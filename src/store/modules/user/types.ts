@@ -1,6 +1,7 @@
 export type RoleType = '' | '*' | 'admin' | 'user';
 export interface UserState {
   name?: string;
+  token?: string;
   avatar?: string;
   job?: string;
   organization?: string;
@@ -16,4 +17,13 @@ export interface UserState {
   accountId?: string;
   certification?: number;
   role: RoleType;
+  permissions: string[];
+  roles: string[];
+  sysUser: object;
+}
+
+export interface CaptchaData {
+  uuid?:string
+  captchaOnOff?:boolean
+  img?:string
 }

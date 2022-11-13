@@ -8,6 +8,7 @@
       :model="userInfo"
       class="login-form"
       layout="vertical"
+      size="large"
       @submit="handleSubmit"
     >
       <a-form-item
@@ -41,6 +42,30 @@
           </template>
         </a-input-password>
       </a-form-item>
+
+      <a-form-item
+          field="code"
+          hide-label
+      >
+        <a-input
+            v-model="userInfo.code"
+            placeholder="请输入验证码"
+        >
+          <template #prefix>
+            <icon-safe />
+          </template>
+          <template #append>
+              <a-image
+                  @click="getCaptcha"
+                  height="38"
+                  :fit="fill"
+                  :preview="false"
+                  :src="captchaUrl"
+              />
+          </template>
+        </a-input>
+      </a-form-item>
+
       <a-space :size="16" direction="vertical">
         <div class="login-form-password-actions">
           <a-checkbox
@@ -64,7 +89,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+import {ref, reactive, onMounted} from 'vue';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
@@ -73,6 +98,8 @@
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import type { LoginData } from '@/api/user';
+  import { verificationCode } from '@/api/user';
+
 
   const router = useRouter();
   const { t } = useI18n();
@@ -83,12 +110,23 @@
   const loginConfig = useStorage('login-config', {
     rememberPassword: true,
     username: 'admin', // 演示默认值
-    password: 'admin', // demo default value
+    password: '123123', // demo default value
   });
+
   const userInfo = reactive({
+    uuid: '',
     username: loginConfig.value.username,
     password: loginConfig.value.password,
   });
+
+const captchaUrl = ref('')
+const getCaptcha = async () => {
+  const { data,code } = await verificationCode()
+  if(code === 200){
+    userInfo.uuid = data.uuid;
+    captchaUrl.value = data.img
+  }
+}
 
   const handleSubmit = async ({
     errors,
@@ -126,6 +164,10 @@
   const setRememberPassword = (value: boolean) => {
     loginConfig.value.rememberPassword = value;
   };
+
+  onMounted(() => {
+    getCaptcha();
+  })
 </script>
 
 <style lang="less" scoped>

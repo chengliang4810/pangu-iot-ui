@@ -13,6 +13,7 @@ import useAppStore from '../app';
 const useUserStore = defineStore('user', {
   state: (): UserState => ({
     name: undefined,
+    token: undefined,
     avatar: undefined,
     job: undefined,
     organization: undefined,
@@ -64,7 +65,7 @@ const useUserStore = defineStore('user', {
     async login(loginForm: LoginData) {
       try {
         const res = await userLogin(loginForm);
-        setToken(res.data.token);
+        setToken(res.data.access_token);
       } catch (err) {
         clearToken();
         throw err;
