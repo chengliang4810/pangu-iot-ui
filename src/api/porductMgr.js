@@ -30,8 +30,8 @@ export function deleteProductType(data) {
 // 产品分类-修改
 export function updateProductType(data) {
   return request({
-    url: '/productType/update',
-    method: 'post',
+    url: `/iot/product_group`,
+    method: 'put',
     data
   })
 }

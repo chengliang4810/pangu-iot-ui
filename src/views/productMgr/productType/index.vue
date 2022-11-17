@@ -21,7 +21,7 @@
     >
       <el-table-column prop="name" label="名称">
         <template slot-scope="props">
-          <svg-icon :icon-class="$route.meta.icon24" class="icon24" :style="{marginLeft: props.row.children == null && props.row.parentId == '0' ? '23px' : '0' }" />
+          <svg-icon :icon-class="$route.meta.icon24" class="icon24" :style="{marginLeft: props.row.children == null && props.row.parentId === '0' ? '23px' : '0' }" />
           <span class="event" @click="edit(props.row)">{{ props.row.name }}</span>
         </template>
       </el-table-column>
@@ -133,8 +133,7 @@ export default {
       },
       dialogForm: {
         name: '',
-        parentId: null,
-        pid: null
+        parentId: null
       },
       form: {
         name: ''
@@ -165,7 +164,7 @@ export default {
       this.dialogForm = {
         name: '',
         pIds: null,
-        parendId: null
+        parentId: null
       }
     },
     add() {
@@ -210,11 +209,16 @@ export default {
         if (valid) {
           this.butLoading = true
           const pIds = this.dialogForm.pIds
+          let pids = '[0],'
           if (pIds && pIds.length) {
             this.dialogForm.parentId = pIds[pIds.length - 1]
+            pIds.forEach((item) => {
+              pids += `[${item}],`
+            })
+            this.dialogForm.pids = pids
           }
 
-          if (this.dialogForm.nodeId) {
+          if (this.dialogForm.id) {
             updateProductType(this.dialogForm).then(async(res) => {
               if (res.code == 200) {
                 this.$message({
@@ -229,7 +233,6 @@ export default {
               this.butLoading = false
             })
           } else {
-            this.dialogForm.pids = undefined
             createProductType(this.dialogForm).then(async(res) => {
               if (res.code == 200) {
                 this.$message({
