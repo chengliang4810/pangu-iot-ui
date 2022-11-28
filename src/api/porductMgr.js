@@ -147,8 +147,8 @@ export function createAttrTrapper(data) {
 // 产品属性修改
 export function updateAttrTrapper(data) {
   return request({
-    url: '/product/model/attr/trapper/update',
-    method: 'post',
+    url: '/iot/product_attribute',
+    method: 'put',
     data
   })
 }

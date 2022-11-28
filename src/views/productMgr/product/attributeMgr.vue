@@ -35,6 +35,7 @@ import {
   getAttrTrapperByPage,
   updateAttrTrapper
 } from '@/api/porductMgr'
+import {getDictListByCode} from "@/api/system";
 
 export default {
   name: 'AttributeMgr',
@@ -52,6 +53,8 @@ export default {
   },
   data() {
     return {
+      dataTypeList: [],
+      sourceTypeList: [],
       formParams: [
         {
           componentName: 'InputTemplate',
@@ -97,12 +100,12 @@ export default {
         },
         {
           label: '来源类型',
-          prop: 'source',
+          prop: 'sourceName',
           show: true
         },
         {
           label: '数据类型',
-          prop: 'valueType',
+          prop: 'valueTypeName',
           show: true
         },
         {
@@ -144,11 +147,27 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
+      this.init()
       this.form.prodId = this.$route.query.id
       this.getList()
     }
   },
   methods: {
+    // 初始化
+    async init() {
+      // 加载数据类型
+      await getDictListByCode({ dictTypeCode: 'data_type' }).then((res) => {
+        if (res.code === 200) {
+          this.dataTypeList = res.data
+        }
+      })
+      // 加载资源类型
+      await getDictListByCode({ dictTypeCode: 'attr_type' }).then((res) => {
+        if (res.code === 200) {
+          this.sourceTypeList = res.data
+        }
+      })
+    },
     search() {
       this.page = 1
       this.getList()
@@ -157,8 +176,14 @@ export default {
       this.loading = true
       getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
         this.loading = false
-        if (res.code == 200) {
-          this.tableData = res.data.list
+        if (res.code === 200) {
+          const list = res.data.list
+          list.forEach(element => {
+            const valueTypeObj = this.dataTypeList.find((dataItem) => dataItem.dictValue == element.valueType)
+            const sourceTypeObj = this.sourceTypeList.find((typeItem) => typeItem.dictValue == element.source)
+            element = Object.assign(element, { valueTypeName: (valueTypeObj ? valueTypeObj.dictLabel : '-') || '未分类', sourceName: (sourceTypeObj ? sourceTypeObj.dictLabel : '-') || '-' })
+          })
+          this.tableData = list
           this.total = res.data.total
         }
       }).catch(() => {
@@ -218,7 +243,7 @@ export default {
     submit() {
       if (this.$refs.attributeForm.validateForm()) {
         this.butLoading = true
-        if (this.dialogForm.attrId) {
+        if (this.dialogForm.id) {
           updateAttrTrapper(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({

@@ -173,7 +173,7 @@ export default {
       this.loading = true
       getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
         this.loading = false
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.tableData = res.data
           this.total = res.count
         }
