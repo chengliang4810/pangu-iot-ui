@@ -35,7 +35,7 @@ import {
   getAttrTrapperByPage,
   updateAttrTrapper
 } from '@/api/porductMgr'
-import {getDictListByCode} from "@/api/system";
+import { getDictListByCode } from '@/api/system'
 
 export default {
   name: 'AttributeMgr',
@@ -68,7 +68,8 @@ export default {
         }
       ],
       form: {
-        name: ''
+        name: '',
+        id: ''
       },
       tableData: [],
       loading: false,
@@ -148,7 +149,7 @@ export default {
   created() {
     if (this.$route.query.id) {
       this.init()
-      this.form.prodId = this.$route.query.id
+      this.form.id = this.$route.query.id
       this.getList()
     }
   },

@@ -109,8 +109,9 @@ export function updateProdTag(data) {
 
 // 产品属性列表
 export function getAttrTrapperByPage(data) {
+  const { id } = data
   return request({
-    url: '/manager/device_attribute/list',
+    url: `/manager/device_attribute/list?productId=${id}`,
     method: 'get',
     data
   })
@@ -118,8 +119,9 @@ export function getAttrTrapperByPage(data) {
 
 // 产品属性列表-不分页
 export function getProductAttrTrapperList(data) {
+  const { id } = data
   return request({
-    url: '/manager/device_attribute/tree',
+    url: `/manager/device_attribute/tree?productId=${id}`,
     method: 'get',
     data
   })

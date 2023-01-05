@@ -187,8 +187,8 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
-      this.prodId = this.$route.query.id
-      this.formData.productId = this.prodId
+      this.productId = this.$route.query.id
+      this.formData.productId = this.productId
       this.getDict()
     }
   },
@@ -207,10 +207,11 @@ export default {
       groupDictByCode({ dictTypeCode: 'UNITS' }).then(res => {
         if (res.code == 200) {
           this.unitsList = this.groupFormat(res.data)
+          console.log(6666, this.unitsList)
         }
       })
       if (this.isDev) {
-        getAttrTrapperList({ prodId: this.prodId }).then(res => {
+        getAttrTrapperList({ id: this.productId }).then(res => {
           if (res.code == 200) {
             if (this.formData.attrId) {
               const arr = []
@@ -226,20 +227,21 @@ export default {
           }
         })
         if (this.formData.templateId) {
-          getValueMapList({ productId: this.proId }).then(res => {
+          getValueMapList({ id: this.productId }).then(res => {
             if (res.code == 200) {
               this.mapList = res.data
             }
           })
         } else {
-          getDevValueMapList({ deviceId: this.prodId }).then(res => {
+          getDevValueMapList({ deviceId: this.productId }).then(res => {
             if (res.code == 200) {
               this.mapList = res.data
             }
           })
         }
       } else {
-        getProductAttrTrapperList({ prodId: this.prodId }).then(res => {
+        console.log('productId', this.productId)
+        getProductAttrTrapperList({ id: this.productId }).then(res => {
           if (res.code == 200) {
             if (this.formData.attrId) {
               const arr = []
@@ -254,7 +256,7 @@ export default {
             }
           }
         })
-        // getValueMapList({ productId: this.prodId }).then(res => {
+        // getValueMapList({ productId: this.productId }).then(res => {
         //   if (res.code == 200) {
         //     this.mapList = res.data
         //   }

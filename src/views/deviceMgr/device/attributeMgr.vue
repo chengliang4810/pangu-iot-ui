@@ -1,7 +1,7 @@
 <!--设备详情-属性管理页面 -->
 <template>
   <div class="attribute-mgr">
-    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search"/>
+    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
     <BusinessTable
       v-if="!dialogVisible"
       :table-data="tableData"
@@ -11,11 +11,11 @@
       :icon="$route.meta.icon24"
       @detail="detail"
     />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
       <FormTemplate :up="'属性列表'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
-          <attributeForm v-if="dialogVisible" ref="attributeForm" v-model="dialogForm" :pro-id="proId" is-dev/>
+          <attributeForm v-if="dialogVisible" ref="attributeForm" v-model="dialogForm" :pro-id="proId" is-dev />
         </template>
       </FormTemplate>
     </div>
@@ -233,7 +233,7 @@ export default {
       if (this.$refs.attributeForm.validateForm()) {
         this.butLoading = true
         if (this.dialogForm.attrId) {
-          updateAttrTrapper(this.dialogForm).then(async (res) => {
+          updateAttrTrapper(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '修改成功',
@@ -247,7 +247,7 @@ export default {
             this.butLoading = false
           })
         } else {
-          createAttrTrapper(this.dialogForm).then(async (res) => {
+          createAttrTrapper(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '添加成功',

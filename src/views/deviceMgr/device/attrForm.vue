@@ -2,13 +2,19 @@
 <template>
   <div class="form-content">
     <div class="dialog-body">
-      <el-form ref="attrForm" :rules="attrRules" :model="form" label-width="80px" label-position="top"
-               class="dialog-form">
+      <el-form
+        ref="attrForm"
+        :rules="attrRules"
+        :model="form"
+        label-width="80px"
+        label-position="top"
+        class="dialog-form"
+      >
         <el-form-item label="属性名称" prop="attrName">
-          <el-input v-model="form.attrName" size="mini"/>
+          <el-input v-model="form.attrName" size="mini" />
         </el-form-item>
         <el-form-item label="标识符" prop="key">
-          <el-input v-model="form.key" size="mini"/>
+          <el-input v-model="form.key" size="mini" />
           <div class="el-form-item-tips">
             <svg-icon icon-class="tips" class="icon" />
             <span>可以包含数字、字母、-_.。更多特殊形式请见文档</span>
@@ -68,7 +74,7 @@
           <el-input v-model="form.key" size="mini" />
         </el-form-item> -->
         <el-form-item label="描述">
-          <el-input v-model="form.remark" type="textarea" rows="2" size="mini"/>
+          <el-input v-model="form.remark" type="textarea" rows="2" size="mini" />
         </el-form-item>
         <el-form-item label="数据预处理">
           <div v-for="(item,index) in processStepList" :key="'pre'+index" class="zeus-list-conten zeus-flex-between">
@@ -89,21 +95,23 @@
                   </el-option-group>
                 </el-select>
               </div>
-              <div v-if="item.type !== '7' && item.type !== '8' && item.type !== '25' && item.type !== '21'"
-                   class="zeus-list-item">
-                <el-input v-model="item.value" size="mini" :placeholder="tipsText(item.type)"/>
+              <div
+                v-if="item.type !== '7' && item.type !== '8' && item.type !== '25' && item.type !== '21'"
+                class="zeus-list-item"
+              >
+                <el-input v-model="item.value" size="mini" :placeholder="tipsText(item.type)" />
               </div>
               <div v-if="item.type === '25'" class="zeus-list-item">
-                <el-input v-model="item.value" size="mini" placeholder="被替换文本"/>
+                <el-input v-model="item.value" size="mini" placeholder="被替换文本" />
               </div>
               <div v-if="item.type === '25'" class="zeus-list-item">
-                <el-input v-model="item.value2" size="mini" placeholder="替换为"/>
+                <el-input v-model="item.value2" size="mini" placeholder="替换为" />
               </div>
               <div v-if="item.type === '21'" class="zeus-list-item" @click="changeJs(index)">
-                <el-input v-model="item.value" class="zeus-attr-js" size="mini" disabled placeholder="script" suffix-icon="el-icon-edit-outline"/>
+                <el-input v-model="item.value" class="zeus-attr-js" size="mini" disabled placeholder="script" suffix-icon="el-icon-edit-outline" />
               </div>
             </div>
-            <i class="el-icon-delete zeus-icon" @click="delItem('pre',index)"/>
+            <i class="el-icon-delete zeus-icon" @click="delItem('pre',index)" />
           </div>
           <el-button class="add-btn" plain icon="el-icon-plus" size="mini" @click="preAdd">增加预处理步骤</el-button>
           <div class="el-form-item-tips">
@@ -137,7 +145,7 @@
                 </el-input>
               </div>
             </div>
-            <i class="el-icon-delete zeus-icon" @click="delItem('tag',index)"/>
+            <i class="el-icon-delete zeus-icon" @click="delItem('tag',index)" />
           </div>
           <el-button class="add-btn" plain icon="el-icon-plus" size="mini" @click="tagAdd">增加标签</el-button>
           <div class="el-form-item-tips">
@@ -161,17 +169,17 @@
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="dialog_edit"/>
+          <svg-icon icon-class="dialog_edit" />
           Java Script
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="jsVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="jsVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
         <p>function (value) {</p>
-        <json-editor ref="JsonEditor" :json="jsValue" @change="handleJsonChange1"/>
+        <json-editor ref="JsonEditor" :json="jsValue" @change="handleJsonChange1" />
         <!-- <el-input v-model="jsValue" type="textarea" placeholder="return value" maxlength="65535" show-word-limit :autosize="{ minRows: 3, maxRows: 15}" /> -->
         <p>}</p>
       </div>
@@ -304,6 +312,7 @@ export default {
     if (this.$route.query.id) {
       this.prodId = this.$route.query.id
       this.form.productId = this.prodId
+      console.log('chanpin', this.prodId)
       await this.getMapList()
       await this.getAttribute()
     }
@@ -428,7 +437,7 @@ export default {
       })
     },
     getAttribute() {
-      const data = { prodId: this.prodId }
+      const data = { id: this.prodId }
       getAttrTrapperByPage(data).then(res => {
         if (res.code == 200) {
           this.attrList = res.data
