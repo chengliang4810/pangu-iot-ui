@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 产品分类树
 export function getProductTypeTree(data) {
   return request({
-    url: '/iot/product_group/list',
+    url: '/manager/product_group/list',
     method: 'get',
     data
   })
@@ -12,7 +12,7 @@ export function getProductTypeTree(data) {
 // 产品分类-新增
 export function createProductType(data) {
   return request({
-    url: '/iot/product_group',
+    url: '/manager/product_group',
     method: 'post',
     data
   })
@@ -22,7 +22,7 @@ export function createProductType(data) {
 export function deleteProductType(data) {
   const { id } = data
   return request({
-    url: `/iot/product_group/${id}`,
+    url: `/manager/product_group/${id}`,
     method: 'delete'
   })
 }
@@ -30,7 +30,7 @@ export function deleteProductType(data) {
 // 产品分类-修改
 export function updateProductType(data) {
   return request({
-    url: `/iot/product_group`,
+    url: `/manager/product_group`,
     method: 'put',
     data
   })
@@ -39,7 +39,7 @@ export function updateProductType(data) {
 // 产品分页列表
 export function getProductByPage(params) {
   return request({
-    url: '/iot/product/list',
+    url: '/manager/product/list',
     method: 'get',
     params
   })
@@ -57,7 +57,7 @@ export function getProductList(data) {
 export function productDetail(params) {
   const { productId } = params
   return request({
-    url: `/iot/product/${productId}`,
+    url: `/manager/product/${productId}`,
     method: 'get'
   })
 }
@@ -65,7 +65,7 @@ export function productDetail(params) {
 // 新增产品
 export function createProduct(data) {
   return request({
-    url: '/iot/product',
+    url: '/manager/product',
     method: 'post',
     data
   })
@@ -82,9 +82,9 @@ export function UpdateProduct(data) {
 
 // 删除产品
 export function DeleteProduct(data) {
-  const productId = data.productId
+  const productId = data.id
   return request({
-    url: `/iot/product/${productId}`,
+    url: `/manager/product/${productId}`,
     method: 'delete'
   })
 }
@@ -110,7 +110,7 @@ export function updateProdTag(data) {
 // 产品属性列表
 export function getAttrTrapperByPage(data) {
   return request({
-    url: '/iot/product_attribute/page',
+    url: '/manager/device_attribute/list',
     method: 'get',
     data
   })
@@ -119,7 +119,7 @@ export function getAttrTrapperByPage(data) {
 // 产品属性列表-不分页
 export function getProductAttrTrapperList(data) {
   return request({
-    url: '/iot/product_attribute/list',
+    url: '/manager/device_attribute/tree',
     method: 'get',
     data
   })
@@ -130,7 +130,7 @@ export function detailAttrTrapper(params) {
   console.log(params)
   const { attrId } = params
   return request({
-    url: `/iot/product_attribute/${attrId}`,
+    url: `/manager/device_attribute/${attrId}`,
     method: 'get'
   })
 }
@@ -138,7 +138,7 @@ export function detailAttrTrapper(params) {
 // 产品属性创建
 export function createAttrTrapper(data) {
   return request({
-    url: '/iot/product_attribute',
+    url: '/manager/device_attribute',
     method: 'post',
     data
   })
@@ -147,7 +147,7 @@ export function createAttrTrapper(data) {
 // 产品属性修改
 export function updateAttrTrapper(data) {
   return request({
-    url: '/iot/product_attribute',
+    url: '/manager/device_attribute',
     method: 'put',
     data
   })
@@ -157,7 +157,7 @@ export function updateAttrTrapper(data) {
 export function deleteAttrTrapper(data) {
   const { attrIds } = data
   return request({
-    url: `/iot/product_attribute/${attrIds}`,
+    url: `/manager/device_attribute/${attrIds}`,
     method: 'delete'
   })
 }

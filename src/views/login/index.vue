@@ -43,6 +43,24 @@
           />
         </el-form-item>
 
+        <el-form-item prop="code" v-if="captchaEnabled">
+          <el-input
+            v-model="loginForm.code"
+            ref="code"
+            name="验证码"
+            auto-complete="off"
+            placeholder="请输入验证码"
+            style="width: 63%"
+            tabindex="3"
+            @keyup.enter.native="handleLogin"
+          >
+            <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+          </el-input>
+          <div class="login-code">
+            <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          </div>
+        </el-form-item>
+
         <el-button
           class="box-shadow btn-container"
           :loading="loading"
@@ -58,7 +76,7 @@
 <script>
 import { nextFirstLink } from '@/utils'
 // import EventBus from '@/utils/event-bus'
-import { code } from '@/api/user'
+import {code, getCodeImg} from '@/api/user'
 export default {
   name: 'Login',
   data() {
@@ -72,10 +90,16 @@ export default {
         callback()
       }
     }
+    const validateCode = (rule, value, callback) => {
+        callback()
+    }
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin123',
+        code: '',
+        rememberMe: false,
+        uuid: ""
       },
       loginRules: {
         username: [
@@ -83,8 +107,13 @@ export default {
         ],
         password: [
           { required: true, trigger: 'blur', validator: validatePassword }
+        ],
+        code: [
+          { required: true, trigger: 'blur', validator: validateCode }
         ]
       },
+      codeUrl: "",
+      captchaEnabled: true,
       loading: false,
       passwordType: 'password',
       redirect: undefined
@@ -103,11 +132,29 @@ export default {
   },
   created() {
     // 获取验证码
-    code().then((res) => {
-      console.log(res.data)
-    })
+    this.getCode();
+    this.getCookie();
   },
   methods: {
+    getCode() {
+      getCodeImg().then(res => {
+        this.captchaEnabled = res.data.captchaEnabled === undefined ? true : res.data.captchaEnabled;
+        if (this.captchaEnabled) {
+          this.codeUrl = "data:image/gif;base64," + res.data.img;
+          this.loginForm.uuid = res.data.uuid;
+        }
+      });
+    },
+    getCookie() {
+      const username = Cookies.get("username");
+      const password = Cookies.get("password");
+      const rememberMe = Cookies.get('rememberMe')
+      this.loginForm = {
+        username: username === undefined ? this.loginForm.username : username,
+        password: password === undefined ? this.loginForm.password : decrypt(password),
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
+      };
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -122,16 +169,17 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
-          const { username, password } = this.loginForm
+          const { username, password, code, uuid} = this.loginForm
           this.$store
             .dispatch('user/login', {
               username,
-              password
+              password,
+              code,
+              uuid
             })
             .then(async(r) => {
               if (r) {
                 await this.$store.dispatch('user/getMember').then(() => {
-                  console.log(1111)
                   const path = nextFirstLink(
                     this.$store.state.permission.addRoutes
                   )
@@ -164,6 +212,20 @@ export default {
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
+
+.login-code {
+  width: 35%;
+  height: 38px;
+  float: right;
+  img {
+    cursor: pointer;
+    vertical-align: middle;
+  }
+}
+
+.login-code-img {
+  height: 38px;
+}
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {

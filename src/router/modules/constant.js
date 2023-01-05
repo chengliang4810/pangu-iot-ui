@@ -12,25 +12,25 @@ const constantRoutes = [
     component: () => import('@/views/login'),
     hidden: true
   },
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   name: 'home',
-  //   meta: {
-  //     title: '首页',
-  //     icon: 'dashboard',
-  //     active_icon: 'dashboard'
-  //   },
-  //   children: [
-  //     {
-  //       path: '/',
-  //       component: () => import('@/views/home/index'),
-  //       name: 'home1',
-  //       meta: {
-  //         title: '首页1'
-  //       }
-  //     }
-  //   ]
-  // }
+  {
+    path: '/',
+    component: Layout,
+    name: 'home',
+    meta: {
+      title: '首页',
+      icon: 'dashboard',
+      active_icon: 'dashboard'
+    },
+    children: [
+      {
+        path: '/',
+        component: () => import('@/views/productMgr/product/index'),
+        name: 'home1',
+        meta: {
+          title: '首页1'
+        }
+      }
+    ]
+  }
 ]
 export default constantRoutes

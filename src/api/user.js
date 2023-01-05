@@ -7,6 +7,17 @@ export function code() {
   })
 }
 
+export function getCodeImg() {
+  return request({
+    url: '/code',
+    headers: {
+      isToken: false
+    },
+    method: 'get',
+    timeout: 20000
+  })
+}
+
 export function login(data) {
   return request({
     url: '/auth/login',

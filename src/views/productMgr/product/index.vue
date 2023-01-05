@@ -133,7 +133,7 @@ export default {
           label: '',
           prop: 'buttons',
           width: 120,
-          idName: 'productId',
+          idName: 'id',
           show: true,
           buttons: [
             {
@@ -203,7 +203,7 @@ export default {
         this.loading = false
         if (res.code == 200) {
           this.total = res.data.total
-          const list = res.data.list
+          const list = res.data.rows
           list.forEach(element => {
             const groupObj = this.groupList.find((groupItem) => groupItem.id == element.groupId)
             const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
@@ -231,7 +231,7 @@ export default {
       this.$router.push({
         path: '/productMgr/product/detail',
         query: {
-          id: item.productId
+          id: item.id
         }
       })
     },
@@ -241,7 +241,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        DeleteProduct({ productId: id }).then(async(res) => {
+        DeleteProduct({ id: id }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',
@@ -260,7 +260,7 @@ export default {
     handleSubmit() {
       if (this.$refs.ProductForm.validateForm()) {
         this.butLoading = true
-        if (this.productId) {
+        if (this.id) {
           UpdateProduct(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({

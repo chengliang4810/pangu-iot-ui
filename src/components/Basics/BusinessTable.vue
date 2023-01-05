@@ -44,7 +44,7 @@
     </el-table-column>
     <el-table-column
       v-for="(item, index) in newColumns"
-      :key="index"
+      :key="'business-' + index"
       :header-align="item.column_align ? item.column_align : 'left'"
       :align="item.column_align ? item.column_align : 'left'"
       :label="item.label"
@@ -95,7 +95,7 @@
         </template>
         <template v-else-if="item.device">
           <div v-if="scope.row[item.prop] && scope.row[item.prop].length">
-            <div v-for="(i, ind) in scope.row[item.prop]" :key="ind" class="event" @click="toDev(i.deviceId)">{{ i.name }}</div>
+            <div v-for="(i, ind) in scope.row[item.prop]" :key="'device-' + ind" class="event" @click="toDev(i.deviceId)">{{ i.name }}</div>
           </div>
           <div v-else>-</div>
         </template>

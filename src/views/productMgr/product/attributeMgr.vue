@@ -177,7 +177,7 @@ export default {
       getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
         this.loading = false
         if (res.code === 200) {
-          const list = res.data.list
+          const list = res.data.rows
           list.forEach(element => {
             const valueTypeObj = this.dataTypeList.find((dataItem) => dataItem.dictValue == element.valueType)
             const sourceTypeObj = this.sourceTypeList.find((typeItem) => typeItem.dictValue == element.source)
