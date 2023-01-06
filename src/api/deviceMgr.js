@@ -3,16 +3,16 @@ import request from '@/utils/request'
 // 设备组列表
 export function getDeviceGrpByPage(data) {
   return request({
-    url: '/deviceGroup/getDeviceGrpByPage',
-    method: 'post',
+    url: '/manager/device_group/list',
+    method: 'get',
     data
   })
 }
 
 export function getDeviceGrpList(data) {
   return request({
-    url: '/deviceGroup/list',
-    method: 'post',
+    url: '/manager/device_group/tree',
+    method: 'get',
     data
   })
 }
@@ -20,7 +20,7 @@ export function getDeviceGrpList(data) {
 // 设备组新增
 export function createDeviceGroup(data) {
   return request({
-    url: '/deviceGroup/create',
+    url: '/manager/device_group',
     method: 'post',
     data
   })
@@ -29,8 +29,8 @@ export function createDeviceGroup(data) {
 // 设备组修改
 export function updateDeviceGroup(data) {
   return request({
-    url: '/deviceGroup/update',
-    method: 'post',
+    url: '/manager/device_group',
+    method: 'put',
     data
   })
 }
@@ -38,34 +38,33 @@ export function updateDeviceGroup(data) {
 // 设备组删除
 export function deleteDeviceGroup(data) {
   return request({
-    url: '/deviceGroup/delete',
-    method: 'post',
-    data
+    url: `/manager/device_group/${data.ids}`,
+    method: 'delete'
   })
 }
 
 // 设备列表
 export function getDeviceByPage(data) {
   return request({
-    url: '/device/getDeviceByPage',
-    method: 'post',
-    data
+    url: '/manager/device/list',
+    method: 'get',
+    params: data
   })
 }
 
 // 设备列表-不分页
 export function getDeviceList(data) {
   return request({
-    url: '/device/list',
-    method: 'post',
-    data
+    url: '/manager/device/tree',
+    method: 'get',
+    params: data
   })
 }
 
 // 设备修改状态
 export function modifyStatusDev(data) {
   return request({
-    url: '/device/status/update',
+    url: '/manager/device/status/update',
     method: 'post',
     data
   })
@@ -74,7 +73,7 @@ export function modifyStatusDev(data) {
 // 设备新增
 export function createDevice(data) {
   return request({
-    url: '/device/create',
+    url: '/manager/device/create',
     method: 'post',
     data
   })
@@ -83,7 +82,7 @@ export function createDevice(data) {
 // 设备修改
 export function updateDevice(data) {
   return request({
-    url: '/device/update',
+    url: '/manager/device/update',
     method: 'post',
     data
   })
@@ -92,7 +91,7 @@ export function updateDevice(data) {
 // 设备删除
 export function deleteDevice(data) {
   return request({
-    url: '/device/delete',
+    url: '/manager/device/delete',
     method: 'post',
     data
   })
@@ -101,7 +100,7 @@ export function deleteDevice(data) {
 // 设备详情
 export function deviceDetail(params) {
   return request({
-    url: '/device/detail',
+    url: '/manager/device/detail',
     method: 'get',
     params
   })
@@ -110,7 +109,7 @@ export function deviceDetail(params) {
 // 设备标签
 export function getDeviceTag(params) {
   return request({
-    url: '/device/tag/list',
+    url: '/manager/device/tag/list',
     method: 'get',
     params
   })
@@ -119,7 +118,7 @@ export function getDeviceTag(params) {
 // 更新设备标签
 export function updateDevTag(data) {
   return request({
-    url: '/device/tag/update',
+    url: '/manager/device/tag/update',
     method: 'post',
     data
   })
@@ -128,7 +127,7 @@ export function updateDevTag(data) {
 // 设备属性列表
 export function getAttrTrapperByPage(data) {
   return request({
-    url: '/device/model/getAttrTrapperByPage',
+    url: '/manager/device/model/getAttrTrapperByPage',
     method: 'post',
     data
   })
@@ -137,7 +136,7 @@ export function getAttrTrapperByPage(data) {
 // 设备属性列表--不分页
 export function getAttrTrapperList(data) {
   return request({
-    url: '/device/model/list',
+    url: '/manager/device/model/list',
     method: 'post',
     data
   })
@@ -146,7 +145,7 @@ export function getAttrTrapperList(data) {
 // 设备属性创建
 export function createAttrTrapper(data) {
   return request({
-    url: '/device/model/attr/trapper/create',
+    url: '/manager/device/model/attr/trapper/create',
     method: 'post',
     data
   })
@@ -155,7 +154,7 @@ export function createAttrTrapper(data) {
 // 设备属性修改
 export function updateAttrTrapper(data) {
   return request({
-    url: '/device/model/attr/trapper/update',
+    url: '/manager/device/model/attr/trapper/update',
     method: 'post',
     data
   })
@@ -164,7 +163,7 @@ export function updateAttrTrapper(data) {
 // 设备属性删除
 export function deleteAttrTrapper(data) {
   return request({
-    url: '/device/model/attr/trapper/delete',
+    url: '/manager/device/model/attr/trapper/delete',
     method: 'post',
     data
   })
@@ -173,7 +172,7 @@ export function deleteAttrTrapper(data) {
 // 设备属性详情
 export function detailAttrTrapper(params) {
   return request({
-    url: '/device/model/detail',
+    url: '/manager/device/model/detail',
     method: 'get',
     params
   })
@@ -201,7 +200,7 @@ export function getCharts(params) {
 // 设备值映射列表
 export function getDevValueMapList(params) {
   return request({
-    url: '/device/valueMap/list',
+    url: '/manager/device/valueMap/list',
     method: 'get',
     params
   })
@@ -210,7 +209,7 @@ export function getDevValueMapList(params) {
 // 设备值映射修改
 export function updateDevValuemap(data) {
   return request({
-    url: '/device/valueMap/update',
+    url: '/manager/device/valueMap/update',
     method: 'post',
     data
   })
@@ -219,7 +218,7 @@ export function updateDevValuemap(data) {
 // 设备值映射删除
 export function deleteDevValueMap(data) {
   return request({
-    url: '/device/valueMap/delete',
+    url: '/manager/device/valueMap/delete',
     method: 'post',
     data
   })
@@ -228,12 +227,11 @@ export function deleteDevValueMap(data) {
 // 设备调试
 export function sendData(data) {
   return request({
-    url: '/device/api/sendData',
+    url: '/manager/device/api/sendData',
     method: 'post',
     data
   })
 }
-
 
 // 上下线规则创建
 export function createTrigger(data) {
@@ -265,7 +263,7 @@ export function getTrigger(params) {
 // 告警规则创建
 export function createDevAlarm(data) {
   return request({
-    url: '/device/event/trigger/create',
+    url: '/manager/device/event/trigger/create',
     method: 'post',
     data
   })
@@ -283,7 +281,7 @@ export function getEventByPage(data) {
 // 告警规则修改-设备
 export function updateEventDev(data) {
   return request({
-    url: '/device/event/trigger/update',
+    url: '/manager/device/event/trigger/update',
     method: 'post',
     data
   })
@@ -301,7 +299,7 @@ export function updateEvent(data) {
 // 告警规则删除
 export function deleteDevEvent(data) {
   return request({
-    url: '/device/event/trigger/delete',
+    url: '/manager/device/event/trigger/delete',
     method: 'post',
     data
   })
@@ -310,7 +308,7 @@ export function deleteDevEvent(data) {
 // 告警规则详情
 export function detailEventDev(params) {
   return request({
-    url: '/device/event/trigger/detail',
+    url: '/manager/device/event/trigger/detail',
     method: 'get',
     params
   })
@@ -319,7 +317,7 @@ export function detailEventDev(params) {
 // 告警规则修改状态
 export function modifyStatusEventDev(data) {
   return request({
-    url: '/device/event/trigger/status',
+    url: '/manager/device/event/trigger/status',
     method: 'post',
     data
   })
@@ -418,7 +416,7 @@ export function createMacro(data) {
 // 设备日志列表
 export function getLogByPage(data) {
   return request({
-    url: '/device/log/getLogByPage',
+    url: '/manager/device/log/getLogByPage',
     method: 'post',
     data
   })
@@ -427,7 +425,7 @@ export function getLogByPage(data) {
 // 设备日志列表-不分页
 export function deviceLogList(params) {
   return request({
-    url: '/device/log/list',
+    url: '/manager/device/log/list',
     method: 'get',
     params
   })

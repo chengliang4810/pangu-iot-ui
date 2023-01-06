@@ -73,7 +73,7 @@ export default {
       state: '',
       dialogVisible: false,
       item: {
-        deviceGroupId: '',
+        id: '',
         name: '',
         remark: ''
       },
@@ -84,19 +84,14 @@ export default {
           event: 'detail',
           show: true
         },
-        {
-          label: '租户',
-          prop: 'tenantName',
-          show: true
-        },
-        {
-          label: '备注',
-          prop: 'remark',
-          show: true
-        },
+        // {
+        //   label: '租户',
+        //   prop: 'tenantName',
+        //   show: true
+        // },
         {
           label: '创建人',
-          prop: 'createUserName',
+          prop: 'createBy',
           show: true
         },
         {
@@ -105,11 +100,16 @@ export default {
           show: true
         },
         {
+          label: '备注',
+          prop: 'remark',
+          show: true
+        },
+        {
           label: '',
           prop: 'buttons',
           width: 120,
           show: true,
-          idName: 'deviceGroupId',
+          idName: 'id',
           buttons: [
             {
               label: '编辑',
@@ -158,8 +158,8 @@ export default {
       getDeviceGrpByPage(this.form).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = Number(res.count)
+          this.tableData = res.data.rows
+          this.total = Number(res.data.total)
         }
       }).catch(() => {
         this.loading = false
@@ -170,12 +170,12 @@ export default {
       this.getList()
     },
     handleSelect(selection) {
-      this.ids = selection.map((i) => { return i.deviceGroupId })
+      this.ids = selection.map((i) => { return i.id })
     },
     close() {
       this.dialogVisible = false
       this.item = {
-        deviceGroupId: '',
+        id: '',
         name: '',
         remark: ''
       }
@@ -185,11 +185,11 @@ export default {
       this.dialogVisible = true
     },
     detail(item) {
-      this.edit(item.deviceGroupId)
+      this.edit(item.id)
     },
     edit(id) {
       for (const item of this.tableData) {
-        if (id === item.deviceGroupId) {
+        if (id === item.id) {
           this.item = Object.assign({}, item)
         }
       }
@@ -202,7 +202,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDeviceGroup({ deviceGroupIds: this.ids }).then(async(res) => {
+        if (this.ids.length === 0) {
+          this.$message({
+            message: '未选择数据',
+            type: 'warning'
+          })
+          return
+        }
+        deleteDeviceGroup({ ids: this.ids }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',
@@ -219,7 +226,7 @@ export default {
       this.$refs.deviceGroupForm.validate(async(valid, errorFields) => {
         if (valid) {
           this.butLoading = true
-          if (this.item.deviceGroupId) {
+          if (this.item.id) {
             updateDeviceGroup(this.item).then(async(res) => {
               if (res.code == 200) {
                 this.$message({

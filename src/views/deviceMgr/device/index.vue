@@ -3,12 +3,12 @@
   <div class="device">
     <ListHeadTemplate>
       <template v-slot:logo>
-        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px"/>
+        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>设备</template>
       <template v-slot:subhead>物理设备要连接到平台，需要先在平台创建设备(支持单个或批量导入创建)，并获取连接到平台的鉴权信息(待定)。设备列表支持灵活的搜索和导出。</template>
     </ListHeadTemplate>
-    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search"/>
+    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
     <BusinessTable
       v-if="!dialogVisible"
       :table-data="tableData"
@@ -18,11 +18,11 @@
       @detail="detail"
       @proDetail="proDetail"
     />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible" style="padding-bottom: 12px">
       <FormTemplate :up="'设备列表'" :state="state + '设备'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
-          <deviceForm v-if="dialogVisible" ref="deviceForm" v-model="dialogForm" :state="state" :product-list="productList" :device-group="deviceGroup"/>
+          <deviceForm v-if="dialogVisible" ref="deviceForm" v-model="dialogForm" :state="state" :product-list="productList" :device-group="deviceGroup" />
         </template>
       </FormTemplate>
     </div>
@@ -204,7 +204,7 @@ export default {
     // 从url中获取搜索条件
     if (this.$route.query.form) {
       const form = JSON.parse(this.$route.query.form)
-      if (form.deviceGroupIds){
+      if (form.deviceGroupIds) {
         form.deviceGroupId = form.deviceGroupIds[0]
       }
       this.form = form
@@ -287,7 +287,7 @@ export default {
     },
     search() {
       // 获取搜索条件并保存在url内
-      if (this.form.deviceGroupId){
+      if (this.form.deviceGroupId) {
         this.$set(this.form, 'deviceGroupIds', [this.form.deviceGroupId])
       }
       const form = JSON.stringify(this.form)
@@ -302,14 +302,14 @@ export default {
     },
     getList() {
       this.loading = true
-      if (this.form.prodTypeNames && this.form.prodTypeNames.length){
+      if (this.form.prodTypeNames && this.form.prodTypeNames.length) {
         this.form.prodTypeName = this.form.prodTypeNames[this.form.prodTypeNames.length - 1]
       }
-      getDeviceByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
+      getDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false

@@ -120,7 +120,7 @@ export default {
   async created() {
     await this.getDictList()
     await this.getTypeTree()
-    console.log("Add From产品ID：" ,this.productId);
+    console.log('Add From产品ID：', this.productId)
     if (this.productId) {
       this.getDetail()
     }
@@ -145,8 +145,8 @@ export default {
       await productDetail({ productId: this.productId }).then(res => {
         if (res.code == 200) {
           const groupObj = this.groupList.find((groupItem) => groupItem.id == this.form.groupId)
-          this.form = Object.assign( res.data, { groupName: (groupObj ? groupObj.name : '') || '未分类' });
-          console.log("add form: ", this.form)
+          this.form = Object.assign(res.data, { groupName: (groupObj ? groupObj.name : '') || '未分类' })
+          console.log('add form: ', this.form)
         }
       })
     },
@@ -163,7 +163,7 @@ export default {
     },
     changeGroupId(id) {
       // this.form.groupId = id
-      console.log("222", id)
+      console.log('222', id)
       this.$set(this.form, 'groupId', id)
     },
     imgChange(file) {

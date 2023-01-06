@@ -141,7 +141,7 @@ export default {
           const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == data.type)
           const obj = Object.assign(data, { groupName: (groupObj ? groupObj.name : '') || '未分类', typeName: (typeObj ? typeObj.dictLabel : '-') || '-' })
           this.info = obj
-          console.log("product info :", this.info)
+          console.log('product info :', this.info)
           this.detailList = [
             {
               key: '产品ID',
