@@ -69,7 +69,7 @@ export default {
       ],
       form: {
         name: '',
-        id: ''
+        productId: ''
       },
       tableData: [],
       loading: false,
@@ -149,7 +149,7 @@ export default {
   created() {
     if (this.$route.query.id) {
       this.init()
-      this.form.id = this.$route.query.id
+      this.form.productId = this.$route.query.id
       this.getList()
     }
   },
@@ -175,7 +175,7 @@ export default {
     },
     getList() {
       this.loading = true
-      getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
+      getAttrTrapperByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code === 200) {
           const list = res.data.rows

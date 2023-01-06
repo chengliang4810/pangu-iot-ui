@@ -241,7 +241,7 @@ export default {
         }
       } else {
         console.log('productId', this.productId)
-        getProductAttrTrapperList({ id: this.productId }).then(res => {
+        getProductAttrTrapperList({ productId: this.productId }).then(res => {
           if (res.code == 200) {
             if (this.formData.attrId) {
               const arr = []
