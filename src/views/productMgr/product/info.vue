@@ -64,7 +64,7 @@
     <div v-else class="basics">
       <FormTemplate :up="'基本信息'" :state="'编辑基本信息'" :but-loading="butLoading" @submit="submit" @cancel="dialogVisible = false">
         <template v-slot:main>
-          <addForm ref="ProductForm" v-model="dialogForm" :prod-id="prodId" />
+          <addForm ref="ProductForm" v-model="dialogForm" :product-id="prodId" />
         </template>
       </FormTemplate>
     </div>

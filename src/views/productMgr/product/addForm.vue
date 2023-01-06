@@ -99,12 +99,13 @@ export default {
         ]
       },
       treeProps: {
-        children: 'childrenNodes',
+        children: 'children',
         label: 'name'
       },
       treeData: [],
       status: false,
-      dictlist: []
+      dictlist: [],
+      groupList: []
     }
   },
   watch: {
@@ -119,6 +120,7 @@ export default {
   async created() {
     await this.getDictList()
     await this.getTypeTree()
+    console.log("Add From产品ID：" ,this.productId);
     if (this.productId) {
       this.getDetail()
     }
@@ -134,14 +136,17 @@ export default {
     getTypeTree() {
       getProductTypeTree().then(res => {
         if (res.code == 200) {
-          this.treeData = res.data
+          this.groupList = res.data
+          this.treeData = this.handleTree(res.data, 'id', 'parentId')
         }
       })
     },
     async getDetail() {
       await productDetail({ productId: this.productId }).then(res => {
         if (res.code == 200) {
-          this.form = res.data
+          const groupObj = this.groupList.find((groupItem) => groupItem.id == this.form.groupId)
+          this.form = Object.assign( res.data, { groupName: (groupObj ? groupObj.name : '') || '未分类' });
+          console.log("add form: ", this.form)
         }
       })
     },
@@ -158,6 +163,7 @@ export default {
     },
     changeGroupId(id) {
       // this.form.groupId = id
+      console.log("222", id)
       this.$set(this.form, 'groupId', id)
     },
     imgChange(file) {

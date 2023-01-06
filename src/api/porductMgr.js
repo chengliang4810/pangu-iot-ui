@@ -74,8 +74,8 @@ export function createProduct(data) {
 // 更新产品
 export function UpdateProduct(data) {
   return request({
-    url: '/product/update',
-    method: 'post',
+    url: '/manager/product',
+    method: 'put',
     data
   })
 }
