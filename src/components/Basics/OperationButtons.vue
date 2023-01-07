@@ -49,7 +49,7 @@ export default {
     status: {
       type: String,
       default() {
-        return 'ENABLE'
+        return true
       }
     }
   },
@@ -57,10 +57,10 @@ export default {
     buttonList() {
       const arr = []
       this.buttons.forEach((item) => {
-        if (this.status === 'ENABLE' && item.label !== '启用') {
+        if (this.status === true && item.label !== '启用') {
           arr.push(item)
         }
-        if (this.status === 'DISABLE' && item.label !== '禁用') {
+        if (this.status === false && item.label !== '禁用') {
           arr.push(item)
         }
       })

@@ -47,9 +47,9 @@ export function getProductByPage(params) {
 
 export function getProductList(data) {
   return request({
-    url: '/product/list',
-    method: 'post',
-    data
+    url: '/manager/product/tree',
+    method: 'get',
+    params: data
   })
 }
 

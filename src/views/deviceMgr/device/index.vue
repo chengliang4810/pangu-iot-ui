@@ -99,7 +99,7 @@ export default {
         },
         {
           label: '设备ID',
-          prop: 'deviceId',
+          prop: 'code',
           show: true
         },
         {
@@ -139,17 +139,17 @@ export default {
           prop: 'createTime',
           show: true
         },
-        // {
-        //   label: '最近在线时间',
-        //   prop: 'latestOnline',
-        //   show: true
-        // },
+        {
+          label: '最近在线时间',
+          prop: 'latestOnline',
+          show: true
+        },
         {
           label: '',
           prop: 'buttons',
           show: true,
           width: 180,
-          idName: 'deviceId',
+          idName: 'id',
           buttons: [
             {
               label: '删除',
@@ -180,7 +180,7 @@ export default {
       dialogForm: {
         name: '',
         productId: '',
-        deviceGroupIds: [],
+        groupIds: [],
         remark: '',
         deviceInterface: {
           useip: '1',
@@ -209,7 +209,6 @@ export default {
       }
       this.form = form
     }
-    this.getList()
     this.searchInit()
   },
   methods: {
@@ -226,6 +225,7 @@ export default {
           this.typeList = res.data
         }
       })
+      await this.getList()
       // 获取产品列表
       await getProductList({}).then((res) => {
         if (res.code == 200) {
@@ -241,18 +241,18 @@ export default {
       this.formParams = [
         {
           componentName: 'SelectTemplate',
-          keyName: 'deviceGroupId',
+          keyName: 'id',
           label: '设备组',
-          optionId: 'deviceGroupId',
+          optionId: 'id',
           optionName: 'name',
           options: this.deviceGroup
         },
         {
           componentName: 'SelectTemplate',
-          keyName: 'prodType',
+          keyName: 'type',
           label: '设备类型',
-          optionId: 'code',
-          optionName: 'name',
+          optionId: 'dictValue',
+          optionName: 'dictLabel',
           options: this.typeList
         },
         {
@@ -308,7 +308,14 @@ export default {
       getDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data.rows
+          const data = res.data.rows.map((element) => {
+            const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
+            element.typeName = typeObj.dictLabel
+            return element
+          })
+          console.log(data)
+
+          this.tableData = data
           this.total = res.data.total
         }
       }).catch(() => {
@@ -371,13 +378,13 @@ export default {
     close() {
       this.dialogVisible = false
       this.dialogForm = {
-        deviceId: '',
+        code: '',
         name: '',
         productId: '',
-        deviceGroupIds: [],
+        groupIds: [],
         remark: '',
         position: '',
-        addr: ''
+        address: ''
       }
     },
     submit() {
@@ -400,10 +407,10 @@ export default {
       }
     },
     disable(id) {
-      this.modifyStatus(id, 'DISABLE')
+      this.modifyStatus(id, 'false')
     },
     enable(id) {
-      this.modifyStatus(id, 'ENABLE')
+      this.modifyStatus(id, 'true')
     },
     modifyStatus(deviceId, status) {
       modifyStatusDev({ deviceId, status }).then((res) => {

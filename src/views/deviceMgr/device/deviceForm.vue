@@ -2,49 +2,49 @@
 <template>
   <div class="device-form">
     <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="80px" class="dialog-form">
-      <el-form-item label="设备ID" prop="deviceId">
-        <el-input v-model="dialogForm.deviceId" size="mini" :disabled="state === '编辑'"/>
+      <el-form-item label="设备ID" prop="code">
+        <el-input v-model="dialogForm.code" size="mini" :disabled="state === '编辑'" />
         <div v-if="state !== '编辑'" class="el-form-item-tips">
           <svg-icon icon-class="tips" class="icon" />
           若不填写设备ID，则由系统自动生成唯一ID，且不再可以编辑
         </div>
       </el-form-item>
       <el-form-item label="设备名称" prop="name">
-        <el-input v-model="dialogForm.name" size="mini"/>
+        <el-input v-model="dialogForm.name" size="mini" />
       </el-form-item>
       <el-form-item label="产品" prop="productId">
         <el-select v-model="dialogForm.productId" :disabled="state === '编辑' || isProduct" filterable placeholder="请选择产品" size="mini" @change="changePro">
           <el-option
             v-for="item in productList"
-            :key="item.productId"
+            :key="item.id"
             :label="item.name"
-            :value="item.productId"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
       <el-form-item v-if="apiShow" label="采集接口" prop="interface">
-<!--        <el-radio-group v-model="dialogForm.deviceInterface.useip" size="small" class="zeus-mr-5 radio">-->
-<!--          <el-radio-button label="1">IP</el-radio-button>-->
-<!--          <el-radio-button label="0">DNS</el-radio-button>-->
-<!--        </el-radio-group>-->
-        <el-input v-if="dialogForm.deviceInterface.useip == '1'" v-model="dialogForm.deviceInterface.ip" placeholder="请输入IP" size="mini" class="w390 zeus-mr-5"/>
-<!--        <el-input v-if="dialogForm.deviceInterface.useip == '0'" v-model="dialogForm.deviceInterface.dns" placeholder="请输入DNS" size="mini" class="w390 zeus-mr-5"/>-->
-        <el-input v-model="dialogForm.deviceInterface.port" placeholder="请输入端口号" size="mini" class="w100"/>
+        <!--        <el-radio-group v-model="dialogForm.deviceInterface.useip" size="small" class="zeus-mr-5 radio">-->
+        <!--          <el-radio-button label="1">IP</el-radio-button>-->
+        <!--          <el-radio-button label="0">DNS</el-radio-button>-->
+        <!--        </el-radio-group>-->
+        <el-input v-if="dialogForm.deviceInterface.useip == '1'" v-model="dialogForm.deviceInterface.ip" placeholder="请输入IP" size="mini" class="w390 zeus-mr-5" />
+        <!--        <el-input v-if="dialogForm.deviceInterface.useip == '0'" v-model="dialogForm.deviceInterface.dns" placeholder="请输入DNS" size="mini" class="w390 zeus-mr-5"/>-->
+        <el-input v-model="dialogForm.deviceInterface.port" placeholder="请输入端口号" size="mini" class="w100" />
       </el-form-item>
-      <el-form-item label="设备组" prop="deviceGroupIds">
-        <el-select v-model="dialogForm.deviceGroupIds" multiple filterable placeholder="请选择设备组" size="mini" @change="changeDevGroup">
+      <el-form-item label="设备组" prop="groupIds">
+        <el-select v-model="dialogForm.groupIds" multiple filterable placeholder="请选择设备组" size="mini" @change="changeDevGroup">
           <el-option
             v-for="item in deviceGroup"
-            :key="item.deviceGroupId"
+            :key="item.id"
             :label="item.name"
-            :value="item.deviceGroupId.toString()"
+            :value="item.id"
           />
         </el-select>
         <div class="el-form-item-tips">
           <svg-icon icon-class="tips" class="icon" />帮助对数据权限进行精确控制。
         </div>
       </el-form-item>
-      <el-form-item label="代理" prop="proxyId">
+      <!-- <el-form-item label="代理" prop="proxyId">
         <el-select v-model="dialogForm.proxyId" clearable filterable placeholder="请选择代理" size="mini">
           <el-option
             v-for="item in proxyList"
@@ -53,18 +53,18 @@
             :value="item.id"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="描述" prop="remark">
-        <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini"/>
+        <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
       </el-form-item>
       <el-form-item label="坐标" prop="position">
-        <el-input v-model="dialogForm.position" size="mini"/>
+        <el-input v-model="dialogForm.position" size="mini" />
         <div class="el-form-item-tips">
           <svg-icon icon-class="tips" class="icon" />请点击地图来获取坐标，或直接输入经纬度，如 119.977871,31.822535
         </div>
       </el-form-item>
-      <el-form-item label="地址" prop="addr">
-        <el-input v-model="dialogForm.addr" size="mini"/>
+      <el-form-item label="地址" prop="address">
+        <el-input v-model="dialogForm.address" size="mini" />
       </el-form-item>
     </el-form>
     <div v-if="selfKey === ''" class="bm-view zeus-mt-20">
@@ -73,7 +73,7 @@
         <span>为正常使用地图控件,请设置用户Key。</span>
       </div>
       <div class="zeus-text-align-c no-key">
-        <svg-icon icon-class="loadFail" style="font-size:50px"/>
+        <svg-icon icon-class="loadFail" style="font-size:50px" />
         <div class="zeus-mt-5">加载失败</div>
       </div>
     </div>
@@ -87,18 +87,19 @@
       @ready="mapReady"
       @click="selectPoint"
     >
-      <bm-marker :position="point"/>
-      <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+      <bm-marker :position="point" />
+      <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT" />
       <bm-geolocation
         anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
         :show-address-bar="true"
-        :auto-location="true"/>
+        :auto-location="true"
+      />
       <bm-control class="map-input zeus-pl-10 zeus-pr-10 zeus-pt-10">
         <bm-auto-complete v-model="keyword" :sug-style="{zIndex: 9999}">
-          <el-input v-model="keyword" placeholder="请输入关键字" class="map-input"/>
+          <el-input v-model="keyword" placeholder="请输入关键字" class="map-input" />
         </bm-auto-complete>
       </bm-control>
-      <bm-local-search :keyword="keyword" :auto-viewport="true" :panel="false"/>
+      <bm-local-search :keyword="keyword" :auto-viewport="true" :panel="false" />
     </baidu-map>
   </div>
 </template>
@@ -133,7 +134,7 @@ export default {
         return {
           name: '',
           productId: '',
-          deviceGroupIds: [],
+          groupIds: [],
           remark: ''
         }
       }
@@ -165,7 +166,7 @@ export default {
         productId: [
           { required: true, message: '请选择产品', trigger: 'change' }
         ],
-        deviceGroupIds: [
+        groupIds: [
           { required: true, message: '请选择设备组', trigger: 'change' }
         ]
       },
@@ -189,22 +190,22 @@ export default {
     }
   },
   created() {
-    getProxyList({}).then((res) => {
-      if (res.code == '200') {
-        this.proxyList = res.data
-      }
-    })
+    // getProxyList({}).then((res) => {
+    //   if (res.code == '200') {
+    //     this.proxyList = res.data
+    //   }
+    // })
   },
   beforeDestroy() {
     this.keyword = ''
     this.dialogForm = {
-      deviceId: '',
+      code: '',
       name: '',
       productId: '',
-      deviceGroupIds: [],
+      groupIds: [],
       remark: '',
       position: '',
-      addr: ''
+      address: ''
     }
   },
   methods: {

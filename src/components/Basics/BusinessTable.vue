@@ -3,17 +3,17 @@
   <el-table
     ref="businessTable"
     v-loading="loading"
+    v-el-table-infinite-scroll="load"
     :data="tableData"
     :header-cell-class-name="'business-table-header'"
     class="BusinessTable"
     :height="h"
     :class="isRadio ? 'isRadio' : ''"
+    :row-key="getRowKey"
+    :infinite-scroll-disabled="!scroll"
     @select="handleSelect"
     @select-all="handleSelectAll"
     @row-click="handleRowClick"
-    :row-key="getRowKey"
-    v-el-table-infinite-scroll="load"
-    :infinite-scroll-disabled="!scroll"
   >
     <el-table-column
       v-if="selection"
@@ -70,10 +70,10 @@
           </span>
         </template>
         <template v-else-if="item.status">
-          <span v-if="scope.row[item.prop] === 'ENABLE'" class="enable">
+          <span v-if="scope.row[item.prop] === true" class="enable">
             已启用
           </span>
-          <span v-if="scope.row[item.prop] === 'DISABLE'" class="disable">
+          <span v-if="scope.row[item.prop] == false" class="disable">
             已禁用
           </span>
         </template>

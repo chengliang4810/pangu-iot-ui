@@ -73,7 +73,7 @@ export function modifyStatusDev(data) {
 // 设备新增
 export function createDevice(data) {
   return request({
-    url: '/manager/device/create',
+    url: '/manager/device',
     method: 'post',
     data
   })
