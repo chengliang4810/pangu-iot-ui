@@ -135,9 +135,16 @@ export function getAttrTrapperByPage(data) {
 // 设备属性列表--不分页
 export function getAttrTrapperList(data) {
   return request({
-    url: '/manager/device/model/list',
-    method: 'post',
-    data
+    url: '/manager/device_attribute/tree',
+    method: 'get',
+    params: data
+  })
+}
+
+export function getDeviceAttributeList(data) {
+  return request({
+    url: `/manager/device_attribute/tree/${data.deviceId}`,
+    method: 'get'
   })
 }
 
@@ -226,7 +233,7 @@ export function deleteDevValueMap(data) {
 // 设备调试
 export function sendData(data) {
   return request({
-    url: '/manager/device/api/sendData',
+    url: '/manager/device/debug/sendData',
     method: 'post',
     data
   })

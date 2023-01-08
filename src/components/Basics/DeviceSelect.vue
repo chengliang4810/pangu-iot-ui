@@ -1,18 +1,18 @@
 <template>
-  <div class="DeviceSelect" ref="DeviceSelect">
+  <div ref="DeviceSelect" class="DeviceSelect">
     <div class="zeus-pt-15 zeus-pb-15 zeus-pl-10 zeus-pr-10 screen">
       <el-row :gutter="10">
         <el-col :span="7">
           <el-cascader
+            v-model="prodTypes"
             class="zeus-w100"
             size="mini"
             placeholder="请选择产品分类"
             popper-class="device-cascader"
-            v-model="prodTypes"
             :options="productTypeList"
             :show-all-levels="false"
             :props="{ expandTrigger: 'hover',multiple: true,children: 'childrenNodes', checkStrictly: true,value: 'id', label: 'name' }"
-          ></el-cascader>
+          />
         </el-col>
         <el-col :span="7">
           <el-select v-model="form.productIds" multiple filterable size="mini" placeholder="请选择产品" class="zeus-w100">
@@ -20,8 +20,8 @@
               v-for="(item, index) in productList"
               :key="index"
               :label="item.name"
-              :value="item.productId">
-            </el-option>
+              :value="item.productId"
+            />
           </el-select>
         </el-col>
         <el-col :span="7">
@@ -30,7 +30,7 @@
               v-for="item in deviceGroup"
               :key="item.deviceGroupId"
               :label="item.name"
-              :value="item.deviceGroupId.toString()"
+              :value="item.deviceGroupId"
             />
           </el-select>
         </el-col>
@@ -40,10 +40,10 @@
       </el-row>
       <el-row :gutter="10">
         <el-col :span="7" class="zeus-mt-10">
-          <el-input v-model="form.name" size="mini" placeholder="请输入设备名称" @keyup.enter.native="search"/>
+          <el-input v-model="form.name" size="mini" placeholder="请输入设备名称" @keyup.enter.native="search" />
         </el-col>
         <el-col :span="7" class="zeus-mt-10">
-          <el-input v-model="form.deviceId" size="mini" placeholder="请输入设备ID" @keyup.enter.native="search"/>
+          <el-input v-model="form.deviceId" size="mini" placeholder="请输入设备ID" @keyup.enter.native="search" />
         </el-col>
         <el-col :span="3" :offset="7" class="zeus-mt-10">
           <el-button round size="mini" class="but" @click="search"><svg-icon icon-class="list_search" /> 搜索</el-button>
@@ -57,16 +57,16 @@
         </div>
       </div>
     </div>
-<!--    <el-table-->
-<!--      v-if="type === '设备列表'"-->
-<!--      :data="tableData"-->
-<!--      :loading="loading"-->
-<!--      ref="DeviceSelectTable"-->
-<!--      style="width: 100%">-->
-<!--      <el-table-column prop="name" label="设备名称"></el-table-column>-->
-<!--      <el-table-column prop="deviceId" label="设备ID"></el-table-column>-->
-<!--      <el-table-column prop="status" label="状态"></el-table-column>-->
-<!--    </el-table>-->
+    <!--    <el-table-->
+    <!--      v-if="type === '设备列表'"-->
+    <!--      :data="tableData"-->
+    <!--      :loading="loading"-->
+    <!--      ref="DeviceSelectTable"-->
+    <!--      style="width: 100%">-->
+    <!--      <el-table-column prop="name" label="设备名称"></el-table-column>-->
+    <!--      <el-table-column prop="deviceId" label="设备ID"></el-table-column>-->
+    <!--      <el-table-column prop="status" label="状态"></el-table-column>-->
+    <!--    </el-table>-->
     <BusinessTable
       v-if="type === '设备列表'"
       ref="DeviceSelectTable"
@@ -91,8 +91,8 @@
       @ready="mapReady"
     >
       <bml-marker-clusterer :average-center="true" :styles="[{url, size: {width: 68, height: 68}, textColor: '#fff'}]">
-        <bm-marker v-for="(marker, index) of markers" :key="index" :position="{lng: marker.lng, lat: marker.lat}" @click="markerClick(marker.deviceId)">
-          <bm-label :content="marker.name" :offset="{width: 0, height: 30}"/>
+        <bm-marker v-for="(marker, index) of markers" :key="index" :position="{lng: marker.lng, lat: marker.lat}" @click="markerClick(marker.id)">
+          <bm-label :content="marker.name" :offset="{width: 0, height: 30}" />
         </bm-marker>
       </bml-marker-clusterer>
     </baidu-map>
@@ -171,19 +171,14 @@ export default {
         },
         {
           label: '设备ID',
-          prop: 'deviceId',
+          prop: 'id',
           show: true
         },
-        // {
-        //   label: '产品',
-        //   prop: 'productName',
-        //   show: true
-        // },
-        // {
-        //   label: '设备类型',
-        //   prop: 'typeName',
-        //   show: true
-        // },
+        {
+          label: '产品',
+          prop: 'productName',
+          show: true
+        },
         {
           label: '状态',
           prop: 'status',
@@ -210,7 +205,7 @@ export default {
           prop: 'buttons',
           show: true,
           width: 120,
-          idName: 'deviceId',
+          idName: 'id',
           buttons: [
             {
               label: '查看详情',
@@ -234,7 +229,7 @@ export default {
       this.form = JSON.parse(localStorage.getItem('devForm'))
     }
     this.init()
-    // this.getList(true)
+    this.getList(true)
     this.$nextTick(() => {
       this.h = this.$refs.DeviceSelect.offsetHeight - 147
     })
@@ -281,15 +276,16 @@ export default {
       } else {
         this.form.prodTypes = []
       }
-      this.form.page = this.page
-      this.form.maxRow = 50
+      this.form.pageNum = this.page
+      this.form.pageSize = 50
       getDeviceByPage(this.form).then((res) => {
         if (res.code == 200) {
-          this.tableData = this.tableData.concat(res.data)
-          this.count = res.count
+          this.tableData = this.tableData.concat(res.data.rows)
+          console.log(this.tableData)
+          this.count = res.data.total
           if (tage) {
             const dev = this.tableData.find((i) => {
-              return i.deviceId === this.deviceIds
+              return i.id === this.deviceIds
             })
             this.$refs.DeviceSelectTable.setSelection(dev)
           }
@@ -324,7 +320,7 @@ export default {
       // this.$refs.DeviceSelectTable.clearSelection()
       // this.$refs.DeviceSelectTable.setSelection(row)
       // this.ids = row.deviceId
-      this.ids = selection.map((i) => { return i.deviceId })
+      this.ids = selection.map((i) => { return i.id })
     },
     reset() {
       this.prodTypes = []
@@ -340,7 +336,7 @@ export default {
       this.$emit('closeDialog')
     },
     selectedItem(item) {
-      this.$emit('checked', item.deviceId)
+      this.$emit('checked', item.id)
       this.$emit('closeDialog')
     },
     load() {

@@ -3,7 +3,7 @@
   <div class="debug">
     <ListHeadTemplate>
       <template v-slot:logo>
-        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px"/>
+        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>设备调试</template>
       <template v-slot:subhead>平台提供设备模拟器，以方便在没有设备时进行调试开发，从而将设备与开发工作解耦，极大提高开发效率。</template>
@@ -24,14 +24,14 @@
           v-for="(item,index) in devList"
           :key="index"
           :label="item.name"
-          :value="item.deviceId"
+          :value="item.id"
         />
       </el-select>
     </div>
     <div class="main">
-<!--      <div class="tabs">-->
-<!--        <el-button type="primary" size="mini" round>上报属性</el-button>-->
-<!--      </div>-->
+      <!--      <div class="tabs">-->
+      <!--        <el-button type="primary" size="mini" round>上报属性</el-button>-->
+      <!--      </div>-->
       <div class="detail">
         <div v-if="attrList.length" class="detail-l zeus-pr-15 zeus-relative">
           <span>正在模拟设备:</span>
@@ -45,16 +45,15 @@
           </div>
           <el-checkbox-group v-model="checkedAttr" @change="handleCheckedAttrChange">
             <div v-for="(attr, index) in attrList" :key="index" class="zeus-mt-15">
-              <el-checkbox :label="attr.attrId">
-                {{ attr.attrName }} {{ attr.key }} <span class="type">{{ attr.valueTypeName }}</span>
+              <el-checkbox :label="attr.id">
+                {{ attr.name }} {{ attr.key }} <span class="type">{{ attr.valueTypeName }}</span>
               </el-checkbox>
               <el-input
+                v-model="attr.deviceAttrValue"
                 type="textarea"
                 autosize
-                v-model="attr.deviceAttrValue"
                 class="zeus-mt-10"
-              >
-              </el-input>
+              />
             </div>
           </el-checkbox-group>
           <div class="zeus-absolute bottom">
@@ -63,19 +62,19 @@
           </div>
         </div>
         <div v-else-if="devName === ''" class="detail-l zeus-pr-15">
-          <el-empty description="请先选择上方的设备"></el-empty>
+          <el-empty description="请先选择上方的设备" />
         </div>
         <div v-else class="detail-l zeus-pr-15">
-          <el-empty description="所选设备暂无可调试的属性"></el-empty>
+          <el-empty description="所选设备暂无可调试的属性" />
         </div>
         <div class="detail-r zeus-pl-15">
           <div class="log-title">
             <span>调试记录</span>
             <div class="el-form-item-tips zeus-inline-block zeus-ml-15">
-              <i class="el-icon-info"/>设备调试会直接对线上内容进行操作，请谨慎操作。
+              <i class="el-icon-info" />设备调试会直接对线上内容进行操作，请谨慎操作。
             </div>
             <el-button size="mini" round class="zeus-right" @click="logList = []">
-              <svg-icon icon-class="clear"/>
+              <svg-icon icon-class="clear" />
               清除
             </el-button>
           </div>
@@ -89,7 +88,7 @@
               </el-card>
             </div>
           </div>
-          <el-empty v-else description="暂无调试记录"></el-empty>
+          <el-empty v-else description="暂无调试记录" />
         </div>
       </div>
     </div>
@@ -105,16 +104,16 @@
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="select"/>
+          <svg-icon icon-class="select" />
           设备选择
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
-        <DeviceSelect :deviceIds="form.devId" @closeDialog="dialogVisible = false" @checked="checked"></DeviceSelect>
+        <DeviceSelect :device-ids="form.devId" @closeDialog="dialogVisible = false" @checked="checked" />
       </div>
     </el-dialog>
   </div>
@@ -123,12 +122,13 @@
 <script>
 import ListHeadTemplate from '@/components/Slots/ListHeadTemplate'
 import DeviceSelect from '@/components/Basics/DeviceSelect'
-import {getProductList} from '@/api/porductMgr'
-import {getDeviceList, getAttrTrapperList, sendData} from '@/api/deviceMgr'
-import {ftimestampToData} from '@/utils'
+import { getProductList } from '@/api/porductMgr'
+import { getDeviceList, getDeviceAttributeList, sendData } from '@/api/deviceMgr'
+import { ftimestampToData } from '@/utils'
+import { getDictListByCode } from '@/api/system'
 
 export default {
-  name: 'debug',
+  name: 'Debug',
   components: {
     ListHeadTemplate,
     DeviceSelect
@@ -147,6 +147,7 @@ export default {
       attrList2: [],
       attrKeyList: [],
       tabsName: '上报属性',
+      datatTypeList: [],
       dialogVisible: false,
       isIndeterminate: false,
       checkAll: false,
@@ -162,9 +163,15 @@ export default {
       }
     })
     this.changePro('')
+    getDictListByCode({ dictTypeCode: 'data_type' }).then((res) => {
+      if (res.code == 200) {
+        this.datatTypeList = res.data
+      }
+    })
   },
   methods: {
     checked(ids) {
+      console.log('设备选择回调：', ids)
       this.form.devId = ids
       this.changeDev(ids)
     },
@@ -185,7 +192,7 @@ export default {
           return item.productId === productId
         })
         this.proName = i.name
-        getDeviceList({productId}).then((res) => {
+        getDeviceList({ productId }).then((res) => {
           if (res.code == 200) {
             this.devList = res.data
           }
@@ -201,18 +208,19 @@ export default {
         return false
       }
       const i = this.devList.find((item) => {
-        return item.deviceId === prodId
+        return item.id === prodId
       })
       this.devName = i.name
-      getAttrTrapperList({prodId}).then((res) => {
+      getDeviceAttributeList({ deviceId: prodId }).then((res) => {
         if (res.code == 200) {
           this.attrKeyList = res.data.map((item) => {
-            return item.attrId
+            return item.id
           })
           const arr = []
           res.data.forEach((item) => {
-            if (item.source != '18'){
-              arr.push(item)
+            if (item.source != '18') {
+              const typeObj = this.datatTypeList.find((typeItem) => typeItem.dictValue == item.valueType)
+              arr.push(Object.assign(item, { valueTypeName: (typeObj ? typeObj.dictLabel : '-') || '-' }))
             }
           })
           this.attrList = arr
@@ -243,7 +251,7 @@ export default {
       }
       const params = this.checkedAttr.map((i) => {
         const obj = this.attrList.find((item) => {
-          return item.attrId === i
+          return item.id === i
         })
         if (obj.deviceAttrValue === undefined || obj.deviceAttrValue === '') {
           this.$message({
@@ -267,7 +275,7 @@ export default {
           code: JSON.stringify(params)
         }
       )
-      sendData({params, deviceId: this.form.devId}).then((res) => {
+      sendData({ params, deviceId: this.form.devId }).then((res) => {
         if (res.code == 200) {
           this.logList.push(
             {
