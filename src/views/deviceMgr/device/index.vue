@@ -209,23 +209,26 @@ export default {
       }
       this.form = form
     }
+
     this.searchInit()
   },
   methods: {
     async searchInit() {
-      // 获取设备组列表
-      await getDeviceGrpList({}).then((res) => {
-        if (res.code == 200) {
-          this.deviceGroup = res.data
-        }
-      })
       // 获取设备类型
       await getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then((res) => {
         if (res.code == 200) {
           this.typeList = res.data
         }
       })
+      // 获取设备列表
       await this.getList()
+
+      // 获取设备组列表
+      await getDeviceGrpList({}).then((res) => {
+        if (res.code == 200) {
+          this.deviceGroup = res.data
+        }
+      })
       // 获取产品列表
       await getProductList({}).then((res) => {
         if (res.code == 200) {
@@ -241,7 +244,7 @@ export default {
       this.formParams = [
         {
           componentName: 'SelectTemplate',
-          keyName: 'id',
+          keyName: 'groupIds',
           label: '设备组',
           optionId: 'id',
           optionName: 'name',
@@ -255,20 +258,20 @@ export default {
           optionName: 'dictLabel',
           options: this.typeList
         },
-        {
-          componentName: 'CascaderTemplate',
-          keyName: 'prodTypeNames',
-          label: '产品分类',
-          optionId: 'name',
-          optionName: 'name',
-          childrenName: 'childrenNodes',
-          options: this.treeData
-        },
+        // {
+        //   componentName: 'CascaderTemplate',
+        //   keyName: 'groupIds',
+        //   label: '产品分类',
+        //   optionId: 'id',
+        //   optionName: 'name',
+        //   childrenName: 'childrenNodes',
+        //   options: this.treeData
+        // },
         {
           componentName: 'SelectTemplate',
           keyName: 'productIds',
           label: '产品',
-          optionId: 'productId',
+          optionId: 'id',
           optionName: 'name',
           multiple: true,
           options: this.productList
@@ -287,16 +290,16 @@ export default {
     },
     search() {
       // 获取搜索条件并保存在url内
-      if (this.form.deviceGroupId) {
-        this.$set(this.form, 'deviceGroupIds', [this.form.deviceGroupId])
-      }
-      const form = JSON.stringify(this.form)
-      this.$router.push({
-        path: '/deviceMgr/device',
-        query: {
-          form
-        }
-      })
+      // if (this.form.deviceGroupId) {
+      //   this.$set(this.form, 'deviceGroupIds', [this.form.deviceGroupId])
+      // }
+      // const form = JSON.stringify(this.form)
+      // this.$router.push({
+      //   path: '/deviceMgr/device',
+      //   query: {
+      //     form
+      //   }
+      // })
       this.page = 1
       this.getList()
     },
@@ -308,14 +311,11 @@ export default {
       getDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          const data = res.data.rows.map((element) => {
+          this.tableData = res.data.rows.map((element) => {
             const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
             element.typeName = typeObj.dictLabel
             return element
           })
-          console.log(data)
-
-          this.tableData = data
           this.total = res.data.total
         }
       }).catch(() => {
