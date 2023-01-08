@@ -47,7 +47,7 @@ export default {
       }
     },
     status: {
-      type: String,
+      type: Boolean,
       default() {
         return true
       }

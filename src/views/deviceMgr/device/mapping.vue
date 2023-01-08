@@ -3,17 +3,17 @@
     <el-card v-for="(item, index) in mapList" :key="index" class="box-card zeus-mb-10" shadow="hover">
       <el-row>
         <el-col :span="8">
-          <svg-icon icon-class="mapping" class="mapping-icon"/>
+          <svg-icon icon-class="mapping" class="mapping-icon" />
           <span class="mapping-name zeus-inline-block zeus-ml-10 on-click" @click="edit(item)">{{ item.name }}</span>
         </el-col>
         <el-col :span="8">
           <el-row v-for="(i, ind) in list(item.mappings)" :key="ind" class="zeus-mb-15">
             <el-col :span="12">
-              <svg-icon icon-class="mapping-equal" class="zeus-mr-5"/>
+              <svg-icon icon-class="mapping-equal" class="zeus-mr-5" />
               <span>{{ i.value }}</span>
             </el-col>
             <el-col :span="12">
-              <svg-icon icon-class="mapping-shift" class="zeus-mr-5"/>
+              <svg-icon icon-class="mapping-shift" class="zeus-mr-5" />
               <span>{{ i.newvalue }}</span>
             </el-col>
           </el-row>
@@ -22,11 +22,11 @@
         <el-col :span="8">
           <div class="zeus-right">
             <el-button size="mini" round @click="edit(item)">
-              <svg-icon icon-class="dialog_edit" style="margin-right: 5px"/>
+              <svg-icon icon-class="dialog_edit" style="margin-right: 5px" />
               编辑
             </el-button>
             <el-button size="mini" round @click="del(item.valuemapid)">
-              <svg-icon icon-class="list-del" style="margin-right: 5px"/>
+              <svg-icon icon-class="list-del" style="margin-right: 5px" />
               删除
             </el-button>
           </div>
@@ -58,7 +58,7 @@
                   </div>
                 </div>
                 <el-button type="text" class=" zeus-icon" @click="mapItem.valueMaps.splice(index, 1)">
-                  <svg-icon icon-class="but_del"></svg-icon>
+                  <svg-icon icon-class="but_del" />
                 </el-button>
               </div>
               <el-button class="add-btn" plain icon="el-icon-plus" size="mini" @click="mapAdd">增加</el-button>
@@ -71,15 +71,15 @@
 </template>
 
 <script>
-import {getDevValueMapList, deleteDevValueMap, updateDevValuemap} from '@/api/deviceMgr'
-import {getValueMapList, deleteValueMap, updateValuemap} from '@/api/porductMgr'
+import { getDevValueMapList, deleteDevValueMap, updateDevValuemap } from '@/api/deviceMgr'
+import { getValueMapList, deleteValueMap, updateValuemap } from '@/api/porductMgr'
 import FormTemplate from '@/components/Slots/FormTemplate'
 export default {
-  props: {
-    isDev: Boolean
-  },
   components: {
     FormTemplate
+  },
+  props: {
+    isDev: Boolean
   },
   data() {
     return {

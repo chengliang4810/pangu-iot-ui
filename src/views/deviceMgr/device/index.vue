@@ -363,7 +363,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDevice({ deviceId }).then(async(res) => {
+        deleteDevice({ id: deviceId }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',

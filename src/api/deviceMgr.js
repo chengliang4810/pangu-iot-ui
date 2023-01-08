@@ -64,8 +64,8 @@ export function getDeviceList(data) {
 // 设备修改状态
 export function modifyStatusDev(data) {
   return request({
-    url: '/manager/device/status/update',
-    method: 'post',
+    url: '/manager/device/status',
+    method: 'put',
     data
   })
 }
@@ -91,9 +91,8 @@ export function updateDevice(data) {
 // 设备删除
 export function deleteDevice(data) {
   return request({
-    url: '/manager/device/delete',
-    method: 'post',
-    data
+    url: `/manager/device/${data.id}`,
+    method: 'delete'
   })
 }
 
