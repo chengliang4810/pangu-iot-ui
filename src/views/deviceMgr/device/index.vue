@@ -407,10 +407,10 @@ export default {
       }
     },
     disable(id) {
-      this.modifyStatus(id, 'false')
+      this.modifyStatus(id, false)
     },
     enable(id) {
-      this.modifyStatus(id, 'true')
+      this.modifyStatus(id, true)
     },
     modifyStatus(deviceId, status) {
       modifyStatusDev({ deviceId, status }).then((res) => {
