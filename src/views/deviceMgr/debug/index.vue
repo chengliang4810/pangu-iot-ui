@@ -220,7 +220,7 @@ export default {
           res.data.forEach((item) => {
             if (item.source != '18') {
               const typeObj = this.datatTypeList.find((typeItem) => typeItem.dictValue == item.valueType)
-              arr.push(Object.assign(item, { valueTypeName: (typeObj ? typeObj.dictLabel : '-') || '-' }))
+              arr.push(Object.assign(item, {deviceAttrValue: "", valueTypeName: (typeObj ? typeObj.dictLabel : '-') || '-' }))
             }
           })
           this.attrList = arr
