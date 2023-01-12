@@ -280,8 +280,7 @@ export default {
       this.form.pageSize = 50
       getDeviceByPage(this.form).then((res) => {
         if (res.code == 200) {
-          this.tableData = this.tableData.concat(res.data.rows)
-          console.log(this.tableData)
+          this.tableData = res.data.rows
           this.count = res.data.total
           if (tage) {
             const dev = this.tableData.find((i) => {
