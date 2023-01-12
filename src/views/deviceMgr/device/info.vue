@@ -9,7 +9,7 @@
         <el-row :gutter="18" class="row">
           <el-col :span="6">
             <div class="info_i">
-              <div class="con">{{ infoData.deviceId || '-' }}</div>
+              <div class="con">{{ infoData.code || '-' }}</div>
               <div class="tit">设备ID</div>
             </div>
           </el-col>
@@ -28,7 +28,7 @@
           <el-col :span="6">
             <div class="info_i">
               <div class="con">
-                <span v-for="(item, index) in dialogForm.groupList" :key="index" class="group-item">{{ item }}</span>
+                <span v-for="(item, index) in dialogForm.groupList" :key="index" class="group-item">{{ item.name }}</span>
               </div>
               <div class="tit">设备组</div>
             </div>

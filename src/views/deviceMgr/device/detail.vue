@@ -34,6 +34,8 @@ import record from '@/views/deviceMgr/device/record'
 import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
 import { deviceDetail, getDeviceTag } from '@/api/deviceMgr'
+import item from "@/layout/components/Sidebar/Item.vue";
+import {getDictListByCode} from "@/api/system";
 export default {
   name: 'DeviceDetail',
   components: {
@@ -106,10 +108,16 @@ export default {
       info: {},
       tagList: [],
       deviceId: '',
-      proId: ''
+      proId: '',
+      typeList: []
     }
   },
   async created() {
+    await getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then((res) => {
+      if (res.code == 200) {
+        this.typeList = res.data
+      }
+    })
     if (this.$route.query.id) {
       this.deviceId = this.$route.query.id
       await this.getDetail()
@@ -123,15 +131,21 @@ export default {
       this.activity = name
     },
     async getDetail() {
-      await getDeviceTag({ deviceId: this.deviceId }).then((res) => {
+      // await getDeviceTag({ deviceId: this.deviceId }).then((res) => {
+      //   if (res.code == 200) {
+      //     this.tagList = res.data
+      //   }
+      // })
+      await deviceDetail({ id: this.deviceId }).then((res) => {
         if (res.code == 200) {
-          this.tagList = res.data
-        }
-      })
-      await deviceDetail({ deviceId: this.deviceId }).then((res) => {
-        if (res.code == 200) {
+          const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == res.data.type)
+          if (typeObj){
+            res.data.typeName = typeObj.dictLabel || ""
+          }
           this.info = res.data
           this.proId = res.data.productId
+          const groupList = res.data.groupList || []
+          const groupNames = groupList.map((item) => item.name)
           if (this.info.type == '3') {
             this.tabs.push({
               label: '子设备',
@@ -141,7 +155,7 @@ export default {
           this.detailList = [
             {
               key: '设备ID',
-              value: res.data.deviceId
+              value: res.data.code
             },
             {
               key: '产品',
@@ -154,7 +168,7 @@ export default {
             },
             {
               key: '设备组',
-              value: res.data.groupName.split(',')
+              value: groupNames
             },
             {
               key: '标签',
@@ -171,7 +185,7 @@ export default {
             // },
             {
               key: '创建人',
-              value: res.data.createUserName
+              value: res.data.createBy
             }
           ]
           this.subhead = res.data.remark

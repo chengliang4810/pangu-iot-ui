@@ -99,9 +99,8 @@ export function deleteDevice(data) {
 // 设备详情
 export function deviceDetail(params) {
   return request({
-    url: '/manager/device/detail',
-    method: 'get',
-    params
+    url: `/manager/device/${params.id}`,
+    method: 'get'
   })
 }
 
