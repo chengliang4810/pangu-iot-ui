@@ -15,6 +15,8 @@ import router from './router'
 import store from './store'
 import VueClipboard from 'vue-clipboard2'
 import { handleTree } from '@/utils/common'
+import DictData from '@/components/DictData'
+DictData.install()
 
 Vue.prototype.handleTree = handleTree
 Vue.use(ElementUI)

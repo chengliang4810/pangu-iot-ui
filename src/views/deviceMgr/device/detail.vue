@@ -179,10 +179,10 @@ export default {
               key: '创建时间',
               value: res.data.createTime
             },
-            // {
-            //   key: '最近在线时间',
-            //   value: res.data.latestOnline
-            // },
+            {
+              key: '最近在线时间',
+              value: res.data.latestOnline
+            },
             {
               key: '创建人',
               value: res.data.createBy

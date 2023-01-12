@@ -125,16 +125,16 @@ export function updateDevTag(data) {
 // 设备属性列表
 export function getAttrTrapperByPage(data) {
   return request({
-    url: '/manager/device/model/getAttrTrapperByPage',
-    method: 'post',
-    data
+    url: '/manager/device_attribute/value/list',
+    method: 'get',
+    params: data
   })
 }
 
 // 设备属性列表--不分页
 export function getAttrTrapperList(data) {
   return request({
-    url: '/manager/device_attribute/tree',
+    url: '/manager/device_attribute/value/tree',
     method: 'get',
     params: data
   })

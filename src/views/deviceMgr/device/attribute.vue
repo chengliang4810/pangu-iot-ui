@@ -175,6 +175,7 @@ import {ftimestampToData} from '@/utils/index'
 import BusinessTable from '@/components/Basics/BusinessTable'
 
 export default {
+  dicts: ['value_type'],
   name: 'Attribute',
   provide() {
     return {
