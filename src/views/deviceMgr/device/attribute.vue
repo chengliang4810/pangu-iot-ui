@@ -3,7 +3,7 @@
   <div style="height: 100%">
     <div class="zeus-mb-10 zeus-text-align-r">
       <a class="but" :class="switchover ? 'activity' : ''" @click="switchover = true"><svg-icon :icon-class="switchover ? 'attr_mode_activity' : 'attr_mode'" /></a>
-      <a class="but zeus-ml-5" :class="switchover ? '' : 'activity'" @click="switchover = false"><svg-icon :icon-class="switchover ? 'attr_list' : 'attr_list_activity'" /></a>
+      <!-- <a class="but zeus-ml-5" :class="switchover ? '' : 'activity'" @click="switchover = false"><svg-icon :icon-class="switchover ? 'attr_list' : 'attr_list_activity'" /></a> -->
     </div>
     <div class="attribute">
       <div v-if="switchover" v-loading="loading" class="list">
@@ -13,7 +13,7 @@
               <div class="zeus-mb-15 title">
                 <span class="c-gray">{{ item.attrName }}</span>
                 <el-button class="zeus-right" size="mini" round @click="history(item)">
-                  <svg-icon icon-class="attr_history"/>
+                  <svg-icon icon-class="attr_history" />
                   历史数据
                 </el-button>
               </div>
@@ -29,17 +29,17 @@
                 <el-col :span="16">
                   <el-row class="bg-gray">
                     <el-col :span="13" class="zeus-pl-10 blue pl47">
-                      <svg-icon icon-class="attr_key"/>
+                      <svg-icon icon-class="attr_key" />
                       {{ item.key }}
                     </el-col>
                     <el-col :span="11" class="zeus-pl-10">
-                      <svg-icon icon-class="attr_type"/>
-                      {{ item.valueTypeName }}
+                      <svg-icon icon-class="attr_type" />
+                      <dict-tag :options="dict.type.data_type" :value="item.valueType" />
                     </el-col>
                   </el-row>
                   <el-row class="bg-gray zeus-mt-10">
                     <el-col :span="24" class="zeus-pl-10 pl47">
-                      <svg-icon icon-class="attr_time"/>
+                      <svg-icon icon-class="attr_time" />
                       {{ item.clock }}
                     </el-col>
                   </el-row>
@@ -48,7 +48,7 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-empty v-else description="暂无数据"></el-empty>
+        <el-empty v-else description="暂无数据" />
       </div>
       <BusinessTable
         v-else
@@ -57,7 +57,7 @@
         :loading="loading"
         :h="'calc(100% - 50px)'"
       />
-      <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+      <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
       <el-dialog
         v-dialogDrag
         :visible.sync="dialogVisible"
@@ -70,12 +70,12 @@
         <div slot="title" class="dialog-title zeus-flex-between">
           <div class="left">{{ state }}属性</div>
           <div class="right">
-            <svg-icon icon-class="dialog_close" class="closeicon"/>
-            <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false"/>
+            <svg-icon icon-class="dialog_close" class="closeicon" />
+            <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false" />
           </div>
         </div>
         <div class="dialog-body">
-          <attributeForm v-if="dialogVisible" ref="attributeForm" v-model="dialogForm"/>
+          <attributeForm v-if="dialogVisible" ref="attributeForm" v-model="dialogForm" />
         </div>
         <el-footer class="dialog-footer-btn">
           <el-button size="mini" round @click="dialogVisible = false">取 消</el-button>
@@ -94,19 +94,19 @@
         <div slot="title" class="dialog-title zeus-flex-between">
           <div class="left">属性历史数据</div>
           <div class="right">
-            <svg-icon icon-class="dialog_close" class="closeicon"/>
-            <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false"/>
+            <svg-icon icon-class="dialog_close" class="closeicon" />
+            <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false" />
           </div>
         </div>
         <div class="zeus-pt-10 zeus-pl-25 zeus-pr-25">
           <el-row class="bg-gray zeus-mt-15">
-            <el-col :span="8" class="zeus-pl-10">属性名称: {{ itemData.attrName }}</el-col>
+            <el-col :span="8" class="zeus-pl-10">属性名称: {{ itemData.name }}</el-col>
             <el-col :span="8" class="zeus-pl-10">
-              <svg-icon icon-class="attr_key"/>
+              <svg-icon icon-class="attr_key" />
               <span class="blue"> 标识符: {{ itemData.key }}</span>
             </el-col>
             <el-col :span="8" class="zeus-pl-10">
-              <svg-icon icon-class="attr_type"/>
+              <svg-icon icon-class="attr_type" />
               数据类型: {{ itemData.valueTypeName }}
             </el-col>
           </el-row>
@@ -122,9 +122,8 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               @change="changeTime"
-            >
-            </el-date-picker>
-            <el-select v-model="shortcuts" placeholder="快捷时间" size="mini" @change="changeShortcuts" class="w200 zeus-ml-15">
+            />
+            <el-select v-model="shortcuts" placeholder="快捷时间" size="mini" class="w200 zeus-ml-15" @change="changeShortcuts">
               <el-option
                 v-for="i in shortcutsList"
                 :key="i.key"
@@ -140,7 +139,7 @@
             </div>
             <div v-if="dialogRadio === '趋势图' && (itemData.valueType == 3 || itemData.valueType == 0)" v-loading="loading2" class="zeus-relative">
               <img class="chart-img" :src="img">
-              <div class="zeus-absolute img-title"></div>
+              <div class="zeus-absolute img-title" />
             </div>
             <div v-if="dialogRadio === '表格' || !(itemData.valueType == 3 || itemData.valueType == 0)" style="height: 560px">
               <BusinessTable
@@ -149,7 +148,7 @@
                 :loading="loading2"
                 :h="'calc(100% - 42px)'"
               />
-              <Pagination :total="total2" :size="size2" :current-page="page2" @handleCurrentChange="handleCurrentChange2"/>
+              <Pagination :total="total2" :size="size2" :current-page="page2" @handleCurrentChange="handleCurrentChange2" />
             </div>
           </div>
         </div>
@@ -171,11 +170,11 @@ import {
   getHistory,
   getCharts
 } from '@/api/deviceMgr'
-import {ftimestampToData} from '@/utils/index'
+import { ftimestampToData } from '@/utils/index'
 import BusinessTable from '@/components/Basics/BusinessTable'
 
 export default {
-  dicts: ['value_type'],
+  dicts: ['data_type'],
   name: 'Attribute',
   provide() {
     return {
@@ -228,7 +227,7 @@ export default {
       columns2: [
         {
           label: '属性名称',
-          prop: 'attrName',
+          prop: 'name',
           show: true
         },
         {
@@ -247,8 +246,8 @@ export default {
           show: true
         },
         {
-          label: '创建时间',
-          prop: 'createTime',
+          label: '时间',
+          prop: 'clock',
           show: true
         },
         {
@@ -354,7 +353,7 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      getAttrTrapperByPage({...this.form, maxRow: this.size, page: this.page}).then((res) => {
+      getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.rows
@@ -432,7 +431,7 @@ export default {
       this.dialogVisible = true
     },
     edit(attrId) {
-      detailAttrTrapper({attrId}).then(res => {
+      detailAttrTrapper({ attrId }).then(res => {
         if (res.code == 200) {
           this.dialogForm = res.data
           this.state = '编辑'
@@ -451,7 +450,7 @@ export default {
     submit() {
       if (this.$refs.attributeForm.validateForm()) {
         if (this.dialogForm.attrId) {
-          updateAttrTrapper(this.dialogForm).then(async (res) => {
+          updateAttrTrapper(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '修改成功',
@@ -462,7 +461,7 @@ export default {
             }
           })
         } else {
-          createAttrTrapper(this.dialogForm).then(async (res) => {
+          createAttrTrapper(this.dialogForm).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '添加成功',
@@ -481,7 +480,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteAttrTrapper({attrIds: [id]}).then(async (res) => {
+        deleteAttrTrapper({ attrIds: [id] }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',
@@ -494,15 +493,18 @@ export default {
       })
     },
     history2(attrId) {
-      const i = this.tableData.find((item) => {
-        return item.attrId === attrId
-      })
-      this.history(i)
+      //
+      return false
+      // const i = this.tableData.find((item) => {
+      //   return item.attrId === attrId
+      // })
+      // this.history(i)
     },
     history(item) {
-      this.itemData = item
-      this.getList2()
-      this.dialogVisible2 = true
+      return false
+      // this.itemData = item
+      // this.getList2()
+      // this.dialogVisible2 = true
     },
     ftimestampToData(ftimestamp) {
       if (!ftimestamp) return ''

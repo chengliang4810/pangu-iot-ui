@@ -15,6 +15,8 @@ import router from './router'
 import store from './store'
 import VueClipboard from 'vue-clipboard2'
 import { handleTree } from '@/utils/common'
+// 字典标签组件
+import DictTag from '@/components/DictTag'
 import DictData from '@/components/DictData'
 DictData.install()
 
@@ -43,3 +45,5 @@ new Vue({
   store,
   render: (h) => h(App)
 })
+
+Vue.component('DictTag', DictTag)
