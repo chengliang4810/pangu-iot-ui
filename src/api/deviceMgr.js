@@ -125,7 +125,7 @@ export function updateDevTag(data) {
 // 设备属性列表
 export function getAttrTrapperByPage(data) {
   return request({
-    url: '/manager/device_attribute/value/list',
+    url: '/manager/device_attribute/latest_data/list',
     method: 'get',
     params: data
   })

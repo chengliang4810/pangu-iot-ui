@@ -347,7 +347,7 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
-      this.form.prodId = this.$route.query.id
+      this.form.deviceId = this.$route.query.id
       this.getList()
     }
   },
@@ -357,8 +357,8 @@ export default {
       getAttrTrapperByPage({...this.form, maxRow: this.size, page: this.page}).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
