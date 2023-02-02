@@ -45,12 +45,12 @@
         <template v-slot:main>
           <el-form ref="attrForm" :model="dialogForm" :rules="rules" label-width="80px">
             <el-form-item label="上线规则" prop="onLine">
-              <el-select v-model="dialogForm.onLine.depAttrId" size="mini" placeholder="请选择属性" class="w3" @change="changeOnLineAttr">
+              <el-select v-model="dialogForm.onLine.depattributeId" size="mini" placeholder="请选择属性" class="w3" @change="changeOnLineAttr">
                 <el-option
                   v-for="item in attrList"
-                  :key="item.attrId"
-                  :label="item.attrName"
-                  :value="item.attrId"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 />
               </el-select>
               <el-select v-model="dialogForm.onLine.type" size="mini" class="w1 zeus-ml-10">
@@ -74,12 +74,12 @@
               <span v-if="dialogForm.onLine.type === 'last'">{{ dialogForm.onLine.unit }}</span>
             </el-form-item>
             <el-form-item label="下线规则" prop="offLine">
-              <el-select v-model="dialogForm.offLine.depAttrId" size="mini" placeholder="请选择属性" class="w3" @change="changeOffLineAttr">
+              <el-select v-model="dialogForm.offLine.depattributeId" size="mini" placeholder="请选择属性" class="w3" @change="changeOffLineAttr">
                 <el-option
                   v-for="item in attrList"
-                  :key="item.attrId"
-                  :label="item.attrName"
-                  :value="item.attrId"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 />
               </el-select>
               <el-select v-model="dialogForm.offLine.type" size="mini" class="w1 zeus-ml-10">
@@ -126,14 +126,14 @@ export default {
       butLoading: false,
       form: {
         onLine: {
-          depAttrId: '',
+          depattributeId: '',
           type: 'nodata',
           timeType: 'm',
           exp: '=',
           num: ''
         },
         offLine: {
-          depAttrId: '',
+          depattributeId: '',
           type: 'nodata',
           timeType: 'm',
           exp: '=',
@@ -142,14 +142,14 @@ export default {
       },
       dialogForm: {
         onLine: {
-          depAttrId: '',
+          depattributeId: '',
           type: 'nodata',
           timeType: 'm',
           exp: '=',
           num: ''
         },
         offLine: {
-          depAttrId: '',
+          depattributeId: '',
           type: 'nodata',
           timeType: 'm',
           exp: '=',
@@ -187,14 +187,14 @@ export default {
       this.dialogVisible = false
       // this.form = {
       //   onLine: {
-      //     depAttrId: '',
+      //     depattributeId: '',
       //     type: 'nodata',
       //     timeType: 'm',
       //     exp: '=',
       //     num: ''
       //   },
       //   offLine: {
-      //     depAttrId: '',
+      //     depattributeId: '',
       //     type: 'nodata',
       //     timeType: 'm',
       //     exp: '=',
@@ -209,44 +209,45 @@ export default {
       return i.label
     },
     detail() {
+      this.state = '创建'
       // 获取详情,有数据就是编辑,没数据就是创建
-      getTrigger({ relationId: this.id }).then((res) => {
-        if (res.code == 200) {
-          const data = res.data
-          this.ruleData = data
-          if (data && data.ruleId) {
-            this.ruleId = data.ruleId
-            this.state = '编辑'
-            this.form.offLine = {
-              depAttrId: data.attrId,
-              type: data.ruleFunction === 'nodata' ? 'nodata' : 'last',
-              timeType: data.ruleFunction === 'nodata' ? data.unit : '',
-              exp: data.ruleFunction === 'nodata' ? '=' : data.ruleFunction,
-              num: data.ruleCondition
-            }
-            this.form.onLine = {
-              depAttrId: data.attrIdRecovery,
-              type: data.ruleFunctionRecovery === 'nodata' ? 'nodata' : 'last',
-              timeType: data.ruleFunctionRecovery === 'nodata' ? data.unitRecovery : '',
-              exp: data.ruleFunctionRecovery === 'nodata' ? '=' : data.ruleFunctionRecovery,
-              num: data.ruleConditionRecovery
-            }
-          } else {
-            this.state = '创建'
-          }
-        }
-      })
+      // getTrigger({ relationId: this.id }).then((res) => {
+      //   if (res.code == 200) {
+      //     const data = res.data
+      //     this.ruleData = data
+      //     if (data && data.ruleId) {
+      //       this.ruleId = data.ruleId
+      //       this.state = '编辑'
+      //       this.form.offLine = {
+      //         depattributeId: data.attributeId,
+      //         type: data.ruleFunction === 'nodata' ? 'nodata' : 'last',
+      //         timeType: data.ruleFunction === 'nodata' ? data.unit : '',
+      //         exp: data.ruleFunction === 'nodata' ? '=' : data.ruleFunction,
+      //         num: data.ruleCondition
+      //       }
+      //       this.form.onLine = {
+      //         depattributeId: data.attributeIdRecovery,
+      //         type: data.ruleFunctionRecovery === 'nodata' ? 'nodata' : 'last',
+      //         timeType: data.ruleFunctionRecovery === 'nodata' ? data.unitRecovery : '',
+      //         exp: data.ruleFunctionRecovery === 'nodata' ? '=' : data.ruleFunctionRecovery,
+      //         num: data.ruleConditionRecovery
+      //       }
+      //     } else {
+      //       this.state = '创建'
+      //     }
+      //   }
+      // })
     },
     changeOffLineAttr(id) {
       const item = this.attrList.find((i) => {
-        return i.attrId === id
+        return i.id === id
       })
       this.dialogForm.offLine.key = item.key
       this.dialogForm.offLine.unit = item.unitsName
     },
     changeOnLineAttr(id) {
       const item = this.attrList.find((i) => {
-        return i.attrId === id
+        return i.id === id
       })
       this.dialogForm.onLine.key = item.key
       this.dialogForm.onLine.unit = item.unitsName
@@ -254,24 +255,24 @@ export default {
     async edit() {
       this.dialogForm = JSON.parse(JSON.stringify(this.form))
       if (this.isDev) {
-        await getAttrTrapperList({ prodId: this.$route.query.id }).then((res) => {
+        await getAttrTrapperList({ productId: this.$route.query.id }).then((res) => {
           if (res.code == 200) {
-            this.attrList = res.data
+            this.attrList = res.data.row
           }
         })
       } else {
-        await getProductAttrTrapperList({ prodId: this.$route.query.id }).then((res) => {
+        await getProductAttrTrapperList({ productId: this.$route.query.id }).then((res) => {
           if (res.code == 200) {
             this.attrList = res.data
           }
         })
       }
       this.dialogVisible = true
-      if (this.dialogForm.offLine.depAttrId) {
-        this.changeOffLineAttr(this.dialogForm.offLine.depAttrId)
+      if (this.dialogForm.offLine.depattributeId) {
+        this.changeOffLineAttr(this.dialogForm.offLine.depattributeId)
       }
-      if (this.dialogForm.onLine.depAttrId) {
-        this.changeOnLineAttr(this.dialogForm.onLine.depAttrId)
+      if (this.dialogForm.onLine.depattributeId) {
+        this.changeOnLineAttr(this.dialogForm.onLine.depattributeId)
       }
     },
     handleSubmit() {
@@ -279,17 +280,17 @@ export default {
       const data = {
         relationId: this.id,
 
-        attrId: offLine.depAttrId,
+        attributeId: offLine.depattributeId,
         ruleFunction: offLine.type === 'nodata' ? 'nodata' : offLine.exp,
         ruleCondition: offLine.num,
         unit: offLine.type === 'nodata' ? offLine.timeType : '',
-        productAttrKey: offLine.key,
+        attributeKey: offLine.key,
 
-        attrIdRecovery: onLine.depAttrId,
+        attributeIdRecovery: onLine.depattributeId,
         ruleFunctionRecovery: onLine.type === 'nodata' ? 'nodata' : onLine.exp,
         ruleConditionRecovery: onLine.num,
         unitRecovery: onLine.type === 'nodata' ? onLine.timeType : '',
-        productAttrKeyRecovery: onLine.key
+        attributeKeyRecovery: onLine.key
       }
       this.butLoading = true
       if (this.state === '编辑') {

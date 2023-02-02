@@ -241,7 +241,7 @@ export function sendData(data) {
 // 上下线规则创建
 export function createTrigger(data) {
   return request({
-    url: '/product/status/trigger/create',
+    url: '/manager/device_status_function/trigger',
     method: 'post',
     data
   })
