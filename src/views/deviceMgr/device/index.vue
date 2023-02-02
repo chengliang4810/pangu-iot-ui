@@ -276,11 +276,11 @@ export default {
           multiple: true,
           options: this.productList
         },
-        {
-          componentName: 'KeyValueTemplate',
-          keyName: 'tag',
-          label: '标签'
-        },
+        // {
+        //   componentName: 'KeyValueTemplate',
+        //   keyName: 'tag',
+        //   label: '标签'
+        // },
         {
           componentName: 'InputTemplate',
           keyName: 'name',
@@ -304,6 +304,7 @@ export default {
       this.getList()
     },
     getList() {
+      console.log(1111, this.tableData)
       this.loading = true
       if (this.form.prodTypeNames && this.form.prodTypeNames.length) {
         this.form.prodTypeName = this.form.prodTypeNames[this.form.prodTypeNames.length - 1]
@@ -313,13 +314,15 @@ export default {
         if (res.code == 200) {
           this.tableData = res.data.rows.map((element) => {
             const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
-            element.typeName = typeObj.dictLabel
+            element.typeName = typeObj?.dictLabel
             return element
           })
           this.total = res.data.total
         }
-      }).catch(() => {
+        console.log(1111, this.tableData)
+      }).catch((e) => {
         this.loading = false
+        console.log("catch111:", e)
       })
     },
     handleCurrentChange(val) {

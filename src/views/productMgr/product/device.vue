@@ -249,6 +249,7 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+      console.log(1111, this.tableData)
     },
     detail(item) {
       this.$router.push({
