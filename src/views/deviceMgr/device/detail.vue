@@ -73,10 +73,10 @@ export default {
           label: '属性管理',
           name: '属性管理'
         },
-        {
-          label: '事件管理',
-          name: '事件管理'
-        },
+        // {
+        //   label: '事件管理',
+        //   name: '事件管理'
+        // },
         {
           label: '服务管理',
           name: '服务管理'
@@ -88,19 +88,20 @@ export default {
         {
           label: '告警规则',
           name: '告警规则'
-        },
-        {
-          label: '标签',
-          name: '标签'
-        },
-        {
-          label: '变量',
-          name: '变量'
-        },
-        {
-          label: '值映射方案',
-          name: '值映射方案'
         }
+        // ,
+        // {
+        //   label: '标签',
+        //   name: '标签'
+        // },
+        // {
+        //   label: '变量',
+        //   name: '变量'
+        // },
+        // {
+        //   label: '值映射方案',
+        //   name: '值映射方案'
+        // }
       ],
       subhead: '',
       title: '',

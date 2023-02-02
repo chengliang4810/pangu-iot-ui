@@ -243,8 +243,8 @@ export default {
       getDeviceByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
