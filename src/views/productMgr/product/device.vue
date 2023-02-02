@@ -95,13 +95,13 @@ export default {
         },
         {
           label: '设备ID',
-          prop: 'deviceId',
+          prop: 'code',
           show: true
         },
         {
           label: '产品',
           prop: 'productName',
-          show: true
+          show: false
         },
         {
           label: '设备类型',
@@ -113,11 +113,11 @@ export default {
           prop: 'statusName',
           show: true
         },
-        {
-          label: '设备组',
-          prop: 'groupName',
-          show: true
-        },
+        // {
+        //   label: '设备组',
+        //   prop: 'groupName',
+        //   show: true
+        // },
         {
           label: '描述',
           prop: 'remark',
@@ -140,16 +140,16 @@ export default {
           width: 160,
           idName: 'deviceId',
           buttons: [
-            // {
-            //   label: '编辑',
-            //   event: 'detail',
-            //   icon: 'list-edit'
-            // },
-            // {
-            //   label: '删除',
-            //   event: 'delete',
-            //   icon: 'list-edit'
-            // }
+            {
+              label: '编辑',
+              event: 'detail',
+              icon: 'list-edit'
+            },
+            {
+              label: '删除',
+              event: 'delete',
+              icon: 'list-edit'
+            }
           ]
         }
       ],
@@ -166,7 +166,7 @@ export default {
         productId: '',
         deviceGroupIds: [],
         remark: ''
-      },
+      }
     }
   },
   created() {
@@ -176,7 +176,6 @@ export default {
       this.dialogForm.productId = this.$route.query.id
     }
     this.searchInit()
-    this.getList()
   },
   methods: {
     async searchInit() {
@@ -192,6 +191,8 @@ export default {
           this.typeList = res.data
         }
       })
+
+      await this.getList()
       // 获取产品列表
       await getProductList({}).then((res) => {
         if (res.code == 200) {
@@ -199,27 +200,27 @@ export default {
         }
       })
       this.formParams = [
+        // {
+        //   componentName: 'SelectTemplate',
+        //   keyName: 'deviceGroupId',
+        //   label: '设备组',
+        //   optionId: 'deviceGroupId',
+        //   optionName: 'name',
+        //   options: this.deviceGroup
+        // },
         {
           componentName: 'SelectTemplate',
-          keyName: 'deviceGroupId',
-          label: '设备组',
-          optionId: 'deviceGroupId',
-          optionName: 'name',
-          options: this.deviceGroup
-        },
-        {
-          componentName: 'SelectTemplate',
-          keyName: 'prodType',
+          keyName: 'type',
           label: '设备类型',
-          optionId: 'code',
-          optionName: 'name',
+          optionId: 'dictValue',
+          optionName: 'dictLabel',
           options: this.typeList
         },
         {
           componentName: 'SelectTemplate',
           keyName: 'productId',
           label: '产品',
-          optionId: 'productId',
+          optionId: 'id',
           optionName: 'name',
           options: this.productList
         },
@@ -240,10 +241,18 @@ export default {
     },
     getList() {
       this.loading = true
-      getDeviceByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
+      getDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.rows
+
+          this.tableData = res.data.rows.map((element) => {
+            const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
+            element.typeName = typeObj?.dictLabel
+            element.statusName = element.status ? '启用' : '禁用'
+            return element
+          })
+
           this.total = res.data.total
         }
       }).catch(() => {
