@@ -250,8 +250,8 @@ export function createTrigger(data) {
 // 上下线规则修改
 export function updateTrigger(data) {
   return request({
-    url: '/product/status/trigger/update',
-    method: 'post',
+    url: '/manager/device_status_function/trigger',
+    method: 'put',
     data
   })
 }
