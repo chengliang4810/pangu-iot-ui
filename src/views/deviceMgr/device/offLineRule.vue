@@ -33,7 +33,7 @@
         <span>{{ ruleData.unitsName }}</span>
       </el-card>
     </div>
-    <el-empty v-else description="暂无数据"></el-empty>
+    <el-empty v-else description="暂无数据" />
     <el-button v-if="!isDev" size="mini" round class="zeus-absolute edit" @click="edit">
       <svg-icon icon-class="dialog_edit" style="margin-right: 5px" />
       {{ state }}
@@ -99,7 +99,7 @@
                 <el-option label="<=" value="<=" />
                 <el-option label=">=" value=">=" />
               </el-select>
-              <el-input v-if="dialogForm.offLine.type === 'last'" v-model="dialogForm.offLine.num" size="mini" class="w1 zeus-ml-10 zeus-mr-10"/>
+              <el-input v-if="dialogForm.offLine.type === 'last'" v-model="dialogForm.offLine.num" size="mini" class="w1 zeus-ml-10 zeus-mr-10" />
               <span v-if="dialogForm.offLine.type === 'last'">{{ dialogForm.offLine.unit }}</span>
             </el-form-item>
           </el-form>
@@ -114,7 +114,7 @@ import { getProductAttrTrapperList } from '@/api/porductMgr'
 import FormTemplate from '@/components/Slots/FormTemplate'
 
 export default {
-  name: 'offLineRule',
+  name: 'OffLineRule',
   components: {
     FormTemplate
   },
@@ -209,34 +209,33 @@ export default {
       return i.label
     },
     detail() {
-      this.state = '创建'
       // 获取详情,有数据就是编辑,没数据就是创建
-      // getTrigger({ relationId: this.id }).then((res) => {
-      //   if (res.code == 200) {
-      //     const data = res.data
-      //     this.ruleData = data
-      //     if (data && data.ruleId) {
-      //       this.ruleId = data.ruleId
-      //       this.state = '编辑'
-      //       this.form.offLine = {
-      //         depattributeId: data.attributeId,
-      //         type: data.ruleFunction === 'nodata' ? 'nodata' : 'last',
-      //         timeType: data.ruleFunction === 'nodata' ? data.unit : '',
-      //         exp: data.ruleFunction === 'nodata' ? '=' : data.ruleFunction,
-      //         num: data.ruleCondition
-      //       }
-      //       this.form.onLine = {
-      //         depattributeId: data.attributeIdRecovery,
-      //         type: data.ruleFunctionRecovery === 'nodata' ? 'nodata' : 'last',
-      //         timeType: data.ruleFunctionRecovery === 'nodata' ? data.unitRecovery : '',
-      //         exp: data.ruleFunctionRecovery === 'nodata' ? '=' : data.ruleFunctionRecovery,
-      //         num: data.ruleConditionRecovery
-      //       }
-      //     } else {
-      //       this.state = '创建'
-      //     }
-      //   }
-      // })
+      getTrigger({ relationId: this.id }).then((res) => {
+        if (res.code == 200) {
+          const data = res.data
+          this.ruleData = data
+          if (data && data.id) {
+            this.ruleId = data.id
+            this.state = '编辑'
+            this.form.offLine = {
+              depattributeId: data.attributeId,
+              type: data.ruleFunction === 'nodata' ? 'nodata' : 'last',
+              timeType: data.ruleFunction === 'nodata' ? data.unit : '',
+              exp: data.ruleFunction === 'nodata' ? '=' : data.ruleFunction,
+              num: data.ruleCondition
+            }
+            this.form.onLine = {
+              depattributeId: data.attributeIdRecovery,
+              type: data.ruleFunctionRecovery === 'nodata' ? 'nodata' : 'last',
+              timeType: data.ruleFunctionRecovery === 'nodata' ? data.unitRecovery : '',
+              exp: data.ruleFunctionRecovery === 'nodata' ? '=' : data.ruleFunctionRecovery,
+              num: data.ruleConditionRecovery
+            }
+          } else {
+            this.state = '创建'
+          }
+        }
+      })
     },
     changeOffLineAttr(id) {
       const item = this.attrList.find((i) => {

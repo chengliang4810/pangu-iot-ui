@@ -258,10 +258,10 @@ export function updateTrigger(data) {
 
 // 上下线规则详情
 export function getTrigger(params) {
+  const { relationId } = params
   return request({
-    url: '/product/status/trigger/detail',
-    method: 'get',
-    params
+    url: `/manager/device_status_function/relationId/${relationId}`,
+    method: 'get'
   })
 }
 
