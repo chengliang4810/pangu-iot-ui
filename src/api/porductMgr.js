@@ -265,7 +265,7 @@ export function detailEvent(params) {
 // 告警规则创建
 export function createAlarm(data) {
   return request({
-    url: '/product/event/trigger/create',
+    url: '/manager/product_event/trigger',
     method: 'post',
     data
   })

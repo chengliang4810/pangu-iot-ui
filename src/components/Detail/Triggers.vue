@@ -23,8 +23,8 @@
           <el-option
             v-for="(i, index) in deviceAttribute"
             :key="index"
-            :label="i.attrName"
-            :value="i.attrId"
+            :label="i.name"
+            :value="i.id"
           />
         </el-select>
       </el-form-item>
@@ -310,7 +310,7 @@ export default {
     },
     attrChange(val) {
       const attr = this.deviceAttribute.find((i) => {
-        return i.attrId === val
+        return i.id === val
       })
       this.units = attr.unitsName
       this.item.attrValueType = attr.valueType
@@ -371,7 +371,7 @@ export default {
       })
     },
     getAttrList(prodId) {
-      getProductAttrTrapperList({ prodId }).then((res) => {
+      getProductAttrTrapperList({ productId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data
         }

@@ -172,11 +172,11 @@ export default {
     },
     getList() {
       this.loading = true
-      getEventByPage({ ...this.form, prodId: this.$route.query.id, maxRow: this.size, page: this.page, classify: '0' }).then((res) => {
+      getEventByPage({ ...this.form, productId: this.$route.query.id, maxRow: this.size, page: this.page, classify: '0' }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
