@@ -9,7 +9,7 @@
         <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
         <incident v-else-if="activity ==='事件管理'" is-dev />
         <serve v-else-if="activity === '服务管理'" is-dev />
-        <offLineRule v-else-if="activity === '上下线规则'" is-dev />
+        <offLineRule  v-else-if="activity === '上下线规则'" is-dev :productId="proId"  />
         <alarm v-else-if="activity === '告警规则'" is-dev />
         <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
         <variable v-else-if="activity === '变量'" is-dev />

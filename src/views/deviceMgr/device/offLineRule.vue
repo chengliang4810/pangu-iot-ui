@@ -119,7 +119,13 @@ export default {
     FormTemplate
   },
   props: {
-    isDev: Boolean
+    isDev: Boolean,
+    productId: {
+      type: String,
+      default() {
+        return ''
+      }
+    }
   },
   data() {
     return {
@@ -179,7 +185,7 @@ export default {
     }
   },
   created() {
-    this.id = this.$route.query.id
+    this.id = this.productId || this.$route.query.id
     this.detail()
   },
   methods: {
