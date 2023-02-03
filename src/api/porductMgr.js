@@ -272,11 +272,10 @@ export function createAlarm(data) {
 }
 
 // 告警规则删除
-export function deleteEvent(data) {
+export function deleteEvent(ruleId) {
   return request({
-    url: '/product/event/trigger/delete',
-    method: 'post',
-    data
+    url: `/manager/product_event/trigger/${ruleId}`,
+    method: 'delete'
   })
 }
 

@@ -135,7 +135,7 @@ export default {
           prop: 'buttons',
           show: true,
           width: 270,
-          idName: 'eventRuleId',
+          idName: 'id',
           buttons: [
             {
               label: '编辑',
@@ -284,7 +284,7 @@ export default {
             }
           })
         } else {
-          deleteEvent({ eventRuleId }).then(async(res) => {
+          deleteEvent(eventRuleId).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '删除成功',
