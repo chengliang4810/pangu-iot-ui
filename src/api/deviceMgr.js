@@ -277,9 +277,9 @@ export function createDevAlarm(data) {
 // 告警规则列表
 export function getEventByPage(data) {
   return request({
-    url: '/product/event/trigger/getEventByPage',
-    method: 'post',
-    data
+    url: '/manager/product_event/list',
+    method: 'get',
+    params: data
   })
 }
 

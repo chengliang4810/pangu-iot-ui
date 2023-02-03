@@ -52,7 +52,7 @@ export default {
       formParams: [
         {
           componentName: 'InputTemplate',
-          keyName: 'eventRuleName',
+          keyName: 'name',
           label: '告警规则名称'
         }
       ],
@@ -100,13 +100,13 @@ export default {
       columns: [
         {
           label: '告警名称',
-          prop: 'eventRuleName',
+          prop: 'name',
           event: 'detail',
           show: true
         },
         {
           label: '告警级别',
-          prop: 'severityName',
+          prop: 'levelDescribe',
           show: true
         },
         {
@@ -172,7 +172,7 @@ export default {
     },
     getList() {
       this.loading = true
-      getEventByPage({ ...this.form, productId: this.$route.query.id, maxRow: this.size, page: this.page, classify: '0' }).then((res) => {
+      getEventByPage({ ...this.form, productId: this.$route.query.id, pageSize: this.size, pageNum: this.page, classify: '0' }).then((res) => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.rows
