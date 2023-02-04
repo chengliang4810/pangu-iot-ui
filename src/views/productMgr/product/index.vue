@@ -36,7 +36,6 @@ import BusinessTable from '@/components/Basics/BusinessTable'
 import FormTemplate from '@/components/Slots/FormTemplate'
 import Pagination from '@/components/Basics/Pagination'
 import { getProductByPage, DeleteProduct, UpdateProduct, createProduct, getProductTypeTree } from '@/api/porductMgr'
-import { getDictListByCode } from '@/api/system'
 export default {
   dicts: ['device_type'],
   provide() {
@@ -102,7 +101,8 @@ export default {
         },
         {
           label: '设备类型',
-          prop: 'typeName',
+          prop: 'type',
+          propDict: 'device_type',
           show: true
         },
         {
@@ -117,7 +117,7 @@ export default {
         },
         {
           label: '设备总数',
-          prop: 'deviceNumber',
+          prop: 'deviceCount',
           show: true
         },
         {
@@ -157,16 +157,8 @@ export default {
         if (res.code == 200) {
           this.groupList = res.data
           this.treeData = this.handleTree(res.data, 'id', 'parent_id')
-          console.log(this.treeData)
         }
       })
-      // 获取设备类型
-      await getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then((res) => {
-        if (res.code == 200) {
-          this.typeList = res.data
-        }
-      })
-
       this.formParams = [
         {
           componentName: 'CascaderTemplate',
@@ -183,7 +175,7 @@ export default {
           label: '设备类型',
           optionId: 'dictValue',
           optionName: 'dictLabel',
-          options: this.typeList
+          options: this.dict.type.device_type
         },
         {
           componentName: 'InputTemplate',
@@ -207,8 +199,7 @@ export default {
           const list = res.data.rows
           list.forEach(element => {
             const groupObj = this.groupList.find((groupItem) => groupItem.id == element.groupId)
-            const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
-            element = Object.assign(element, { groupName: (groupObj ? groupObj.name : '') || '未分类', typeName: (typeObj ? typeObj.dictLabel : '-') || '-' })
+            element = Object.assign(element, { groupName: (groupObj ? groupObj.name : '') || '未分类' })
           })
           this.tableData = list
         }
