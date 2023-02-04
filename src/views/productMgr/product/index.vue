@@ -38,6 +38,7 @@ import Pagination from '@/components/Basics/Pagination'
 import { getProductByPage, DeleteProduct, UpdateProduct, createProduct, getProductTypeTree } from '@/api/porductMgr'
 import { getDictListByCode } from '@/api/system'
 export default {
+  dicts: ['device_type'],
   provide() {
     return {
       farther: this

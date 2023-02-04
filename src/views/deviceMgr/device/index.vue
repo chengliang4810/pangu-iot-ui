@@ -47,6 +47,7 @@ import { getDictListByCode } from '@/api/system'
 import { getProductList, getProductTypeTree } from '@/api/porductMgr'
 
 export default {
+  dicts: ['device_type'],
   provide() {
     return {
       farther: this
@@ -110,7 +111,8 @@ export default {
         },
         {
           label: '设备类型',
-          prop: 'typeName',
+          prop: 'type',
+          propDict: 'device_type',
           show: true
         },
         {
@@ -174,7 +176,6 @@ export default {
       total: 0,
       size: 20,
       page: 1,
-      typeList: [],
       state: '创建',
       dialogVisible: false,
       dialogForm: {
@@ -214,12 +215,6 @@ export default {
   },
   methods: {
     async searchInit() {
-      // 获取设备类型
-      await getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then((res) => {
-        if (res.code == 200) {
-          this.typeList = res.data
-        }
-      })
       // 获取设备列表
       await this.getList()
 
@@ -256,7 +251,7 @@ export default {
           label: '设备类型',
           optionId: 'dictValue',
           optionName: 'dictLabel',
-          options: this.typeList
+          options: this.dict.type.device_type
         },
         // {
         //   componentName: 'CascaderTemplate',
@@ -303,6 +298,10 @@ export default {
       this.page = 1
       this.getList()
     },
+    typeHandle(type) {
+      console.log('typeHandle', this.dict.type.device_type)
+      return this.selectDictLabel(this.dict.type.device_type, type)
+    },
     getList() {
       console.log(1111, this.tableData)
       this.loading = true
@@ -312,17 +311,11 @@ export default {
       getDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data.rows.map((element) => {
-            const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == element.type)
-            element.typeName = typeObj?.dictLabel
-            return element
-          })
+          this.tableData = res.data.rows
           this.total = res.data.total
         }
-        console.log(1111, this.tableData)
       }).catch((e) => {
         this.loading = false
-        console.log("catch111:", e)
       })
     },
     handleCurrentChange(val) {

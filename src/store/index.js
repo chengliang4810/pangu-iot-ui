@@ -4,6 +4,7 @@ import getters from './getters'
 import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
+import dict from './modules/dict'
 import permission from './modules/permission'
 import publicData from '@/store/modules/publicData'
 
@@ -14,6 +15,7 @@ const store = new Vuex.Store({
     app,
     settings,
     user,
+    dict,
     permission,
     publicData
   },

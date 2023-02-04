@@ -104,7 +104,7 @@
         </template>
         <template v-else>
           <span v-if="scope.row[item.prop]" :class="{event: item.event,weight: item.bold}" @click="detail(scope.row,item.event)">
-            {{ scope.row[item.prop] }}
+            {{ handleProp(scope.row, item) }}
             <span v-if="item.unit">{{ item.unit }}</span>
           </span>
           <span v-else>-</span>
@@ -119,6 +119,7 @@ import OperationButtons from '@/components/Basics/OperationButtons'
 import EventBus from '@/utils/event-bus'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
 export default {
+  inject: ['farther'],
   name: 'BusinessTable',
   directives: {
     'el-table-infinite-scroll': elTableInfiniteScroll
@@ -196,6 +197,15 @@ export default {
     })
   },
   methods: {
+    handleProp(row, item) {
+      if (item.propDict) {
+        return this.selectDictLabel(this.farther.dict.type[item.propDict], row[item.prop])
+      } else if (item.propEvent) {
+        return this.farther[item.propEvent](row[item.prop])
+      } else {
+        return row[item.prop]
+      }
+    },
     /* 优化显示多选框 */
     getRowKey(row) { return row.deviceId },
     /* 滚动加载 */

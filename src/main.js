@@ -14,13 +14,14 @@ import App from './App'
 import router from './router'
 import store from './store'
 import VueClipboard from 'vue-clipboard2'
-import { handleTree } from '@/utils/common'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
 import DictData from '@/components/DictData'
+import { selectDictLabel, handleTree } from '@/utils/pangu'
 DictData.install()
 
 Vue.prototype.handleTree = handleTree
+Vue.prototype.selectDictLabel = selectDictLabel
 Vue.use(ElementUI)
 Vue.use(VueClipboard)
 // Vue.use(new VueSocketIO({
