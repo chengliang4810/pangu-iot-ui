@@ -90,7 +90,7 @@ export default {
           show: true
         },
         {
-          label: '产品ID',
+          label: '产品编号',
           prop: 'code',
           show: true
         },

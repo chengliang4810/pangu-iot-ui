@@ -35,9 +35,9 @@ import {
   getAttrTrapperByPage,
   updateAttrTrapper
 } from '@/api/porductMgr'
-import { getDictListByCode } from '@/api/system'
 
 export default {
+  dicts: ['data_type', 'attr_type'],
   name: 'AttributeMgr',
   provide() {
     return {
@@ -101,17 +101,14 @@ export default {
         },
         {
           label: '来源类型',
-          prop: 'sourceName',
+          prop: 'source',
+          propDict: 'attr_type',
           show: true
         },
         {
           label: '数据类型',
-          prop: 'valueTypeName',
-          show: true
-        },
-        {
-          label: '取数间隔',
-          prop: 'delayName',
+          prop: 'valueType',
+          propDict: 'data_type',
           show: true
         },
         {
@@ -148,27 +145,11 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
-      this.init()
       this.form.productId = this.$route.query.id
       this.getList()
     }
   },
   methods: {
-    // 初始化
-    async init() {
-      // 加载数据类型
-      await getDictListByCode({ dictTypeCode: 'data_type' }).then((res) => {
-        if (res.code === 200) {
-          this.dataTypeList = res.data
-        }
-      })
-      // 加载资源类型
-      await getDictListByCode({ dictTypeCode: 'attr_type' }).then((res) => {
-        if (res.code === 200) {
-          this.sourceTypeList = res.data
-        }
-      })
-    },
     search() {
       this.page = 1
       this.getList()
@@ -178,13 +159,7 @@ export default {
       getAttrTrapperByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code === 200) {
-          const list = res.data.rows
-          list.forEach(element => {
-            const valueTypeObj = this.dataTypeList.find((dataItem) => dataItem.dictValue == element.valueType)
-            const sourceTypeObj = this.sourceTypeList.find((typeItem) => typeItem.dictValue == element.source)
-            element = Object.assign(element, { valueTypeName: (valueTypeObj ? valueTypeObj.dictLabel : '-') || '未分类', sourceName: (sourceTypeObj ? sourceTypeObj.dictLabel : '-') || '-' })
-          })
-          this.tableData = list
+          this.tableData = res.data.rows
           this.total = res.data.total
         }
       }).catch(() => {
@@ -200,11 +175,9 @@ export default {
       this.dialogVisible = true
     },
     detail(item) {
-      console.log(item)
       this.edit(item.id)
     },
     edit(attrId) {
-      console.log(attrId)
       detailAttrTrapper({ attrId }).then(res => {
         if (res.code == 200) {
           this.dialogForm = res.data

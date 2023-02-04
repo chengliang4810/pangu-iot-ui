@@ -2,7 +2,7 @@
 <template>
   <div class="form-content">
     <el-form ref="productForm" :rules="productRules" :model="form" label-width="80px" class="dialog-form">
-      <el-form-item label="产品ID" prop="code">
+      <el-form-item label="产品编号" prop="code">
         <el-input v-model="form.code" size="mini" />
       </el-form-item>
       <el-form-item label="产品名称" prop="name">
@@ -14,10 +14,10 @@
       <el-form-item label="设备类型" prop="type">
         <el-select v-model="form.type" placeholder="请选择设备类型" size="mini">
           <el-option
-            v-for="item in dictlist"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
+            v-for="item in dict.type.device_type"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
@@ -55,8 +55,8 @@
 <script>
 import TreeSelect from '@/components/Basics/TreeSelect.vue'
 import { getProductTypeTree, productDetail } from '@/api/porductMgr'
-import { getDictListByCode } from '@/api/system'
 export default {
+  dicts: ['device_type'],
   components: {
     TreeSelect
   },
@@ -86,7 +86,7 @@ export default {
       form: {},
       productRules: {
         code: [
-          { required: true, message: '请输入产品ID', trigger: 'blur' }
+          { required: true, message: '请输入产品编号', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '请输入产品名称', trigger: 'blur' }
@@ -104,7 +104,6 @@ export default {
       },
       treeData: [],
       status: false,
-      dictlist: [],
       groupList: []
     }
   },
@@ -118,21 +117,22 @@ export default {
     }
   },
   async created() {
-    await this.getDictList()
     await this.getTypeTree()
-    console.log('Add From产品ID：', this.productId)
+    console.log('Add From产品编号：', this.productId)
     if (this.productId) {
       this.getDetail()
     }
+
+    console.log(this.dict.type.device_type)
   },
   methods: {
-    getDictList() {
-      getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then(res => {
-        if (res.code == 200) {
-          this.dictlist = res.data
-        }
-      })
-    },
+    // getDictList() {
+    //   getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then(res => {
+    //     if (res.code == 200) {
+    //       this.dictlist = res.data
+    //     }
+    //   })
+    // },
     getTypeTree() {
       getProductTypeTree().then(res => {
         if (res.code == 200) {

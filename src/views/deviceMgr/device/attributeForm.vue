@@ -15,10 +15,10 @@
     <el-form-item label="来源类型" prop="source">
       <el-select v-model="formData.source" size="mini" placeholder="请选择来源类型" :disabled="disabled" @change="sourceChange">
         <el-option
-          v-for="item in sourceList"
-          :key="item.dictValue"
-          :label="item.dictLabel"
-          :value="item.dictValue"
+          v-for="item in dict.type.attr_type"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
         />
       </el-select>
     </el-form-item>
@@ -35,10 +35,10 @@
     <el-form-item label="数据类型" prop="valueType">
       <el-select v-model="formData.valueType" size="mini" placeholder="请选择数据类型" :disabled="disabled">
         <el-option
-          v-for="item in valueList"
-          :key="item.dictValue"
-          :label="item.dictLabel"
-          :value="item.dictValue"
+          v-for="item in dict.type.data_type"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
         />
       </el-select>
       <div class="el-form-item-tips">
@@ -105,13 +105,14 @@
 </template>
 
 <script>
-import { getDictListByCode, groupDictByCode } from '@/api/system'
+import { groupDictByCode } from '@/api/system'
 import { getAttrTrapperList, getDevValueMapList } from '@/api/deviceMgr'
 import { getProductAttrTrapperList, getValueMapList } from '@/api/porductMgr'
 // import Pretreatment from '@/components/Detail/Pretreatment'
 // import Tag from '@/components/Detail/Tag'
 
 export default {
+  dicts: ['attr_type', 'data_type'],
   name: 'AttributeForm',
   // components: {
   //   Pretreatment,
@@ -192,22 +193,14 @@ export default {
       this.getDict()
     }
   },
+  ready() {
+
+  },
   methods: {
     getDict() {
-      getDictListByCode({ dictTypeCode: 'ATTR_TYPE' }).then(res => {
-        if (res.code == 200) {
-          this.sourceList = res.data
-        }
-      })
-      getDictListByCode({ dictTypeCode: 'DATA_TYPE' }).then(res => {
-        if (res.code == 200) {
-          this.valueList = res.data
-        }
-      })
       groupDictByCode({ dictTypeCode: 'UNITS' }).then(res => {
         if (res.code == 200) {
           this.unitsList = this.groupFormat(res.data)
-          console.log(6666, this.unitsList)
         }
       })
       if (this.isDev) {
@@ -240,7 +233,6 @@ export default {
           })
         }
       } else {
-        console.log('productId', this.productId)
         getProductAttrTrapperList({ productId: this.productId }).then(res => {
           if (res.code == 200) {
             if (this.formData.attrId) {
