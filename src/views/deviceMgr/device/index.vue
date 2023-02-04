@@ -43,7 +43,6 @@ import {
   deleteDevice,
   getDeviceGrpList, modifyStatusDev
 } from '@/api/deviceMgr'
-import { getDictListByCode } from '@/api/system'
 import { getProductList, getProductTypeTree } from '@/api/porductMgr'
 
 export default {
@@ -128,7 +127,8 @@ export default {
         },
         {
           label: '设备组',
-          prop: 'groupName',
+          prop: 'groupList',
+          propEvent: 'convertGroupName',
           show: true
         },
         {
@@ -212,12 +212,18 @@ export default {
     }
 
     this.searchInit()
+    // 获取设备列表
+    this.getList()
   },
   methods: {
+    convertGroupName(groupList) {
+      let str = ''
+      groupList.forEach((item) => {
+        str += item.name + ','
+      })
+      return str.substring(0, str.length - 1)
+    },
     async searchInit() {
-      // 获取设备列表
-      await this.getList()
-
       // 获取设备组列表
       await getDeviceGrpList({}).then((res) => {
         if (res.code == 200) {
@@ -253,15 +259,6 @@ export default {
           optionName: 'dictLabel',
           options: this.dict.type.device_type
         },
-        // {
-        //   componentName: 'CascaderTemplate',
-        //   keyName: 'groupIds',
-        //   label: '产品分类',
-        //   optionId: 'id',
-        //   optionName: 'name',
-        //   childrenName: 'childrenNodes',
-        //   options: this.treeData
-        // },
         {
           componentName: 'SelectTemplate',
           keyName: 'productIds',
@@ -271,11 +268,6 @@ export default {
           multiple: true,
           options: this.productList
         },
-        // {
-        //   componentName: 'KeyValueTemplate',
-        //   keyName: 'tag',
-        //   label: '标签'
-        // },
         {
           componentName: 'InputTemplate',
           keyName: 'name',
@@ -284,26 +276,10 @@ export default {
       ]
     },
     search() {
-      // 获取搜索条件并保存在url内
-      // if (this.form.deviceGroupId) {
-      //   this.$set(this.form, 'deviceGroupIds', [this.form.deviceGroupId])
-      // }
-      // const form = JSON.stringify(this.form)
-      // this.$router.push({
-      //   path: '/deviceMgr/device',
-      //   query: {
-      //     form
-      //   }
-      // })
       this.page = 1
       this.getList()
     },
-    typeHandle(type) {
-      console.log('typeHandle', this.dict.type.device_type)
-      return this.selectDictLabel(this.dict.type.device_type, type)
-    },
     getList() {
-      console.log(1111, this.tableData)
       this.loading = true
       if (this.form.prodTypeNames && this.form.prodTypeNames.length) {
         this.form.prodTypeName = this.form.prodTypeNames[this.form.prodTypeNames.length - 1]

@@ -78,15 +78,14 @@
           </span>
         </template>
         <template v-else-if="item.prop === 'online'">
-          <span v-if="scope.row[item.prop] === '1'">
+          <span v-if="scope.row[item.prop] === true">
             <svg-icon icon-class="online" />
             在线
           </span>
-          <span v-else-if="scope.row[item.prop] === '0'">
+          <span v-else>
             <svg-icon icon-class="offline" />
             离线
           </span>
-          <span v-else>-</span>
         </template>
         <template v-else-if="item.label === '来自产品'">
           <span>
