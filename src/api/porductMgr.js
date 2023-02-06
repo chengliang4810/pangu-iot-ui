@@ -229,9 +229,8 @@ export function updateService(data) {
 // 产品服务删除
 export function deleteService(data) {
   return request({
-    url: '/product/service/delete',
-    method: 'post',
-    data
+    url: `/manager/product_service/${data.ids}`,
+    method: 'delete'
   })
 }
 
