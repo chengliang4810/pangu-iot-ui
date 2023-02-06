@@ -220,8 +220,8 @@ export function createService(data) {
 // 产品服务修改
 export function updateService(data) {
   return request({
-    url: '/product/service/update',
-    method: 'post',
+    url: '/manager/product_service',
+    method: 'put',
     data
   })
 }
