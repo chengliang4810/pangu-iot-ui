@@ -6,7 +6,7 @@
         <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
         <attributeMgr v-else-if="activity === '属性管理'" />
         <incident v-else-if="activity ==='事件管理'" />
-        <serve v-else-if="activity === '服务管理'" />
+        <serve v-else-if="activity === '功能管理'" />
         <offLineRule v-else-if="activity === '上下线规则'" />
         <alarm v-else-if="activity === '告警规则'" />
         <tag v-else-if="activity === '标签'" @updata="getDetail" />
@@ -63,8 +63,8 @@ export default {
         //   name: '事件管理'
         // },
         {
-          label: '服务管理',
-          name: '服务管理'
+          label: '功能管理',
+          name: '功能管理'
         },
         {
           label: '上下线规则',

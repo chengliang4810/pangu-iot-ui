@@ -1,4 +1,4 @@
-<!--详情-服务页面 -->
+<!--详情-功能页面 -->
 <template>
   <div class="serve">
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
@@ -13,10 +13,10 @@
     />
     <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
-      <FormTemplate :up="'服务列表'" :state="state + '服务'" :but-loading="butLoading" @submit="submit" @cancel="close">
+      <FormTemplate :up="'功能列表'" :state="state + '功能'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
           <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="80px" class="dialog-form">
-            <el-form-item label="服务名称" prop="name">
+            <el-form-item label="功能名称" prop="name">
               <el-input v-model="dialogForm.name" size="mini" :disabled="isDev && dialogForm.inherit == '1'" />
             </el-form-item>
             <el-form-item label="标识符" prop="mark">
@@ -48,7 +48,7 @@
       @close="serviceParams = []"
     >
       <div slot="title" class="dialog-title zeus-flex-between">
-        <div class="left">触发服务</div>
+        <div class="left">触发功能</div>
         <div class="right">
           <svg-icon icon-class="dialog_close" class="closeicon"/>
           <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false"/>
@@ -96,7 +96,7 @@ export default {
         {
           componentName: 'InputTemplate',
           keyName: 'name',
-          label: '服务名称'
+          label: '功能名称'
         },
         {
           componentName: 'InputTemplate',
@@ -129,7 +129,7 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入服务名称', trigger: 'blur' }
+          { required: true, message: '请输入功能名称', trigger: 'blur' }
         ],
         mark: [
           { required: true, message: '请输入标识符', trigger: 'blur' }
@@ -147,7 +147,7 @@ export default {
       ],
       columns: [
         {
-          label: '服务名称',
+          label: '功能名称',
           prop: 'name',
           event: 'detail',
           show: true
@@ -196,7 +196,7 @@ export default {
         if (val) {
           this.columns = [
             {
-              label: '服务名称',
+              label: '功能名称',
               prop: 'name',
               event: 'detail',
               show: true
@@ -308,14 +308,14 @@ export default {
       executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res)=>{
         if (res.code == 200){
           this.$message({
-            message: '服务触发成功',
+            message: '功能触发成功',
             type: 'success'
           })
           this.dialogVisible2 = false
         }
       }).catch(() => {
         this.$message({
-          message: '服务触发失败',
+          message: '功能触发失败',
           type: 'error'
         })
         this.dialogVisible2 = false
