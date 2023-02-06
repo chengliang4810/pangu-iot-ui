@@ -102,7 +102,7 @@
           {{ scope.row[item.prop] || '-' }}
         </template>
         <template v-else>
-          <span v-if="scope.row[item.prop]" :class="{event: item.event,weight: item.bold}" @click="detail(scope.row,item.event)">
+          <span v-if="scope.row[item.prop] != undefined" :class="{event: item.event,weight: item.bold}" @click="detail(scope.row,item.event)">
             {{ handleProp(scope.row, item) }}
             <span v-if="item.unit">{{ item.unit }}</span>
           </span>

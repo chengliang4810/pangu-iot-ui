@@ -193,25 +193,25 @@ export function deleteValueMap(data) {
 // 产品服务列表
 export function getServiceByPage(data) {
   return request({
-    url: '/product/service/getServiceByPage',
-    method: 'post',
-    data
+    url: '/manager/product_service/list',
+    method: 'get',
+    params: data
   })
 }
 
 // 产品服务列表-不分页
 export function getServiceList(data) {
   return request({
-    url: '/product/service/list',
-    method: 'post',
-    data
+    url: '/manager/product_service/tree',
+    method: 'get',
+    params: data
   })
 }
 
 // 产品服务创建
 export function createService(data) {
   return request({
-    url: '/product/service/create',
+    url: '/manager/product_service',
     method: 'post',
     data
   })

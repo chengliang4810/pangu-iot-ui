@@ -24,8 +24,8 @@
             </el-form-item>
             <el-form-item label="调用方式" prop="async">
               <el-select v-model="dialogForm.async" placeholder="请选择调用方式" size="mini" :disabled="isDev && dialogForm.inherit == '1'">
-                <el-option label="同步" value="0" />
-                <el-option label="异步" value="1" />
+                <el-option label="同步" :value="0" />
+                <el-option label="异步" :value="1" />
               </el-select>
             </el-form-item>
             <el-form-item label="输入参数" prop="productServiceParamList">
@@ -50,8 +50,8 @@
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">触发功能</div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false" />
         </div>
       </div>
       <div class="dialog-body">
@@ -74,6 +74,7 @@ import FormTemplate from '@/components/Slots/FormTemplate'
 import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
 
 export default {
+  dicts: ['execute_type'],
   name: 'Serve',
   provide() {
     return {
@@ -159,7 +160,8 @@ export default {
         },
         {
           label: '调用方式',
-          prop: 'asyncName',
+          prop: 'async',
+          propDict: 'execute_type',
           show: true
         },
         {
@@ -213,7 +215,7 @@ export default {
             },
             {
               label: '调用方式',
-              prop: 'asyncName',
+              prop: 'async',
               show: true
             },
             {
@@ -261,11 +263,11 @@ export default {
     getList() {
       this.dialogVisible = false
       this.loading = true
-      getServiceByPage({ ...this.form, prodId: this.$route.query.id, maxRow: this.size, page: this.page }).then((res) => {
+      getServiceByPage({ ...this.form, prodId: this.$route.query.id, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
@@ -305,8 +307,8 @@ export default {
       }
     },
     triggerService() {
-      executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res)=>{
-        if (res.code == 200){
+      executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
+        if (res.code == 200) {
           this.$message({
             message: '功能触发成功',
             type: 'success'
@@ -366,7 +368,7 @@ export default {
           this.butLoading = true
           this.dialogForm.relationId = this.$route.query.id
           if (this.state === '创建') {
-            createService(this.dialogForm).then((res) =>{
+            createService(this.dialogForm).then((res) => {
               if (res.code == 200) {
                 this.$message({
                   message: '创建成功',
@@ -380,7 +382,7 @@ export default {
               this.butLoading = false
             })
           } else {
-            updateService(this.dialogForm).then((res) =>{
+            updateService(this.dialogForm).then((res) => {
               if (res.code == 200) {
                 this.$message({
                   message: '修改成功',
