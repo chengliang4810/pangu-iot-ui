@@ -18,11 +18,10 @@
       <el-switch
         v-model="formData.eventNotify"
         size="mini"
-        active-value="1"
-        inactive-value="0"
+        :active-value="1"
+        :inactive-value="0"
         active-text="启用"
         inactive-text="禁用"
-        :disabled="formData.inherit =='1' && isDev"
         active-color="#55BC8A"
         inactive-color="#AB2F29">
       </el-switch>
@@ -31,7 +30,7 @@
         <span>包括平台内部和外部的所有通知。</span>
       </div>
     </el-form-item>
-    <!--    <el-form-item label="启用告警规则" prop="status">-->
+       <!-- <el-form-item label="启用告警规则" prop="status">-->
     <!--      <el-switch-->
     <!--        v-model="formData.status"-->
     <!--        :disabled="formData.inherit =='1' && isDev"-->
@@ -42,8 +41,8 @@
     <!--        inactive-text="禁用"-->
     <!--        active-color="#55BC8A"-->
     <!--        inactive-color="#AB2F29">-->
-    <!--      </el-switch>-->
-    <!--    </el-form-item>-->
+    <!--      </el-switch> -->
+    <!--    </el-form-item> -->
     <el-form-item label="描述" prop="remark">
       <el-input v-model="formData.remark" :disabled="formData.inherit =='1' && isDev" type="textarea" rows="2" size="mini"/>
     </el-form-item>
@@ -68,9 +67,9 @@
                  @click="addAction">增加执行动作
       </el-button>
     </el-form-item>
-    <el-form-item label="标签">
+    <!-- <el-form-item label="标签">
       <Tag ref="tag" v-model="formData.tags"/>
-    </el-form-item>
+    </el-form-item> -->
   </el-form>
 </template>
 
@@ -103,10 +102,10 @@ export default {
           // expList: [
           //   {
           //     deviceId: '',
-          //     productAttrId: '',
+          //     productAttributeId: '',
           //     incident: '',
           //     condition: '=',
-          //     productAttrType: '属性',
+          //     productAttributeType: '属性',
           //     function: 'last',
           //     timeType: '时间',
           //     unit: 'm'
@@ -132,10 +131,10 @@ export default {
         callback(new Error('至少要有一个触发条件!'))
       }
       for (const item of value) {
-        if (item.productAttrType === '属性' && item.productAttrId === '') {
+        if (item.productAttributeType === '属性' && item.productAttributeId === '') {
           callback(new Error('请选择属性!'))
         }
-        if (item.productAttrType === '事件' && item.productAttrId === '') {
+        if (item.productAttributeType === '事件' && item.productAttributeId === '') {
           callback(new Error('请选择事件!'))
         }
         if (item.value === undefined || item.value === '') {
@@ -162,11 +161,11 @@ export default {
         ]
       },
       levelList: [
-        { label: '信息', value: '1' },
-        { label: '低级', value: '2' },
-        { label: '中级', value: '3' },
-        { label: '高级', value: '4' },
-        { label: '紧急', value: '5' }
+        { label: '信息', value: 1 },
+        { label: '低级', value: 2 },
+        { label: '中级', value: 3 },
+        { label: '高级', value: 4 },
+        { label: '紧急', value: 5 }
       ],
       deviceList: [],
       isDev: true
@@ -199,13 +198,13 @@ export default {
         this.formData.expList.push({
           guid: guid(),
           deviceId: '',
-          productAttrId: '',
+          productAttributeId: '',
           condition: '=',
           value: '',
           scope: '',
-          productAttrType: '属性',
+          productAttributeType: 1,
           function: 'last',
-          period: '时间',
+          period: 1,
           unit: 'm'
         })
       }
@@ -227,7 +226,8 @@ export default {
       this.$refs.dialogForm.validate((valid) => {
         flag = valid
       })
-      return flag && this.$refs.tag.verification() && this.verification() && this.validateTriggers()
+      // && this.$refs.tag.verification()
+      return flag && this.verification() && this.validateTriggers()
     },
     del(index) {
       this.formData.expList.splice(index, 1)

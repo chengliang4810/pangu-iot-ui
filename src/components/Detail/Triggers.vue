@@ -13,13 +13,13 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="item.productAttrType" :disabled="disabled" size="mini" class="select3 zeus-mr-5" @change="item.productAttrId = ''">
-          <el-option label="属性" value="属性"/>
-          <el-option label="事件" value="事件"/>
+        <el-select v-model="item.productAttributeType" :disabled="disabled" size="mini" class="select3 zeus-mr-5" @change="item.productAttributeId = ''">
+          <el-option label="属性" :value="1" />
+          <!-- <el-option label="事件" :value="2" /> -->
         </el-select>
       </el-form-item>
-      <el-form-item v-if="item.productAttrType === '属性'" prop="productAttrId" :rules="{ required: true, message: '请选择属性', trigger: 'change' }">
-        <el-select v-model="item.productAttrId" :disabled="disabled" placeholder="请选择属性" size="mini" class="select1 zeus-mr-5" @change="attrChange">
+      <el-form-item v-if="item.productAttributeType === 1" prop="productAttributeId" :rules="{ required: true, message: '请选择属性', trigger: 'change' }">
+        <el-select v-model="item.productAttributeId" :disabled="disabled" placeholder="请选择属性" size="mini" class="select1 zeus-mr-5" @change="attrChange">
           <el-option
             v-for="(i, index) in deviceAttribute"
             :key="index"
@@ -28,8 +28,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="item.productAttrType === '事件'" prop="productAttrId" :rules="{ required: true, message: '请选择事件', trigger: 'change' }">
-        <el-select v-model="item.productAttrId" :disabled="disabled" placeholder="请选择事件" size="mini" class="select1 zeus-mr-5" @change="eventChange">
+      <el-form-item v-if="item.productAttributeType === 2" prop="productAttributeId" :rules="{ required: true, message: '请选择事件', trigger: 'change' }">
+        <el-select v-model="item.productAttributeId" :disabled="disabled" placeholder="请选择事件" size="mini" class="select1 zeus-mr-5" @change="eventChange">
           <el-option
             v-for="(i, index) in incidentList"
             :key="index"
@@ -42,14 +42,14 @@
         <span class="zeus-mr-5 vt">在</span>
         <el-form-item prop="period" :rules="{ required: true, message: '请选择', trigger: 'change' }">
           <el-select v-model="item.period" :disabled="disabled" size="mini" class="select3 zeus-mr-5">
-            <el-option label="时间" value="时间"/>
-            <el-option label="周期" value="周期"/>
+            <el-option label="时间" :value="1"/>
+            <el-option label="周期" :value="2"/>
           </el-select>
         </el-form-item>
         <el-form-item prop="scope" :rules="{ required: true, message: '请输入', trigger: 'blur' }">
           <el-input v-model="item.scope" :disabled="disabled" size="mini" class="input zeus-mr-5"/>
         </el-form-item>
-        <el-form-item v-if="item.period === '时间' " prop="unit" :rules="{ required: true, message: '请选择单位', trigger: 'change' }">
+        <el-form-item v-if="item.period == 1" prop="unit" :rules="{ required: true, message: '请选择单位', trigger: 'change' }">
           <el-select :disabled="disabled" v-model="item.unit" size="mini" class="select3 zeus-mr-5">
             <el-option label="秒" value="s"/>
             <el-option label="分钟" value="m"/>
@@ -162,10 +162,10 @@ export default {
       default() {
         return {
           // deviceId: '',
-          // productAttrId: '',
+          // productAttributeId: '',
           // incident: '',
           // condition: '=',
-          // productAttrType: '属性',
+          // productAttributeType: '属性',
           // function: 'last',
         }
       }
@@ -215,10 +215,10 @@ export default {
         deviceId: [
           { required: true, message: '请选择设备', trigger: 'change' }
         ],
-        productAttrId: [
+        productAttributeId: [
           { required: true, message: '请选择', trigger: 'change' }
         ],
-        // productAttrId2: [
+        // productAttributeId2: [
         //   { required: true, message: '请选择事件', trigger: 'change' }
         // ],
         period: [
@@ -297,9 +297,9 @@ export default {
       }
     },
     deviceChange(val) {
-      this.item.productAttrId = ''
+      this.item.productAttributeId = ''
       this.item.condition = '='
-      this.item.productAttrType = '属性'
+      this.item.productAttributeType = 1
       this.item.function = 'last'
       this.item.period = ''
       this.item.unit = ''
@@ -337,7 +337,7 @@ export default {
       // }
       // this.item.incident = ''
       // this.item.condition = '='
-      // this.item.productAttrType = '属性'
+      // this.item.productAttributeType = '属性'
 
       // this.item.value = ''
       this.item.period = ''

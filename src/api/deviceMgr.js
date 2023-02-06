@@ -330,20 +330,22 @@ export function modifyStatusEventDev(data) {
 
 // 事件管理列表
 export function getAttrEventByPage(data) {
-  return request({
-    url: '/product/attribute/event/getAttrEventByPage',
-    method: 'post',
-    data
-  })
+  return {}
+  // return request({
+  //   url: '/product/attribute/event/getAttrEventByPage',
+  //   method: 'post',
+  //   data
+  // })
 }
 
 // 事件管理列表-不分页
 export function getEventList(data) {
-  return request({
-    url: '/product/attribute/event/list',
-    method: 'post',
-    data
-  })
+  return {}
+  // return request({
+  //   url: '/product/attribute/event/list',
+  //   method: 'post',
+  //   data
+  // })
 }
 
 // 事件管理修改

@@ -67,21 +67,21 @@ export default {
       page: 1,
       dialogForm: {
         eventRuleName: '',
-        eventLevel: '3',
-        eventNotify: '1',
-        status: 'ENABLE',
+        eventLevel: 3,
+        eventNotify: 1,
+        status: true,
         remark: '',
         expLogic: 'and',
         expList: [
           {
             deviceId: '',
-            productAttrId: '',
+            productAttributeId: '',
             incident: '',
             condition: '=',
-            productAttrType: '属性',
+            productAttributeType: 1,
             function: 'last',
             value: '',
-            period: '时间',
+            period: 1,
             unit: 'm',
             scope: ''
           }
@@ -214,21 +214,21 @@ export default {
       this.dialogVisible = false
       this.dialogForm = {
         eventRuleName: '',
-        eventLevel: '3',
-        eventNotify: '1',
-        status: 'ENABLE',
+        eventLevel: 3,
+        eventNotify: 1,
+        status: true,
         remark: '',
         expLogic: 'and',
         expList: [
           {
             deviceId: '',
-            productAttrId: '',
+            productAttributeId: '',
             incident: '',
             condition: '=',
-            productAttrType: '属性',
+            productAttributeType: 1,
             function: 'last',
             value: '',
-            period: '时间',
+            period: 1,
             unit: 'm',
             scope: ''
           }
@@ -238,10 +238,10 @@ export default {
       this.$refs.alarmForm.reset()
     },
     disable(id) {
-      this.modifyStatus(id, 'DISABLE')
+      this.modifyStatus(id, false)
     },
     enable(id) {
-      this.modifyStatus(id, 'ENABLE')
+      this.modifyStatus(id, true)
     },
     modifyStatus(eventRuleId, status) {
       if (this.isDev) {
