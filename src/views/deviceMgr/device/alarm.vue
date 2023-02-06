@@ -146,17 +146,18 @@ export default {
               label: '删除',
               event: 'delete',
               icon: 'list-del'
-            },
-            {
-              label: '启用',
-              event: 'enable',
-              icon: 'list-enable'
-            },
-            {
-              label: '禁用',
-              event: 'disable',
-              icon: 'list-disable'
             }
+            // ,
+            // {
+            //   label: '启用',
+            //   event: 'enable',
+            //   icon: 'list-enable'
+            // },
+            // {
+            //   label: '禁用',
+            //   event: 'disable',
+            //   icon: 'list-disable'
+            // }
           ]
         }
       ]

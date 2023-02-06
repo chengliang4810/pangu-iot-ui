@@ -295,8 +295,8 @@ export function updateEventDev(data) {
 // 告警规则修改-产品
 export function updateEvent(data) {
   return request({
-    url: '/product/event/trigger/update',
-    method: 'post',
+    url: '/manager/product_event/trigger',
+    method: 'put',
     data
   })
 }
