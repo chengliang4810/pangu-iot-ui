@@ -183,7 +183,7 @@ export default {
       })
     },
     detail(item) {
-      this.edit(item.eventRuleId)
+      this.edit(item.id)
     },
     edit(eventRuleId) {
       if (this.isDev) {
