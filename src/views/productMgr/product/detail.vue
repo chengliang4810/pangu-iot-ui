@@ -103,8 +103,8 @@ export default {
   },
   async created() {
     this.init()
-    if (this.$route.query.id) {
-      this.prodId = this.$route.query.id
+    if (this.$route.query.prodId) {
+      this.prodId = this.$route.query.prodId
       await this.getDetail()
     }
     if (this.$route.query.tabsName) {

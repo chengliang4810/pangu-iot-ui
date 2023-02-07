@@ -144,8 +144,8 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.id) {
-      this.form.productId = this.$route.query.id
+    if (this.$route.query.prodId) {
+      this.form.productId = this.$route.query.prodId
       this.getList()
     }
   },

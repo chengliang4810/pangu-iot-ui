@@ -185,7 +185,7 @@ export default {
     }
   },
   created() {
-    this.id = this.productId || this.$route.query.id
+    this.id = this.productId || this.$route.query.prodId
     this.detail()
   },
   methods: {
