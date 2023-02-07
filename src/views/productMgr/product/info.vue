@@ -108,7 +108,7 @@ export default {
     }
   },
   created() {
-    this.prodId = this.$route.query.id
+    this.prodId = this.$route.query.prodId
   },
   methods: {
     closeDialog() {
