@@ -82,8 +82,8 @@ export function createDevice(data) {
 // 设备修改
 export function updateDevice(data) {
   return request({
-    url: '/manager/device/update',
-    method: 'post',
+    url: '/manager/device',
+    method: 'put',
     data
   })
 }

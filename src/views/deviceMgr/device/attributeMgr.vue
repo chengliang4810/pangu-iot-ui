@@ -37,6 +37,7 @@ import {
 } from '@/api/deviceMgr'
 
 export default {
+  dicts: ['data_type', 'attr_type'],
   name: 'AttributeMgr',
   provide() {
     return {
@@ -92,7 +93,7 @@ export default {
       columns: [
         {
           label: '属性名称',
-          prop: 'attrName',
+          prop: 'name',
           event: 'detail',
           show: true
         },
@@ -108,22 +109,14 @@ export default {
         },
         {
           label: '来源类型',
-          prop: 'sourceName',
+          prop: 'source',
+          propDict: 'attr_type',
           show: true
         },
         {
           label: '数据类型',
-          prop: 'valueTypeName',
-          show: true
-        },
-        {
-          label: '取数间隔',
-          prop: 'delayName',
-          show: true
-        },
-        {
-          label: '报错信息',
-          prop: 'error',
+          prop: 'valueType',
+          propDict: 'data_type',
           show: true
         },
         {
@@ -160,8 +153,11 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
-      this.form.prodId = this.$route.query.id
+      this.form.deviceId = this.$route.query.id
       this.getList()
+    }
+    if (this.$route.query.prodId) {
+      this.form.prodId = this.$route.query.prodId
     }
   },
   methods: {
@@ -171,11 +167,11 @@ export default {
     },
     getList() {
       this.loading = true
-      getAttrTrapperByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
+      getAttrTrapperByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code === 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false

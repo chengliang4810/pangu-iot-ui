@@ -9,7 +9,7 @@
         <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
         <incident v-else-if="activity ==='事件管理'" is-dev />
         <serve v-else-if="activity === '服务管理'" is-dev />
-        <offLineRule  v-else-if="activity === '上下线规则'" is-dev :productId="proId"  />
+        <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
         <alarm v-else-if="activity === '告警规则'" is-dev />
         <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
         <variable v-else-if="activity === '变量'" is-dev />
@@ -34,8 +34,8 @@ import record from '@/views/deviceMgr/device/record'
 import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
 import { deviceDetail, getDeviceTag } from '@/api/deviceMgr'
-import item from "@/layout/components/Sidebar/Item.vue";
-import {getDictListByCode} from "@/api/system";
+import item from '@/layout/components/Sidebar/Item.vue'
+import { getDictListByCode } from '@/api/system'
 export default {
   name: 'DeviceDetail',
   components: {
@@ -132,20 +132,19 @@ export default {
       this.activity = name
     },
     async getDetail() {
-      // await getDeviceTag({ deviceId: this.deviceId }).then((res) => {
-      //   if (res.code == 200) {
-      //     this.tagList = res.data
-      //   }
-      // })
       await deviceDetail({ id: this.deviceId }).then((res) => {
         if (res.code == 200) {
           const typeObj = this.typeList.find((typeItem) => typeItem.dictValue == res.data.type)
-          if (typeObj){
-            res.data.typeName = typeObj.dictLabel || ""
+          if (typeObj) {
+            res.data.typeName = typeObj.dictLabel || ''
           }
           this.info = res.data
           this.proId = res.data.productId
           const groupList = res.data.groupList || []
+          this.info.groupIds = []
+          groupList.forEach(element => {
+            this.info.groupIds.push(element.id)
+          })
           const groupNames = groupList.map((item) => item.name)
           if (this.info.type == '3') {
             this.tabs.push({
@@ -170,11 +169,6 @@ export default {
             {
               key: '设备组',
               value: groupNames
-            },
-            {
-              key: '标签',
-              tag: this.tagList,
-              value: 'tage'
             },
             {
               key: '创建时间',

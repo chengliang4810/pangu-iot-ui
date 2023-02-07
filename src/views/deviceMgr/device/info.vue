@@ -3,7 +3,7 @@
   <div class="info">
     <div v-if="!dialogVisible" class="zeus-product basics">
       <div class="left">
-        <svg-icon icon-class="big-device" style="font-size: 46px"/>
+        <svg-icon icon-class="big-device" style="font-size: 46px" />
       </div>
       <div class="content">
         <el-row :gutter="18" class="row">
@@ -60,7 +60,7 @@
       </div>
       <div class="right">
         <el-button size="mini" round @click="dialogVisible = true">
-          <svg-icon icon-class="dialog_edit" style="margin-right: 5px"/>
+          <svg-icon icon-class="dialog_edit" style="margin-right: 5px" />
           编辑
         </el-button>
       </div>
@@ -68,13 +68,13 @@
     <div v-if="dialogVisible">
       <FormTemplate :up="'设备详情'" :state="'编辑基本信息'" :but-loading="butLoading" @submit="submit" @cancel="dialogVisible = false">
         <template v-slot:main>
-          <deviceForm ref="deviceForm" v-model="dialogForm" :state="'编辑'" :product-list="productList" :device-group="deviceGroup"/>
+          <deviceForm ref="deviceForm" v-model="dialogForm" :state="'编辑'" :product-list="productList" :device-group="deviceGroup" />
         </template>
       </FormTemplate>
     </div>
     <el-dialog
-      v-dialogDrag
       v-if="dialogMap"
+      v-dialogDrag
       :visible.sync="dialogMap"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -83,12 +83,12 @@
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="dialog_edit"/>
+          <svg-icon icon-class="dialog_edit" />
           查看地图
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogMap = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogMap = false" />
         </div>
       </div>
       <div class="dialog-body">
@@ -98,7 +98,7 @@
             <span>为正常使用地图控件,请设置用户Key。</span>
           </div>
           <div class="zeus-text-align-c no-key">
-            <svg-icon icon-class="loadFail" style="font-size:50px"/>
+            <svg-icon icon-class="loadFail" style="font-size:50px" />
             <div class="zeus-mt-5">加载失败</div>
           </div>
         </div>
@@ -112,7 +112,7 @@
           :scroll-wheel-zoom="true"
           @ready="mapReady"
         >
-          <bm-marker :position="point"/>
+          <bm-marker :position="point" />
         </baidu-map>
       </div>
     </el-dialog>
@@ -145,22 +145,6 @@ export default {
       }
     }
   },
-  watch: {
-    infoData: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.dialogForm = JSON.parse(JSON.stringify(val))
-          if (this.dialogForm.groupIds) {
-            this.dialogForm.deviceGroupIds = this.dialogForm.groupIds.split(',')
-          }
-          if (this.dialogForm.groupName) {
-            this.dialogForm.groupList = this.dialogForm.groupName.split(',')
-          }
-        }
-      }
-    }
-  },
   data() {
     return {
       // 百度地图key
@@ -186,6 +170,22 @@ export default {
       productList: [],
       deviceGroup: [],
       dialogMap: false
+    }
+  },
+  watch: {
+    infoData: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.dialogForm = JSON.parse(JSON.stringify(val))
+          if (this.dialogForm.groupIds) {
+            this.dialogForm.deviceGroupIds = this.dialogForm.groupIds.split(',')
+          }
+          if (this.dialogForm.groupName) {
+            this.dialogForm.groupList = this.dialogForm.groupName.split(',')
+          }
+        }
+      }
     }
   },
   created() {
@@ -256,7 +256,6 @@ export default {
           this.butLoading = false
         })
       }
-
     }
   }
 }
