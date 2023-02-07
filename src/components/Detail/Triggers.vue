@@ -314,7 +314,7 @@ export default {
       })
       this.units = attr.unitsName
       this.item.attrValueType = attr.valueType
-      this.item.productAttrKey = attr.key
+      this.item.productAttributeKey = attr.key
       if (attr.valueType === '1' || attr.valueType === '4') {
         if (this.item.function === 'sum' || this.item.function === 'min' || this.item.function === 'max' || this.item.function === 'avg') {
           this.item.function = 'last'
@@ -350,7 +350,7 @@ export default {
       })
       this.units = attr.unitsName
       this.item.attrValueType = attr.valueType
-      this.item.productAttrKey = attr.key
+      this.item.productAttributeKey = attr.key
       if (attr.valueType === '1' || attr.valueType === '4') {
         if (this.item.function === 'sum' || this.item.function === 'min' || this.item.function === 'max' || this.item.function === 'avg') {
           this.item.function = 'last'

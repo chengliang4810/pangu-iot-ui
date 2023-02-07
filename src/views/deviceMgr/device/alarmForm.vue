@@ -59,12 +59,12 @@
       <el-button class="add-btn" :disabled="formData.inherit =='1' && isDev" plain icon="el-icon-plus" size="mini" @click="addTrigger">增加触发条件
       </el-button>
     </el-form-item>
-    <el-form-item label="执行动作">
+    <el-form-item label="执行功能">
       <action v-for="(item, index) in formData.deviceServices" :key="item.guid"
               :disabled="formData.inherit =='1' && isDev" v-model="formData.deviceServices[index]" :ind="index"
               :is-dev="isDev" :device-list="deviceList" @del="delAction"></action>
       <el-button class="add-btn" :disabled="formData.inherit =='1' && isDev" plain icon="el-icon-plus" size="mini"
-                 @click="addAction">增加执行动作
+                 @click="addAction">增加执行功能
       </el-button>
     </el-form-item>
     <!-- <el-form-item label="标签">
