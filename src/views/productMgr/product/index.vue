@@ -223,7 +223,7 @@ export default {
       this.$router.push({
         path: '/productMgr/product/detail',
         query: {
-          id: item.id
+          prodId: item.id
         }
       })
     },

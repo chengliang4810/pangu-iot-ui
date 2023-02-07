@@ -378,11 +378,11 @@ export default {
       })
     },
     eventList(prodId) {
-      getEventList({ prodId }).then((res) => {
-        if (res.code == '200') {
-          this.incidentList = res.data
-        }
-      })
+      // getEventList({ prodId }).then((res) => {
+      //   if (res.code == '200') {
+      //     this.incidentList = res.data
+      //   }
+      // })
     },
     del() {
       this.$emit('del', this.ind)

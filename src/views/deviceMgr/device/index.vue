@@ -317,7 +317,8 @@ export default {
       this.$router.push({
         path: '/deviceMgr/device/detail',
         query: {
-          id: item.id
+          id: item.id,
+          prodId: item.productId
         }
       })
     },

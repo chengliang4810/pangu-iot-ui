@@ -9,7 +9,7 @@
         :value="i.deviceId"
       />
     </el-select>
-    <el-select v-model="item.serviceId" :disabled="disabled" placeholder="服务列表" size="mini" class="select2 zeus-mr-5" @focus="getSer">
+    <el-select v-model="item.serviceId" :disabled="disabled" placeholder="功能列表" size="mini" class="select2 zeus-mr-5" @focus="getSer">
       <el-option
         v-for="(i, index) in serviceList"
         :key="index"
@@ -102,8 +102,7 @@ export default {
   created() {
     if (this.$route.query.id) {
       this.getService(this.$route.query.id)
-    }
-    if (this.item.executeDeviceId && this.item.serviceId) {
+    } else if (this.item.executeDeviceId && this.item.serviceId) {
       this.getService(this.item.executeDeviceId)
     }
   },
@@ -118,7 +117,8 @@ export default {
       }
     },
     getSer() {
-      this.getService(this.item.executeDeviceId)
+      // console.log(this.item.executeDeviceId)
+      // this.getService(this.item.executeDeviceId)
     },
     getService(prodId) {
       getServiceList({ prodId }).then((res) => {
@@ -131,6 +131,7 @@ export default {
       this.item.serviceId = ''
       // 获取服务列表
       this.getService(val)
+      console.log("获取服务列表")
     },
     del() {
       this.$emit('del', this.ind)

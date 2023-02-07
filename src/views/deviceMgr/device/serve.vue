@@ -210,12 +210,13 @@ export default {
             },
             {
               label: '来自产品',
-              prop: 'inheritName',
+              prop: 'inherit',
               show: true
             },
             {
               label: '调用方式',
               prop: 'async',
+              propDict: 'execute_type',
               show: true
             },
             {
@@ -263,7 +264,7 @@ export default {
     getList() {
       this.dialogVisible = false
       this.loading = true
-      getServiceByPage({ ...this.form, prodId: this.$route.query.id, pageSize: this.size, pageNum: this.page }).then((res) => {
+      getServiceByPage({ ...this.form, relationId: this.$route.query.id, prodId: this.$route.query.prodId, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.rows
@@ -337,7 +338,7 @@ export default {
       })
       if (i.inherit == '1') {
         this.$message({
-          message: '当前数据不可删除',
+          message: '该功能继承产品，无法在设备进行编辑',
           type: 'warning'
         })
       } else {
@@ -363,10 +364,20 @@ export default {
       this.getList()
     },
     submit() {
+    //
+      if(this.dialogForm.inherit === true){
+        this.$message({
+                  message: '该功能继承产品，无法在设备进行编辑',
+                  type: 'warning'
+                })
+                return;
+      }
+
       this.$refs.dialogForm.validate(async(valid) => {
         if (valid && this.$refs.variable.verification()) {
           this.butLoading = true
           this.dialogForm.relationId = this.$route.query.id
+          this.dialogForm.prodId = this.$route.query.prodId
           if (this.state === '创建') {
             createService(this.dialogForm).then((res) => {
               if (res.code == 200) {
