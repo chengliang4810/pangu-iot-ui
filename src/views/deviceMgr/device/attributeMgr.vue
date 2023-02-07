@@ -104,7 +104,7 @@ export default {
         },
         {
           label: '来自产品',
-          prop: 'templateId',
+          prop: 'inherit',
           show: true
         },
         {

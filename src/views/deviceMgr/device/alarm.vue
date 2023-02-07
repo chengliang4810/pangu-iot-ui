@@ -27,8 +27,8 @@ import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import alarmForm from '@/views/deviceMgr/device/alarmForm'
 import FormTemplate from '@/components/Slots/FormTemplate'
-import { getEventByPage, updateEvent, updateEventDev, deleteDevEvent, detailEventDev, createDevAlarm, modifyStatusEventDev} from '@/api/deviceMgr'
-import { detailEvent, createAlarm, deleteEvent, modifyStatusEvent} from '@/api/porductMgr'
+import { getEventByPage, updateEvent, updateEventDev, deleteDevEvent, detailEventDev, createDevAlarm, modifyStatusEventDev } from '@/api/deviceMgr'
+import { detailEvent, createAlarm, deleteEvent, modifyStatusEvent } from '@/api/porductMgr'
 
 export default {
   name: 'Alarm',
@@ -173,7 +173,7 @@ export default {
     },
     getList() {
       this.loading = true
-      getEventByPage({ ...this.form, productId: this.$route.query.id, pageSize: this.size, pageNum: this.page, classify: '0' }).then((res) => {
+      getEventByPage({ ...this.form, productId: this.$route.query.prodId, deviceId: this.$route.query.id, pageSize: this.size, pageNum: this.page, classify: '0' }).then((res) => {
         this.loading = false
         if (res.code == 200) {
           this.tableData = res.data.rows

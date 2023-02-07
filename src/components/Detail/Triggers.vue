@@ -3,7 +3,7 @@
   <div class="Triggers zeus-relative">
     <el-form ref="triggersForm" :model="item" label-width="0px" class="alarm-form">
       <el-form-item v-if="isDev" prop="deviceId" :rules="{ required: true, message: '请选择设备', trigger: 'change' }">
-        <el-select v-model="item.deviceId" :disabled="disabled" size="mini" placeholder="请选择设备" :popper-class="'xlk'" @focus="dialogVisible = true" clearable class="select2 zeus-mr-5">
+        <el-select v-model="item.deviceId" :disabled="disabled" size="mini" placeholder="请选择设备" :popper-class="'xlk'" clearable class="select2 zeus-mr-5" @focus="dialogVisible = true">
           <el-option
             v-for="(i, index) in deviceList"
             :key="index"
@@ -42,18 +42,18 @@
         <span class="zeus-mr-5 vt">在</span>
         <el-form-item prop="period" :rules="{ required: true, message: '请选择', trigger: 'change' }">
           <el-select v-model="item.period" :disabled="disabled" size="mini" class="select3 zeus-mr-5">
-            <el-option label="时间" :value="1"/>
-            <el-option label="周期" :value="2"/>
+            <el-option label="时间" :value="1" />
+            <el-option label="周期" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item prop="scope" :rules="{ required: true, message: '请输入', trigger: 'blur' }">
-          <el-input v-model="item.scope" :disabled="disabled" size="mini" class="input zeus-mr-5"/>
+          <el-input v-model="item.scope" :disabled="disabled" size="mini" class="input zeus-mr-5" />
         </el-form-item>
         <el-form-item v-if="item.period == 1" prop="unit" :rules="{ required: true, message: '请选择单位', trigger: 'change' }">
-          <el-select :disabled="disabled" v-model="item.unit" size="mini" class="select3 zeus-mr-5">
-            <el-option label="秒" value="s"/>
-            <el-option label="分钟" value="m"/>
-            <el-option label="小时" value="h"/>
+          <el-select v-model="item.unit" :disabled="disabled" size="mini" class="select3 zeus-mr-5">
+            <el-option label="秒" value="s" />
+            <el-option label="分钟" value="m" />
+            <el-option label="小时" value="h" />
           </el-select>
         </el-form-item>
         <span v-else class="zeus-mr-5 vt">次</span>
@@ -62,13 +62,13 @@
       <div v-if="item.function ==='nodata'" class="zeus-inline-block">
         <span class="zeus-mr-5 vt">在</span>
         <el-form-item prop="scope" :rules="{ required: true, message: '请输入', trigger: 'blur' }">
-          <el-input v-model="item.scope" :disabled="disabled" size="mini" class="input zeus-mr-5"/>
+          <el-input v-model="item.scope" :disabled="disabled" size="mini" class="input zeus-mr-5" />
         </el-form-item>
         <el-form-item prop="unit" :rules="{ required: true, message: '请选择单位', trigger: 'change' }">
           <el-select v-model="item.unit" :disabled="disabled" size="mini" class="select3 zeus-mr-5">
-            <el-option label="秒" value="s"/>
-            <el-option label="分钟" value="m"/>
-            <el-option label="小时" value="h"/>
+            <el-option label="秒" value="s" />
+            <el-option label="分钟" value="m" />
+            <el-option label="小时" value="h" />
           </el-select>
         </el-form-item>
         <span class="zeus-mr-5 vt">内</span>
@@ -76,27 +76,27 @@
       <div class="zeus-inline-block">
         <el-form-item v-if="item.attrValueType != '3' && item.attrValueType != '0'" prop="function" :rules="{ required: true, message: '请选择', trigger: 'change' }">
           <el-select v-model="item.function" :disabled="disabled" size="mini" class="select1 zeus-mr-5" @change="functionChange">
-            <el-option label="最新值" value="last"/>
-            <el-option label="值有变化" value="change"/>
-            <el-option label="无值" value="nodata"/>
+            <el-option label="最新值" value="last" />
+            <el-option label="值有变化" value="change" />
+            <el-option label="无值" value="nodata" />
           </el-select>
         </el-form-item>
         <el-form-item v-else prop="function" :rules="{ required: true, message: '请选择', trigger: 'change' }">
           <el-select v-model="item.function" :disabled="disabled" size="mini" class="select1 zeus-mr-5" @change="functionChange">
-            <el-option label="最新值" value="last"/>
-            <el-option label="平均值" value="avg"/>
-            <el-option label="最大值" value="max"/>
-            <el-option label="最小值" value="min"/>
-            <el-option label="和值" value="sum"/>
-            <el-option label="值有变化" value="change"/>
-            <el-option label="无值" value="nodata"/>
+            <el-option label="最新值" value="last" />
+            <el-option label="平均值" value="avg" />
+            <el-option label="最大值" value="max" />
+            <el-option label="最小值" value="min" />
+            <el-option label="和值" value="sum" />
+            <el-option label="值有变化" value="change" />
+            <el-option label="无值" value="nodata" />
           </el-select>
         </el-form-item>
       </div>
       <el-form-item v-if="item.function === 'nodata' || (item.function === 'change' && (item.attrValueType == '1' || item.attrValueType == '4'))" prop="value" :rules="{ required: true, message: '请选择', trigger: 'change' }">
         <el-select v-model="item.value" :disabled="disabled" size="mini" class="select3 zeus-mr-5">
-          <el-option label="为真" value="1"/>
-          <el-option label="为假" value="0"/>
+          <el-option label="为真" value="1" />
+          <el-option label="为假" value="0" />
         </el-select>
       </el-form-item>
       <div v-else class="zeus-inline-block">
@@ -111,13 +111,13 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="value" :rules="{ required: true, message: '请输入', trigger: 'change' }">
-          <el-input v-model="item.value" :disabled="disabled" size="mini" class="input zeus-mr-10"/>
+          <el-input v-model="item.value" :disabled="disabled" size="mini" class="input zeus-mr-10" />
         </el-form-item>
         <span class="vt">{{ units }}</span>
       </div>
     </el-form>
     <el-button type="text" :disabled="disabled" class="zeus-absolute delete" @click="del()">
-      <svg-icon icon-class="but_del"></svg-icon>
+      <svg-icon icon-class="but_del" />
     </el-button>
     <el-dialog
       v-dialogDrag
@@ -131,16 +131,16 @@
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="select"/>
+          <svg-icon icon-class="select" />
           设备选择
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
-        <DeviceSelect :deviceIds="item.deviceId" @closeDialog="dialogVisible = false" @checked="checked"></DeviceSelect>
+        <DeviceSelect :device-ids="item.deviceId" @closeDialog="dialogVisible = false" @checked="checked" />
       </div>
     </el-dialog>
   </div>
@@ -251,10 +251,10 @@ export default {
       immediate: true,
       handler(val) {
         this.item = val
-        if (this.$route.query.id) {
-          this.id = '' + this.$route.query.id
+        if (this.$route.query.prodId) {
+          this.prodId = '' + this.$route.query.prodId
           if (this.isDev && this.item.deviceId === '') {
-            this.item.deviceId = this.$route.query.id
+            this.item.deviceId = this.$route.query.prodId
           }
           if (this.isDev) {
             if (this.inherit == '1') {
@@ -265,9 +265,9 @@ export default {
               this.eventList(this.item.deviceId)
             }
           } else {
-            this.item.productId = this.id
-            this.getAttrList(this.id)
-            this.eventList(this.id)
+            this.item.productId = this.prodId
+            this.getAttrList(this.prodId)
+            this.eventList(this.prodId)
           }
         } else {
           this.getDevAttrList(this.item.deviceId)
@@ -371,6 +371,7 @@ export default {
       })
     },
     getAttrList(prodId) {
+      console.log(333, prodId)
       getProductAttrTrapperList({ productId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data
