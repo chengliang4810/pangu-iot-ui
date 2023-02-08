@@ -2,7 +2,7 @@
 <template>
   <el-form ref="dialogForm" :rules="rules" :model="formData" :validate-on-rule-change="false" label-width="80px" class="alarm-form">
     <el-form-item label="告警名称" prop="eventRuleName">
-      <el-input v-model="formData.eventRuleName" :disabled="formData.inherit =='1' && isDev" size="mini"/>
+      <el-input v-model="formData.eventRuleName" :disabled="formData.inherit =='1' && isDev" size="mini" />
     </el-form-item>
     <el-form-item label="告警级别" prop="eventLevel">
       <el-select v-model="formData.eventLevel" placeholder="请选择告警级别" size="mini">
@@ -23,48 +23,60 @@
         active-text="启用"
         inactive-text="禁用"
         active-color="#55BC8A"
-        inactive-color="#AB2F29">
-      </el-switch>
+        inactive-color="#AB2F29"
+      />
       <div class="el-form-item-tips zeu s-inline-block">
-        <svg-icon icon-class="tips" class="icon"/>
+        <svg-icon icon-class="tips" class="icon" />
         <span>包括平台内部和外部的所有通知。</span>
       </div>
     </el-form-item>
-       <!-- <el-form-item label="启用告警规则" prop="status">-->
-    <!--      <el-switch-->
-    <!--        v-model="formData.status"-->
-    <!--        :disabled="formData.inherit =='1' && isDev"-->
-    <!--        size="mini"-->
-    <!--        active-value="ENABLE"-->
-    <!--        inactive-value="DISABLE"-->
-    <!--        active-text="启用"-->
-    <!--        inactive-text="禁用"-->
-    <!--        active-color="#55BC8A"-->
-    <!--        inactive-color="#AB2F29">-->
-    <!--      </el-switch> -->
-    <!--    </el-form-item> -->
     <el-form-item label="描述" prop="remark">
-      <el-input v-model="formData.remark" :disabled="formData.inherit =='1' && isDev" type="textarea" rows="2" size="mini"/>
+      <el-input v-model="formData.remark" :disabled="formData.inherit =='1' && isDev" type="textarea" rows="2" size="mini" />
     </el-form-item>
     <el-form-item label="触发条件">
       <div class="zeus-mb-10">
         满足下列
         <el-select v-model="formData.expLogic" :disabled="formData.inherit =='1' && isDev" placeholder="" size="mini" class="select-w50 zeus-ml-5 zeus-mr-5">
-          <el-option label="任意" value="or"/>
-          <el-option label="所有" value="and"/>
+          <el-option label="任意" value="or" />
+          <el-option label="所有" value="and" />
         </el-select>
         条件时,触发告警
       </div>
-      <Triggers v-for="(item, index) in formData.expList" :key="item.guid" :disabled="formData.inherit =='1' && isDev" :productId="formData.inheritProductId" v-model="formData.expList[index]" :ind="index" :is-dev="isDev" :device-list="deviceList" :inherit="formData.inherit" @del="del" ref="triggers"/>
+      <Triggers
+        v-for="(item, index) in formData.expList"
+        :key="item.guid"
+        ref="triggers"
+        v-model="formData.expList[index]"
+        :disabled="formData.inherit =='1' && isDev"
+        :product-id="formData.inheritProductId"
+        :ind="index"
+        :is-dev="isDev"
+        :device-list="deviceList"
+        :inherit="formData.inherit"
+        @del="del"
+      />
       <el-button class="add-btn" :disabled="formData.inherit =='1' && isDev" plain icon="el-icon-plus" size="mini" @click="addTrigger">增加触发条件
       </el-button>
     </el-form-item>
     <el-form-item label="执行功能">
-      <action v-for="(item, index) in formData.deviceServices" :key="item.guid"
-              :disabled="formData.inherit =='1' && isDev" v-model="formData.deviceServices[index]" :ind="index"
-              :is-dev="isDev" :device-list="deviceList" @del="delAction"></action>
-      <el-button class="add-btn" :disabled="formData.inherit =='1' && isDev" plain icon="el-icon-plus" size="mini"
-                 @click="addAction">增加执行功能
+      <action
+        v-for="(item, index) in formData.deviceServices"
+        :key="item.guid"
+        v-model="formData.deviceServices[index]"
+        :disabled="formData.inherit =='1' && isDev"
+        :ind="index"
+        :is-dev="isDev"
+        :device-list="deviceList"
+        @del="delAction"
+      />
+      <el-button
+        class="add-btn"
+        :disabled="formData.inherit =='1' && isDev"
+        plain
+        icon="el-icon-plus"
+        size="mini"
+        @click="addAction"
+      >增加执行功能
       </el-button>
     </el-form-item>
     <!-- <el-form-item label="标签">
@@ -75,18 +87,16 @@
 
 <script>
 import { getDeviceList } from '@/api/deviceMgr'
-import { getProductList, getServiceList } from '@/api/porductMgr'
+import { getProductList } from '@/api/porductMgr'
 import Triggers from '@/components/Detail/Triggers'
 import action from '@/views/deviceMgr/device/action'
-import Tag from '@/components/Detail/Tag'
 import { guid } from '@/utils'
 
 export default {
   name: 'AlarmForm',
   components: {
     Triggers,
-    action,
-    Tag
+    action
   },
   props: {
     value: {
@@ -116,36 +126,27 @@ export default {
       }
     }
   },
-  watch: {
-    value: {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        this.formData = val
-      }
-    }
-  },
   data() {
-    const checkData = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('至少要有一个触发条件!'))
-      }
-      for (const item of value) {
-        if (item.productAttributeType === '属性' && item.productAttributeId === '') {
-          callback(new Error('请选择属性!'))
-        }
-        if (item.productAttributeType === '事件' && item.productAttributeId === '') {
-          callback(new Error('请选择事件!'))
-        }
-        if (item.value === undefined || item.value === '') {
-          callback(new Error('请完善触发条件!'))
-        }
-        if ((item.function !== 'last' && item.function !== 'change') && (item.scope === undefined || item.scope === '')) {
-          callback(new Error('请完善触发条件!'))
-        }
-      }
-      callback()
-    }
+    // const checkData = (rule, value, callback) => {
+    //   if (value.length === 0) {
+    //     callback(new Error('至少要有一个触发条件!'))
+    //   }
+    //   for (const item of value) {
+    //     if (item.productAttributeType === '属性' && item.productAttributeId === '') {
+    //       callback(new Error('请选择属性!'))
+    //     }
+    //     if (item.productAttributeType === '事件' && item.productAttributeId === '') {
+    //       callback(new Error('请选择事件!'))
+    //     }
+    //     if (item.value === undefined || item.value === '') {
+    //       callback(new Error('请完善触发条件!'))
+    //     }
+    //     if ((item.function !== 'last' && item.function !== 'change') && (item.scope === undefined || item.scope === '')) {
+    //       callback(new Error('请完善触发条件!'))
+    //     }
+    //   }
+    //   callback()
+    // }
     return {
       formData: {},
       rules: {
@@ -169,6 +170,15 @@ export default {
       ],
       deviceList: [],
       isDev: true
+    }
+  },
+  watch: {
+    value: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        this.formData = val
+      }
     }
   },
   created() {

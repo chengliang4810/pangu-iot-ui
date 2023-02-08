@@ -308,7 +308,7 @@
 </template>
 
 <script>
-import { getAttrTrapperList, getEventList } from '@/api/deviceMgr'
+import { getAttrTrapperList } from '@/api/deviceMgr'
 import { getProductAttrTrapperList } from '@/api/porductMgr'
 import DeviceSelect from '@/components/Basics/DeviceSelect'
 
@@ -322,12 +322,7 @@ export default {
       type: Object,
       default() {
         return {
-          // deviceId: '',
-          // productAttributeId: '',
-          // incident: '',
-          // condition: '=',
-          // productAttributeType: '属性',
-          // function: 'last',
+
         }
       }
     },

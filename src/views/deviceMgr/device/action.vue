@@ -8,9 +8,9 @@
       placeholder="设备列表"
       size="mini"
       :popper-class="'xlk'"
-      @focus="dialogVisible = true"
       clearable
       class="select1 zeus-mr-5"
+      @focus="dialogVisible = true"
     >
       <el-option
         v-for="(i, index) in deviceList"
@@ -35,7 +35,7 @@
       />
     </el-select>
     <el-button type="text" :disabled="disabled" class="del" @click="del(ind)">
-      <svg-icon icon-class="but_del"></svg-icon>
+      <svg-icon icon-class="but_del" />
     </el-button>
     <el-dialog
       v-dialogDrag
@@ -64,52 +64,52 @@
       <div class="dialog-body">
         <DeviceSelect
           multiple
-          :deviceIds="item.executeDeviceId"
+          :device-ids="item.executeDeviceId"
           @closeDialog="dialogVisible = false"
           @checked="checked"
-        ></DeviceSelect>
+        />
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getServiceList } from "@/api/porductMgr";
-import DeviceSelect from "@/components/Basics/DeviceSelect";
+import { getServiceList } from '@/api/porductMgr'
+import DeviceSelect from '@/components/Basics/DeviceSelect'
 
 export default {
-  name: "Action",
+  name: 'Action',
   components: {
-    DeviceSelect,
+    DeviceSelect
   },
   props: {
     value: {
       type: Object,
       default() {
-        return {};
-      },
+        return {}
+      }
     },
     deviceList: {
       type: Array,
       default() {
-        return [];
-      },
+        return []
+      }
     },
     isDev: {
       type: Boolean,
-      default: true,
+      default: true
     },
     ind: {
       type: Number,
-      default: 0,
+      default: 0
     },
-    disabled: Boolean,
+    disabled: Boolean
   },
   data() {
     return {
       item: this.value,
       serviceList: [],
-      dialogVisible: false,
-    };
+      dialogVisible: false
+    }
   },
   watch: {
     // item: {
@@ -121,25 +121,25 @@ export default {
     value: {
       deep: true,
       handler(val) {
-        this.item = val;
-      },
-    },
+        this.item = val
+      }
+    }
   },
   created() {
     if (this.$route.query.prodId) {
-      this.getService(this.$route.query.prodId);
+      this.getService(this.$route.query.prodId)
     } else if (this.item.executeDeviceId && this.item.serviceId) {
-      this.getService(this.item.executeDeviceId);
+      this.getService(this.item.executeDeviceId)
     }
   },
   methods: {
     checked(ids) {
       // 判断是多选还是单选
       if (ids.constructor === Array) {
-        this.$emit("batch", ids);
+        this.$emit('batch', ids)
       } else {
-        this.item.executeDeviceId = ids;
-        this.deviceChange(ids);
+        this.item.executeDeviceId = ids
+        this.deviceChange(ids)
       }
     },
     getSer() {
@@ -148,22 +148,22 @@ export default {
     },
     getService(prodId) {
       getServiceList({ prodId }).then((res) => {
-        if (res.code == "200") {
-          this.serviceList = res.data;
+        if (res.code == '200') {
+          this.serviceList = res.data
         }
-      });
+      })
     },
     deviceChange(val) {
-      this.item.serviceId = "";
+      this.item.serviceId = ''
       // 获取服务列表
-      this.getService(val);
-      console.log("获取服务列表");
+      this.getService(val)
+      console.log('获取服务列表')
     },
     del() {
-      this.$emit("del", this.ind);
-    },
-  },
-};
+      this.$emit('del', this.ind)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

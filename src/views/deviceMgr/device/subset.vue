@@ -45,7 +45,7 @@ import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import deviceForm from '@/views/deviceMgr/device/deviceForm'
-import { createDevice, getDeviceByPage, getDeviceGrpList, updateDevice } from '@/api/deviceMgr'
+import { getDeviceGrpList } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
 import { getProductList } from '@/api/porductMgr'
 
