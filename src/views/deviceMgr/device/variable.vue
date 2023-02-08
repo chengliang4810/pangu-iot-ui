@@ -1,7 +1,7 @@
 <!-- 详情-变量页面 -->
 <template>
   <div class="variable">
-    <SearchForm v-if="!dialogVisible" :buttons="buttons" :columns="columns"/>
+    <SearchForm v-if="!dialogVisible" :buttons="buttons" :columns="columns" />
     <BusinessTable
       v-if="!dialogVisible"
       :table-data="tableData"
@@ -20,10 +20,10 @@
               <span class="zeus-bold"> }</span>
             </el-form-item>
             <el-form-item label="值" prop="value">
-              <el-input v-model="dialogForm.value" size="mini"/>
+              <el-input v-model="dialogForm.value" size="mini" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
-              <el-input v-model="dialogForm.description" type="textarea" rows="2" size="mini"/>
+              <el-input v-model="dialogForm.description" type="textarea" rows="2" size="mini" />
             </el-form-item>
           </el-form>
         </template>

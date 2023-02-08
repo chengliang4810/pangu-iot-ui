@@ -4,14 +4,14 @@
     <div v-if="state === '编辑'">
       <el-divider content-position="left">上线规则</el-divider>
       <el-card v-if="ruleData.ruleFunctionRecovery === 'nodata'" class="box-card zeus-mb-25" shadow="hover">
-        <span>{{ ruleData.attrNameRecovery }}</span>
+        <span>{{ ruleData.attributeNameRecovery }}</span>
         <span>在</span>
         <span>{{ ruleData.ruleConditionRecovery }}</span>
         <span>{{ unitName(ruleData.unitRecovery) }}</span>
         <span>内有值</span>
       </el-card>
       <el-card v-else class="box-card zeus-mb-25" shadow="hover">
-        <span>{{ ruleData.attrNameRecovery }}</span>
+        <span>{{ ruleData.attributeNameRecovery }}</span>
         <span>最新值符合:</span>
         <span>{{ ruleData.ruleFunctionRecovery }}</span>
         <span>{{ ruleData.ruleConditionRecovery }}</span>
@@ -19,14 +19,14 @@
       </el-card>
       <el-divider content-position="left">下线规则</el-divider>
       <el-card v-if="ruleData.ruleFunction === 'nodata'" class="box-card zeus-mb-25" shadow="hover">
-        <span>{{ ruleData.attrName }}</span>
+        <span>{{ ruleData.attributeName }}</span>
         <span>在</span>
         <span>{{ ruleData.ruleCondition }}</span>
         <span>{{ unitName(ruleData.unit) }}</span>
         <span>内无值</span>
       </el-card>
       <el-card v-else class="box-card zeus-mb-25" shadow="hover">
-        <span>{{ ruleData.attrName }}</span>
+        <span>{{ ruleData.attributeName }}</span>
         <span>最新值符合:</span>
         <span>{{ ruleData.ruleFunction }}</span>
         <span>{{ ruleData.ruleCondition }}</span>
@@ -63,12 +63,12 @@
               </el-select>
               <span v-if="dialogForm.onLine.type === 'nodata'">内有值</span>
               <el-select v-if="dialogForm.onLine.type === 'last'" v-model="dialogForm.onLine.exp" size="mini" class="w1 zeus-ml-10">
-                <el-option label="=" value="=" />
-                <el-option label=">" value=">" />
-                <el-option label="<" value="<" />
-                <el-option label="<>" value="<>" />
-                <el-option label="<=" value="<=" />
-                <el-option label=">=" value=">=" />
+                <el-option label="等于" value="=" />
+                <el-option label="大于" value=">" />
+                <el-option label="小于" value="<" />
+                <el-option label="不等于" value="<>" />
+                <el-option label="小于等于" value="<=" />
+                <el-option label="大于等于" value=">=" />
               </el-select>
               <el-input v-if="dialogForm.onLine.type === 'last'" v-model="dialogForm.onLine.num" size="mini" class="w1 zeus-ml-10 zeus-mr-10" />
               <span v-if="dialogForm.onLine.type === 'last'">{{ dialogForm.onLine.unit }}</span>
@@ -92,12 +92,12 @@
               </el-select>
               <span v-if="dialogForm.offLine.type === 'nodata'">内无值</span>
               <el-select v-if="dialogForm.offLine.type === 'last'" v-model="dialogForm.offLine.exp" size="mini" class="w1 zeus-ml-10">
-                <el-option label="=" value="=" />
-                <el-option label=">" value=">" />
-                <el-option label="<" value="<" />
-                <el-option label="<>" value="<>" />
-                <el-option label="<=" value="<=" />
-                <el-option label=">=" value=">=" />
+                <el-option label="等于" value="=" />
+                <el-option label="大于" value=">" />
+                <el-option label="小于" value="<" />
+                <el-option label="不等于" value="<>" />
+                <el-option label="小于等于" value="<=" />
+                <el-option label="大于等于" value=">=" />
               </el-select>
               <el-input v-if="dialogForm.offLine.type === 'last'" v-model="dialogForm.offLine.num" size="mini" class="w1 zeus-ml-10 zeus-mr-10" />
               <span v-if="dialogForm.offLine.type === 'last'">{{ dialogForm.offLine.unit }}</span>
@@ -260,13 +260,13 @@ export default {
     async edit() {
       this.dialogForm = JSON.parse(JSON.stringify(this.form))
       if (this.isDev) {
-        await getAttrTrapperList({ productId: this.$route.query.id }).then((res) => {
+        await getAttrTrapperList({ productId: this.$route.query.prodId }).then((res) => {
           if (res.code == 200) {
             this.attrList = res.data.row
           }
         })
       } else {
-        await getProductAttrTrapperList({ productId: this.$route.query.id }).then((res) => {
+        await getProductAttrTrapperList({ productId: this.$route.query.prodId }).then((res) => {
           if (res.code == 200) {
             this.attrList = res.data
           }
