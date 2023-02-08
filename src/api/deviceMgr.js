@@ -134,7 +134,7 @@ export function getAttrTrapperByPage(data) {
 // 设备属性列表--不分页
 export function getAttrTrapperList(data) {
   return request({
-    url: '/manager/device_attribute/value/tree',
+    url: `/manager/device_attribute/tree/${data.deviceId}`,
     method: 'get',
     params: data
   })
@@ -150,7 +150,7 @@ export function getDeviceAttributeList(data) {
 // 设备属性创建
 export function createAttrTrapper(data) {
   return request({
-    url: '/manager/device/model/attr/trapper/create',
+    url: '/manager/device_attribute',
     method: 'post',
     data
   })

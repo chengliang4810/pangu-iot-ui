@@ -2,16 +2,10 @@
 <template>
   <div class="serve">
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
-    <BusinessTable
-      v-if="!dialogVisible"
-      :table-data="tableData"
-      :columns="columns"
-      :loading="loading"
-      :h="'calc(100% - 115px)'"
-      :icon="$route.meta.icon24"
-      @detail="detail"
-    />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
+    <BusinessTable v-if="!dialogVisible" :table-data="tableData" :columns="columns" :loading="loading"
+      :h="'calc(100% - 115px)'" :icon="$route.meta.icon24" @detail="detail" />
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page"
+      @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
       <FormTemplate :up="'功能列表'" :state="state + '功能'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
@@ -23,13 +17,15 @@
               <el-input v-model="dialogForm.mark" size="mini" :disabled="isDev && dialogForm.inherit == '1'" />
             </el-form-item>
             <el-form-item label="调用方式" prop="async">
-              <el-select v-model="dialogForm.async" placeholder="请选择调用方式" size="mini" :disabled="isDev && dialogForm.inherit == '1'">
+              <el-select v-model="dialogForm.async" placeholder="请选择调用方式" size="mini"
+                :disabled="isDev && dialogForm.inherit == '1'">
                 <el-option label="同步" :value="0" />
                 <el-option label="异步" :value="1" />
               </el-select>
             </el-form-item>
             <el-form-item label="输入参数" prop="productServiceParamList">
-              <Variable ref="variable" v-model="dialogForm.productServiceParamList" :name="'输入参数'" :read="isDev && dialogForm.inherit == '1'" />
+              <Variable ref="variable" v-model="dialogForm.productServiceParamList" :name="'输入参数'"
+                :read="isDev && dialogForm.inherit == '1'" />
             </el-form-item>
             <el-form-item label="描述" prop="remark">
               <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
@@ -38,15 +34,8 @@
         </template>
       </FormTemplate>
     </div>
-    <el-dialog
-      v-dialogDrag
-      :visible.sync="dialogVisible2"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :show-close="false"
-      :width="'700px'"
-      @close="serviceParams = []"
-    >
+    <el-dialog v-dialogDrag :visible.sync="dialogVisible2" :close-on-click-modal="false" :close-on-press-escape="false"
+      :show-close="false" :width="'700px'" @close="serviceParams = []">
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">触发功能</div>
         <div class="right">
@@ -347,7 +336,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteService({ ids: [id] }).then(async(res) => {
+          deleteService({ ids: [id] }).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '删除成功',
@@ -364,19 +353,19 @@ export default {
       this.getList()
     },
     submit() {
-    //
-      if(this.dialogForm.inherit === true){
+      //
+      if (this.dialogForm.inherit === true) {
         this.$message({
-                  message: '该功能继承产品，无法在设备进行编辑',
-                  type: 'warning'
-                })
-                return;
+          message: '该功能继承产品，无法在设备进行编辑',
+          type: 'warning'
+        })
+        return;
       }
 
-      this.$refs.dialogForm.validate(async(valid) => {
+      this.$refs.dialogForm.validate(async (valid) => {
         if (valid && this.$refs.variable.verification()) {
           this.butLoading = true
-          this.dialogForm.relationId = this.$route.query.id
+          this.dialogForm.relationId = this.$route.query.id || this.$route.query.prodId
           this.dialogForm.prodId = this.$route.query.prodId
           if (this.state === '创建') {
             createService(this.dialogForm).then((res) => {
@@ -414,7 +403,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.serve{
+.serve {
   height: 100%;
 }
 </style>

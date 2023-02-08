@@ -13,33 +13,19 @@
       </div>
     </el-form-item>
     <el-form-item label="来源类型" prop="source">
-      <el-select v-model="formData.source" size="mini" placeholder="请选择来源类型" :disabled="disabled" @change="sourceChange">
-        <el-option
-          v-for="item in dict.type.attr_type"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
+      <el-select v-model="formData.source" size="mini" placeholder="请选择来源类型" :disabled="disabled"
+        @change="sourceChange">
+        <el-option v-for="item in dict.type.attr_type" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
     <el-form-item v-if="formData.source === '18'" label="来源属性" prop="dependencyAttrId">
       <el-select v-model="formData.dependencyAttrId" size="mini" placeholder="请选择来源属性" :disabled="disabled">
-        <el-option
-          v-for="item in attrList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
+        <el-option v-for="item in attrList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
     </el-form-item>
     <el-form-item label="数据类型" prop="valueType">
       <el-select v-model="formData.valueType" size="mini" placeholder="请选择数据类型" :disabled="disabled">
-        <el-option
-          v-for="item in dict.type.data_type"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
+        <el-option v-for="item in dict.type.data_type" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <div class="el-form-item-tips">
         <svg-icon icon-class="tips" class="icon" />想要枚举？使用下面的值映射或数据预处理。
@@ -47,22 +33,15 @@
     </el-form-item>
     <el-form-item v-if="formData.valueType == '3' || formData.valueType == '0'" label="单位">
       <el-select v-model="formData.unit" filterable clearable size="mini" placeholder="请选择单位" :disabled="disabled">
-        <el-option-group
-          v-for="group in unitsList"
-          :key="group.label"
-          :label="group.label"
-        >
-          <el-option
-            v-for="item in group.options"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          />
+        <el-option-group v-for="group in unitsList" :key="group.label" :label="group.label">
+          <el-option v-for="item in group.options" :key="item.dictValue" :label="item.dictLabel"
+            :value="item.dictValue" />
         </el-option-group>
       </el-select>
     </el-form-item>
     <el-form-item v-if="formData.source === '0'" label="取数间隔" prop="delay">
-      <el-input v-model.number="formData.delay" placeholder="请输入取数间隔" size="mini" class="input-with-select w500" @input="delayChange" />
+      <el-input v-model.number="formData.delay" placeholder="请输入取数间隔" size="mini" class="input-with-select w500"
+        @input="delayChange" />
       <el-select v-model="formData.unit" size="mini" placeholder="请选择" class="w100">
         <el-option label="秒" value="s" />
         <el-option label="分" value="m" />
@@ -82,19 +61,18 @@
         <svg-icon icon-class="tips" class="icon" />若配置，则最终保存的是预处理后的数据。
       </div>
     </el-form-item> -->
-    <el-form-item label="值映射">
+
+
+    <!-- <el-form-item label="值映射">
       <el-select v-model="formData.valueMapId" clearable size="mini" placeholder="请选择值映射" :disabled="disabled">
-        <el-option
-          v-for="item in mapList"
-          :key="item.valuemapid"
-          :label="item.name"
-          :value="item.valuemapid"
-        />
+        <el-option v-for="item in mapList" :key="item.valuemapid" :label="item.name" :value="item.valuemapid" />
       </el-select>
       <div class="el-form-item-tips">
         <svg-icon icon-class="tips" class="icon" />若配置，则实际保存的依然是原始值。只是方便让展现数据的可读性更好。
       </div>
-    </el-form-item>
+    </el-form-item> -->
+
+
     <!-- <el-form-item label="标签">
       <Tag ref="tag" v-model="formData.tags" />
       <div class="el-form-item-tips">
@@ -106,8 +84,8 @@
 
 <script>
 import { groupDictByCode } from '@/api/system'
-import { getAttrTrapperList, getDevValueMapList } from '@/api/deviceMgr'
-import { getProductAttrTrapperList, getValueMapList } from '@/api/porductMgr'
+import { getAttrTrapperList } from '@/api/deviceMgr'
+import { getProductAttrTrapperList } from '@/api/porductMgr'
 // import Pretreatment from '@/components/Detail/Pretreatment'
 // import Tag from '@/components/Detail/Tag'
 
@@ -187,10 +165,13 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.id) {
-      this.productId = this.$route.query.id
+    if (this.$route.query.prodId) {
+      this.productId = this.$route.query.prodId
       this.formData.productId = this.productId
       this.getDict()
+    }
+    if (this.$route.query.id) {
+      this.formData.deviceId = this.$route.query.id
     }
   },
   ready() {
@@ -204,7 +185,7 @@ export default {
         }
       })
       if (this.isDev) {
-        getAttrTrapperList({ id: this.productId }).then(res => {
+        getAttrTrapperList({ deviceId: this.$route.query.id }).then(res => {
           if (res.code == 200) {
             if (this.formData.attrId) {
               const arr = []
@@ -219,19 +200,6 @@ export default {
             }
           }
         })
-        if (this.formData.templateId) {
-          getValueMapList({ id: this.productId }).then(res => {
-            if (res.code == 200) {
-              this.mapList = res.data
-            }
-          })
-        } else {
-          getDevValueMapList({ deviceId: this.productId }).then(res => {
-            if (res.code == 200) {
-              this.mapList = res.data
-            }
-          })
-        }
       } else {
         getProductAttrTrapperList({ productId: this.productId }).then(res => {
           if (res.code == 200) {
@@ -248,11 +216,6 @@ export default {
             }
           }
         })
-        // getValueMapList({ productId: this.productId }).then(res => {
-        //   if (res.code == 200) {
-        //     this.mapList = res.data
-        //   }
-        // })
       }
     },
     delayChange() {
@@ -291,11 +254,11 @@ export default {
 .attribute-form {
   width: 600px;
 
-  .w500{
+  .w500 {
     width: 500px;
   }
 
-  .w100{
+  .w100 {
     width: 100px;
   }
 }

@@ -2,16 +2,10 @@
 <template>
   <div class="attribute-mgr">
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
-    <BusinessTable
-      v-if="!dialogVisible"
-      :table-data="tableData"
-      :columns="columns"
-      :loading="loading"
-      :h="'calc(100% - 115px)'"
-      :icon="$route.meta.icon24"
-      @detail="detail"
-    />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
+    <BusinessTable v-if="!dialogVisible" :table-data="tableData" :columns="columns" :loading="loading"
+      :h="'calc(100% - 115px)'" :icon="$route.meta.icon24" @detail="detail" />
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page"
+      @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
       <FormTemplate :up="'属性列表'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
@@ -212,7 +206,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteAttrTrapper({ attrIds: [id] }).then(async(res) => {
+          deleteAttrTrapper({ attrIds: [id] }).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '删除成功',
@@ -229,7 +223,7 @@ export default {
       if (this.$refs.attributeForm.validateForm()) {
         this.butLoading = true
         if (this.dialogForm.attrId) {
-          updateAttrTrapper(this.dialogForm).then(async(res) => {
+          updateAttrTrapper(this.dialogForm).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '修改成功',
@@ -243,7 +237,7 @@ export default {
             this.butLoading = false
           })
         } else {
-          createAttrTrapper(this.dialogForm).then(async(res) => {
+          createAttrTrapper(this.dialogForm).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '添加成功',
@@ -267,7 +261,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.attribute-mgr{
+.attribute-mgr {
   height: 100%;
 }
 </style>

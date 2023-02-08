@@ -5,6 +5,9 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 // import fa from 'element-ui/src/locale/lang/fa'
 
+// 是否显示重新登录
+export let isRelogin = { show: false }
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -56,15 +59,17 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (res.code) {
-      if (res.code != 200) {
-        // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-        if (res.code == 401) {
-          // to re-login
-          if (location.hash === '#/login' || location.hash === '#/') {
-            store.dispatch('user/resetToken').then(() => {
-              router.push('/login')
-            })
-          } else {
+      if (res.code == 200) {
+        return res
+      } else if (res.code == 401) {
+        // to re-login
+        if (location.hash === '#/login' || location.hash === '#/') {
+          store.dispatch('user/resetToken').then(() => {
+            router.push('/login')
+          })
+        } else {
+          if (!isRelogin.show) {
+            isRelogin.show = true
             MessageBox.confirm('当前登录信息已过期或失效,请重新登录', '提示', {
               confirmButtonText: '重新登录',
               showCancelButton: false,
@@ -74,19 +79,52 @@ service.interceptors.response.use(
               store.dispatch('user/resetToken').then(() => {
                 router.push('/login')
               })
+            }).catch(() => {
+              isRelogin.show = false
             })
           }
-        } else {
-          Message({
-            message: res.message || 'Error',
-            type: 'error',
-            duration: 5 * 1000
-          })
+          return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
         }
-        return res
+      } else if (res.code == 500) {
+        Message({
+          message: res.msg || 'Error',
+          type: 'error',
+          duration: 5 * 1000
+        })
       } else {
         return res
       }
+      // if (res.code != 200) {
+      //   // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      //   if (res.code == 401) {
+      //     // to re-login
+      //     if (location.hash === '#/login' || location.hash === '#/') {
+      //       store.dispatch('user/resetToken').then(() => {
+      //         router.push('/login')
+      //       })
+      //     } else {
+      //       MessageBox.confirm('当前登录信息已过期或失效,请重新登录', '提示', {
+      //         confirmButtonText: '重新登录',
+      //         showCancelButton: false,
+      //         closeOnClickModal: false,
+      //         type: 'warning'
+      //       }).then(() => {
+      //         store.dispatch('user/resetToken').then(() => {
+      //           router.push('/login')
+      //         })
+      //       })
+      //     }
+      //   } else {
+      //     Message({
+      //       message: res.msg || 'Error',
+      //       type: 'error',
+      //       duration: 5 * 1000
+      //     })
+      //   }
+      //   return res
+      // } else {
+      //   return res
+      // }
     } else {
       return res
     }

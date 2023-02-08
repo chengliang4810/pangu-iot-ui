@@ -371,7 +371,6 @@ export default {
       })
     },
     getAttrList(prodId) {
-      console.log(333, prodId)
       getProductAttrTrapperList({ productId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data

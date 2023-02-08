@@ -1,47 +1,32 @@
 <!-- 执行动作组件 -->
 <template>
   <div class="Action">
-    <el-select v-if="isDev" v-model="item.executeDeviceId" :disabled="disabled" placeholder="设备列表" size="mini" :popper-class="'xlk'" @focus="dialogVisible = true" clearable class="select1 zeus-mr-5">
-      <el-option
-        v-for="(i, index) in deviceList"
-        :key="index"
-        :label="i.name"
-        :value="i.deviceId"
-      />
+    <el-select v-if="isDev" v-model="item.executeDeviceId" :disabled="disabled" placeholder="设备列表" size="mini"
+      :popper-class="'xlk'" @focus="dialogVisible = true" clearable class="select1 zeus-mr-5">
+      <el-option v-for="(i, index) in deviceList" :key="index" :label="i.name" :value="i.deviceId" />
     </el-select>
-    <el-select v-model="item.serviceId" :disabled="disabled" placeholder="功能列表" size="mini" class="select2 zeus-mr-5" @focus="getSer">
-      <el-option
-        v-for="(i, index) in serviceList"
-        :key="index"
-        :label="i.name"
-        :value="i.id"
-      />
+    <el-select v-model="item.serviceId" :disabled="disabled" placeholder="功能列表" size="mini" class="select2 zeus-mr-5"
+      @focus="getSer">
+      <el-option v-for="(i, index) in serviceList" :key="index" :label="i.name" :value="i.id" />
     </el-select>
     <el-button type="text" :disabled="disabled" class=" del" @click="del(ind)">
       <svg-icon icon-class="but_del"></svg-icon>
     </el-button>
-    <el-dialog
-      v-dialogDrag
-      :visible.sync="dialogVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :width="'1234px'"
-      :show-close="false"
-      append-to-body
-      class="device_select_dialog"
-    >
+    <el-dialog v-dialogDrag :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false"
+      :width="'1234px'" :show-close="false" append-to-body class="device_select_dialog">
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="select"/>
+          <svg-icon icon-class="select" />
           设备选择
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
-        <DeviceSelect multiple :deviceIds="item.executeDeviceId" @closeDialog="dialogVisible = false" @checked="checked"></DeviceSelect>
+        <DeviceSelect multiple :deviceIds="item.executeDeviceId" @closeDialog="dialogVisible = false"
+          @checked="checked"></DeviceSelect>
       </div>
     </el-dialog>
   </div>
@@ -100,8 +85,8 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.id) {
-      this.getService(this.$route.query.id)
+    if (this.$route.query.prodId) {
+      this.getService(this.$route.query.prodId)
     } else if (this.item.executeDeviceId && this.item.serviceId) {
       this.getService(this.item.executeDeviceId)
     }

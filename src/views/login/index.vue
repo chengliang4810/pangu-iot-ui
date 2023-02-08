@@ -4,70 +4,34 @@
       <div class="logo-container">
         <img src="@/assets/logo-.png" class="logo">
       </div>
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        auto-complete="on"
-        label-position="left"
-      >
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+        label-position="left">
         <div class="title-container">
           <el-divider content-position="center">欢迎登录</el-divider>
         </div>
 
         <el-form-item prop="username">
-          <el-input
-            ref="username"
-            v-model="loginForm.username"
-            placeholder="请输入账号"
-            name="用户名"
-            :autofocus="true"
-            type="text"
-            tabindex="1"
-            auto-complete="on"
-          />
+          <el-input ref="username" v-model="loginForm.username" placeholder="请输入账号" name="用户名" :autofocus="true"
+            type="text" tabindex="1" auto-complete="on" />
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="请输入密码"
-            name="密码"
-            tabindex="2"
-            auto-complete="on"
-            @keyup.enter.native="handleLogin"
-          />
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
+            placeholder="请输入密码" name="密码" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
         </el-form-item>
 
         <el-form-item prop="code" v-if="captchaEnabled">
-          <el-input
-            v-model="loginForm.code"
-            ref="code"
-            name="验证码"
-            auto-complete="off"
-            placeholder="请输入验证码"
-            style="width: 63%"
-            tabindex="3"
-            @keyup.enter.native="handleLogin"
-          >
+          <el-input v-model="loginForm.code" ref="code" name="验证码" auto-complete="off" placeholder="请输入验证码"
+            style="width: 63%" tabindex="3" @keyup.enter.native="handleLogin">
             <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
           </el-input>
           <div class="login-code">
-            <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+            <img :src="codeUrl" @click="getCode" class="login-code-img" />
           </div>
         </el-form-item>
 
-        <el-button
-          class="box-shadow btn-container"
-          :loading="loading"
-          round
-          type="primary"
-          @click.native.prevent="handleLogin"
-        >登录</el-button>
+        <el-button class="box-shadow btn-container" :loading="loading" round type="primary"
+          @click.native.prevent="handleLogin">登录</el-button>
       </el-form>
     </div>
   </div>
@@ -76,7 +40,7 @@
 <script>
 import { nextFirstLink } from '@/utils'
 // import EventBus from '@/utils/event-bus'
-import {code, getCodeImg} from '@/api/user'
+import { code, getCodeImg } from '@/api/user'
 export default {
   name: 'Login',
   data() {
@@ -91,7 +55,7 @@ export default {
       }
     }
     const validateCode = (rule, value, callback) => {
-        callback()
+      callback()
     }
     return {
       loginForm: {
@@ -121,7 +85,7 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -169,7 +133,7 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
-          const { username, password, code, uuid} = this.loginForm
+          const { username, password, code, uuid } = this.loginForm
           this.$store
             .dispatch('user/login', {
               username,
@@ -177,7 +141,7 @@ export default {
               code,
               uuid
             })
-            .then(async(r) => {
+            .then(async (r) => {
               if (r) {
                 await this.$store.dispatch('user/getMember').then(() => {
                   const path = nextFirstLink(
@@ -194,6 +158,10 @@ export default {
             })
             .catch(() => {
               this.loading = false
+              if (this.captchaEnabled) {
+                this.getCode();
+                this.loginForm.code = ""
+              }
             })
         } else {
           console.log('error submit!!')
@@ -217,6 +185,7 @@ $cursor: #fff;
   width: 35%;
   height: 38px;
   float: right;
+
   img {
     cursor: pointer;
     vertical-align: middle;
@@ -346,12 +315,10 @@ $light_gray: #242e42;
     margin-bottom: 50px;
 
     .el-divider {
-      background: linear-gradient(
-        to right,
-        transparent 0%,
-        #dadde2 50%,
-        transparent 100%
-      );
+      background: linear-gradient(to right,
+          transparent 0%,
+          #dadde2 50%,
+          transparent 100%);
     }
 
     .el-divider__text {
