@@ -179,7 +179,7 @@ export default {
         if (val) {
           this.dialogForm = JSON.parse(JSON.stringify(val))
           if (this.dialogForm.groupIds) {
-            this.dialogForm.deviceGroupIds = this.dialogForm.groupIds.split(',')
+            this.dialogForm.deviceGroupIds = this.dialogForm.groupIds
           }
           if (this.dialogForm.groupName) {
             this.dialogForm.groupList = this.dialogForm.groupName.split(',')
