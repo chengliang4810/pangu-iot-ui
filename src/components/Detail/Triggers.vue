@@ -404,7 +404,7 @@ export default {
         if (this.$route.query.prodId) {
           this.prodId = '' + this.$route.query.prodId
           if (this.isDev && this.item.deviceId === '') {
-            this.item.deviceId = this.$route.query.prodId
+            this.item.deviceId = this.$route.query.id
           }
           if (this.isDev) {
             if (this.inherit == '1') {
@@ -522,7 +522,7 @@ export default {
       this.item.scope = ''
     },
     getDevAttrList(prodId) {
-      getAttrTrapperList({ prodId }).then((res) => {
+      getAttrTrapperList({ deviceId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data
         }
