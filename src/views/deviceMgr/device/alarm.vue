@@ -2,17 +2,13 @@
 <template>
   <div class="alarm">
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
-    <BusinessTable
-      v-if="!dialogVisible"
-      :table-data="tableData"
-      :columns="columns"
-      :loading="loading"
-      :h="'calc(100% - 115px)'"
-      @detail="detail"
-    />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
+    <BusinessTable v-if="!dialogVisible" :table-data="tableData" :columns="columns" :loading="loading"
+      :h="'calc(100% - 115px)'" @detail="detail" />
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page"
+      @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
-      <FormTemplate :up="'告警规则列表'" :state="state + '告警规则'" :width="1050" :but-loading="butLoading" @submit="submit" @cancel="close">
+      <FormTemplate :up="'告警规则列表'" :state="state + '告警规则'" :width="1050" :but-loading="butLoading" @submit="submit"
+        @cancel="close">
         <template v-slot:main>
           <alarmForm ref="alarmForm" v-model="dialogForm" />
         </template>
@@ -274,7 +270,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if (this.isDev) {
-          deleteDevEvent({ eventRuleId, deviceId: this.$route.query.id }).then(async(res) => {
+          deleteDevEvent({ eventRuleId, deviceId: this.$route.query.id }).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '删除成功',
@@ -285,7 +281,7 @@ export default {
             }
           })
         } else {
-          deleteEvent(eventRuleId).then(async(res) => {
+          deleteEvent(eventRuleId).then(async (res) => {
             if (res.code == 200) {
               this.$message({
                 message: '删除成功',
@@ -317,7 +313,7 @@ export default {
               this.butLoading = false
             })
           } else {
-            this.dialogForm.productId = this.$route.query.id
+            this.dialogForm.productId = this.$route.query.prodId
             createAlarm(this.dialogForm).then((res) => {
               if (res.code == 200) {
                 this.$message({
@@ -370,7 +366,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.alarm{
+.alarm {
   height: 100%;
 }
 </style>
