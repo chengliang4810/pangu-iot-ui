@@ -402,10 +402,12 @@ export default {
       handler(val) {
         this.item = val
         if (this.$route.query.prodId) {
-          this.prodId = '' + this.$route.query.prodId
-          if (this.isDev && this.item.deviceId === '') {
+          this.productId = '' + this.$route.query.prodId
+          if (this.isDev && this.item.relationId === '') {
             this.item.deviceId = this.$route.query.id
-            console.log('itemDeviceId:', this.item.deviceId)
+          }
+          if (this.isDev && this.item.relationId) {
+            this.item.deviceId = this.item.relationId
           }
           if (this.isDev) {
             if (this.inherit == '1') {
@@ -416,9 +418,9 @@ export default {
               this.eventList(this.item.deviceId)
             }
           } else {
-            this.item.productId = this.prodId
-            this.getAttrList(this.prodId)
-            this.eventList(this.prodId)
+            this.item.productId = this.productId
+            this.getAttrList(this.productId)
+            this.eventList(this.productId)
           }
         } else {
           this.getDevAttrList(this.item.deviceId)
@@ -523,6 +525,8 @@ export default {
       this.item.scope = ''
     },
     getDevAttrList(prodId) {
+      console.log('prodId：', prodId)
+      console.log('thisItemId', this.item.deviceId)
       getAttrTrapperList({ deviceId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data

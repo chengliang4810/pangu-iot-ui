@@ -201,7 +201,7 @@ export default {
     },
     edit(eventRuleId) {
       if (this.isDev) {
-        detailEventDev({ eventRuleId, deviceId: this.$route.query.id }).then((res) => {
+        detailEvent({ eventRuleId, deviceId: this.$route.query.id }).then((res) => {
           if (res.code == 200) {
             this.dialogForm = res.data
           }

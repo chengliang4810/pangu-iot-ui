@@ -255,7 +255,7 @@ export function getServiceData(params) {
 // 告警规则详情
 export function detailEvent(params) {
   return request({
-    url: `manager/product_event/trigger/${params.eventRuleId}`,
+    url: `manager/device/alarm/rule/${params.eventRuleId}`,
     method: 'get'
   })
 }
