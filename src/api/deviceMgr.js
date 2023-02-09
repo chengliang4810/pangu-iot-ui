@@ -268,7 +268,7 @@ export function getTrigger(params) {
 // 告警规则创建
 export function createDevAlarm(data) {
   return request({
-    url: '/manager/device/event/trigger/create',
+    url: '/manager/device/alarm/rule',
     method: 'post',
     data
   })

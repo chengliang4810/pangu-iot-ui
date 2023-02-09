@@ -26,7 +26,7 @@
             v-for="(i, index) in deviceList"
             :key="index"
             :label="i.name"
-            :value="i.deviceId"
+            :value="i.id"
           />
         </el-select>
       </el-form-item>
@@ -405,6 +405,7 @@ export default {
           this.prodId = '' + this.$route.query.prodId
           if (this.isDev && this.item.deviceId === '') {
             this.item.deviceId = this.$route.query.id
+            console.log('itemDeviceId:', this.item.deviceId)
           }
           if (this.isDev) {
             if (this.inherit == '1') {

@@ -316,6 +316,7 @@ export default {
         this.butLoading = true
         if (this.state === '创建') {
           if (this.isDev) {
+            this.dialogForm.deviceId = this.$route.query.id
             createDevAlarm(this.dialogForm).then((res) => {
               if (res.code == 200) {
                 this.$message({

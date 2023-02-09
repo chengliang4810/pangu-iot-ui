@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth'
 // import fa from 'element-ui/src/locale/lang/fa'
 
 // 是否显示重新登录
-export let isRelogin = { show: false }
+export const isRelogin = { show: false }
 
 // create an axios instance
 const service = axios.create({
@@ -63,28 +63,25 @@ service.interceptors.response.use(
         return res
       } else if (res.code == 401) {
         // to re-login
-        if (location.hash === '#/login' || location.hash === '#/') {
-          store.dispatch('user/resetToken').then(() => {
-            router.push('/login')
-          })
-        } else {
-          if (!isRelogin.show) {
-            isRelogin.show = true
-            MessageBox.confirm('当前登录信息已过期或失效,请重新登录', '提示', {
-              confirmButtonText: '重新登录',
-              showCancelButton: false,
-              closeOnClickModal: false,
-              type: 'warning'
-            }).then(() => {
-              store.dispatch('user/resetToken').then(() => {
-                router.push('/login')
-              })
-            }).catch(() => {
-              isRelogin.show = false
+        store.dispatch('user/resetToken').then(() => {
+          router.push('/login')
+        })
+        if (!isRelogin.show) {
+          isRelogin.show = true
+          MessageBox.confirm('当前登录信息已过期或失效,请重新登录', '提示', {
+            confirmButtonText: '重新登录',
+            showCancelButton: false,
+            closeOnClickModal: false,
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+              router.push('/login')
             })
-          }
-          return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+          }).catch(() => {
+            isRelogin.show = false
+          })
         }
+        return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
       } else if (res.code == 500) {
         Message({
           message: res.msg || 'Error',

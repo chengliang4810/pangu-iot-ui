@@ -8,7 +8,7 @@
         <record v-else-if="activity === '日志'" />
         <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
         <incident v-else-if="activity ==='事件管理'" is-dev />
-        <serve v-else-if="activity === '服务管理'" is-dev />
+        <serve v-else-if="activity === '功能管理'" is-dev />
         <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
         <alarm v-else-if="activity === '告警规则'" is-dev />
         <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
@@ -78,8 +78,8 @@ export default {
         //   name: '事件管理'
         // },
         {
-          label: '服务管理',
-          name: '服务管理'
+          label: '功能管理',
+          name: '功能管理'
         },
         {
           label: '上下线规则',
