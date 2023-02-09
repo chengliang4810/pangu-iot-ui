@@ -304,9 +304,8 @@ export function updateEvent(data) {
 // 告警规则删除
 export function deleteDevEvent(data) {
   return request({
-    url: '/manager/device/event/trigger/delete',
-    method: 'post',
-    data
+    url: `/manager/product_event/trigger/${data.eventRuleId}`,
+    method: 'delete'
   })
 }
 

@@ -8,7 +8,7 @@
       class="alarm-form"
     >
       <el-form-item
-        v-if="isDev"
+        v-if="isDev && inherit == false"
         prop="deviceId"
         :rules="{ required: true, message: '请选择设备', trigger: 'change' }"
       >
@@ -341,8 +341,8 @@ export default {
       default: true
     },
     inherit: {
-      type: [String, Number],
-      default: '0'
+      type: [String, Number, Boolean],
+      default: false
     },
     productId: {
       type: String,
@@ -386,9 +386,6 @@ export default {
         value: [
           { required: true, message: '当前值不能为空', trigger: 'change' }
         ],
-        // value: [
-        //   { required: true, message: '请输入值', trigger: 'change' }
-        // ],
         condition: [
           { required: true, message: '请选择运算符', trigger: 'change' }
         ]
@@ -402,13 +399,14 @@ export default {
       handler(val) {
         this.item = val
         if (this.$route.query.prodId) {
+          console.log(this.item)
           this.productId = '' + this.$route.query.prodId
-          if (this.isDev && this.item.relationId === '') {
+          if (this.isDev && this.item.deviceId === '') {
             this.item.deviceId = this.$route.query.id
-          }
-          if (this.isDev && this.item.relationId) {
+          } else if (this.isDev && this.item.relationId) {
             this.item.deviceId = this.item.relationId
           }
+          console.log('itemId', this.item.deviceId)
           if (this.isDev) {
             if (this.inherit == '1') {
               this.getAttrList(this.productId)
@@ -428,12 +426,6 @@ export default {
         }
       }
     }
-    // inherit: {
-    //   deep: true,
-    //   immediate: true,
-    //   handler(val) {
-    //   }
-    // }
   },
   created() {},
   methods: {
@@ -480,22 +472,6 @@ export default {
       if (this.item.function === 'change') {
         this.item.value = ''
       }
-      // if (attr.valueType === '3' || attr.valueType === '0') {
-      //   if (this.item.function === 'nodata') {
-      //
-      //   }
-      //
-      // } else {
-      //
-      //   if (this.item.function === 'nodata' || this.item.function === 'change') {
-      //
-      //   }
-      // }
-      // this.item.incident = ''
-      // this.item.condition = '='
-      // this.item.productAttributeType = '属性'
-
-      // this.item.value = ''
       this.item.period = ''
       this.item.unit = ''
       this.item.scope = ''
@@ -525,8 +501,6 @@ export default {
       this.item.scope = ''
     },
     getDevAttrList(prodId) {
-      console.log('prodId：', prodId)
-      console.log('thisItemId', this.item.deviceId)
       getAttrTrapperList({ deviceId: prodId }).then((res) => {
         if (res.code == '200') {
           this.deviceAttribute = res.data

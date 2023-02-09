@@ -5,7 +5,7 @@
       <el-input v-model="formData.eventRuleName" :disabled="formData.inherit =='1' && isDev" size="mini" />
     </el-form-item>
     <el-form-item label="告警级别" prop="eventLevel">
-      <el-select v-model="formData.eventLevel" placeholder="请选择告警级别" size="mini">
+      <el-select v-model="formData.eventLevel" placeholder="请选择告警级别" size="mini" :disabled="formData.inherit =='1' && isDev">
         <el-option
           v-for="(item, index) in levelList"
           :key="index"
@@ -24,11 +24,18 @@
         inactive-text="禁用"
         active-color="#55BC8A"
         inactive-color="#AB2F29"
+        :disabled="formData.inherit =='1'"
       />
-      <div class="el-form-item-tips zeu s-inline-block">
+      <div
+        class="
+        el-form-item-tips
+        zeu
+        s-inline-block"
+      >
         <svg-icon icon-class="tips" class="icon" />
         <span>包括平台内部和外部的所有通知。</span>
       </div>
+      </el-switch>
     </el-form-item>
     <el-form-item label="描述" prop="remark">
       <el-input v-model="formData.remark" :disabled="formData.inherit =='1' && isDev" type="textarea" rows="2" size="mini" />
@@ -47,7 +54,7 @@
         :key="item.guid"
         ref="triggers"
         v-model="formData.expList[index]"
-        :disabled="formData.inherit =='1' && isDev"
+        :disabled="formData.inherit == true && isDev"
         :product-id="formData.inheritProductId"
         :ind="index"
         :is-dev="isDev"

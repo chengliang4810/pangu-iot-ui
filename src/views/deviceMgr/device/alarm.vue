@@ -124,14 +124,9 @@ export default {
         },
         {
           label: '来自产品',
-          prop: 'inheritName',
+          prop: 'inherit',
           show: true
         },
-        // {
-        //   label: '相关属性',
-        //   prop: 'productName',
-        //   show: true
-        // },
         {
           label: '启用状态',
           prop: 'status',
@@ -199,15 +194,15 @@ export default {
     detail(item) {
       this.edit(item.id)
     },
-    edit(eventRuleId) {
+    async edit(eventRuleId) {
       if (this.isDev) {
-        detailEvent({ eventRuleId, deviceId: this.$route.query.id }).then((res) => {
+        await detailEvent({ eventRuleId, deviceId: this.$route.query.id }).then((res) => {
           if (res.code == 200) {
             this.dialogForm = res.data
           }
         })
       } else {
-        detailEvent({ eventRuleId, prodId: this.$route.query.id }).then((res) => {
+        await detailEvent({ eventRuleId, prodId: this.$route.query.id }).then((res) => {
           if (res.code == 200) {
             this.dialogForm = res.data
           }
@@ -280,8 +275,19 @@ export default {
         })
       }
     },
-    delete(eventRuleId) {
-      this.$confirm('是否确认删除该数据?', '提示', {
+    async delete(eventRuleId) {
+      const res = await detailEvent({ eventRuleId, deviceId: this.$route.query.id })
+      if (res.code == 200) {
+        const data = res.data
+        if (data.inherit) {
+          this.$message({
+            message: '该告警属于产品，请切换到产品模块删除',
+            type: 'warning'
+          })
+          return
+        }
+      }
+      await this.$confirm('是否确认删除该数据?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -348,6 +354,14 @@ export default {
           }
         } else {
           if (this.isDev) {
+            if (this.dialogForm.inherit) {
+              this.$message({
+                message: '该告警属于产品，请切换到产品模块更新',
+                type: 'warning'
+              })
+              this.butLoading = false
+              return
+            }
             updateEventDev(this.dialogForm).then((res) => {
               if (res.code == 200) {
                 this.$message({
