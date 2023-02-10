@@ -3,17 +3,17 @@
   <div>
     <div class="Head zeus-flex-between">
       <router-link key="expand" class="sidebar-logo-link" to="/">
-        <img src="@/assets/logo-.png" width="250">
+        <!-- <img src="@/assets/logo-.png" width="250"> -->
         <!-- <svg-icon class="" icon-class="logo" style="font-size: 30px" /> -->
-        <!-- <span class="head-title zeus-bold zeus-ml-10 ">Zeus IOT</span> -->
+        <span class="head-title zeus-bold zeus-ml-10 ">Pangu IOT</span>
       </router-link>
       <div class="right-menu">
-        <el-button round size="small" type="text" class="head-but" @click="doc">
+        <!-- <el-button round size="small" type="text" class="head-but" @click="doc">
           <svg-icon icon-class="doc" class="zeus-mr-5" />文档
         </el-button>
         <el-button round size="small" type="text" class="head-but" @click="dialogAbout = true">
           <svg-icon icon-class="about" class="zeus-mr-5" />关于
-        </el-button>
+        </el-button> -->
         <el-dropdown class="avatar-container zeus-ml-25" trigger="click">
           <div class="avatar-wrapper zeus-flex-default">
             <img src="../../assets/avater.jpg" class="user-avatar">

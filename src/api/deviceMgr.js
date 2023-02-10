@@ -286,8 +286,8 @@ export function getEventByPage(data) {
 // 告警规则修改-设备
 export function updateEventDev(data) {
   return request({
-    url: '/manager/device/event/trigger/update',
-    method: 'post',
+    url: '/manager/device/alarm/rule',
+    method: 'put',
     data
   })
 }
