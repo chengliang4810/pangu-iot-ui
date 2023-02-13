@@ -12,17 +12,15 @@ export function getAlarmByPage(data) {
 // 告警记录-解决
 export function resolve(params) {
   return request({
-    url: '/alarm/resolve',
-    method: 'get',
-    params
+    url: `/manager/problem/resolve/${params.eventId}`,
+    method: 'put'
   })
 }
 
 // 告警记录-确认
 export function acknowledgement(params) {
   return request({
-    url: '/alarm/acknowledgement',
-    method: 'get',
-    params
+    url: `/manager/problem/acknowledgement/${params.eventId}`,
+    method: 'put'
   })
 }
