@@ -202,6 +202,7 @@ export default {
         this.form.timeFrom = ''
         this.form.timeTill = ''
       }
+      this.form.deviceInfo = true
       getAlarmByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
