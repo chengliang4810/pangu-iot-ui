@@ -74,6 +74,7 @@
         :ind="index"
         :is-dev="isDev"
         :device-list="deviceList"
+        @batch="batch(formData.deviceServices[index])"
         @del="delAction"
       />
       <el-button
@@ -210,6 +211,14 @@ export default {
     // this.formData = JSON.parse(JSON.stringify(this.value))
   },
   methods: {
+    batch(item) {
+      item.serviceId = ''
+      item.executeDeviceId = ''
+      this.$message({
+        message: '请勿选择多个设备',
+        type: 'warning'
+      })
+    },
     addTrigger() {
       if (this.validateTriggers()) {
         this.formData.expList.push({

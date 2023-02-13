@@ -206,7 +206,7 @@ export default {
       }
     },
     /* 优化显示多选框 */
-    getRowKey(row) { return row.deviceId },
+    getRowKey(row) { return row.id },
     /* 滚动加载 */
     load() {
       this.$emit('load')
@@ -223,6 +223,7 @@ export default {
     },
     /* 多选*/
     handleSelect(selection, row) {
+      console.log('handleSelect', selection, row)
       this.$emit('select', selection, row)
     },
     /* 全选*/

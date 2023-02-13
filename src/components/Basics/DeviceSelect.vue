@@ -282,15 +282,15 @@ export default {
         if (res.code == 200) {
           this.tableData = res.data.rows
           this.count = res.data.total
-          if (tage) {
+          if (tage && this.deviceIds) {
             const dev = this.tableData.find((i) => {
               return i.id === this.deviceIds
             })
-            this.$refs.DeviceSelectTable.setSelection(dev)
+            dev && this.$refs.DeviceSelectTable.setSelection(dev)
           }
           if (res.data && res.data.length) {
             this.markers = []
-            res.data.forEach((i) => {
+            res.data.rows.forEach((i) => {
               if (i.position) {
                 const arr = i.position.split(',')
                 if (arr.length > 1) {
@@ -319,7 +319,8 @@ export default {
       // this.$refs.DeviceSelectTable.clearSelection()
       // this.$refs.DeviceSelectTable.setSelection(row)
       // this.ids = row.deviceId
-      this.ids = selection.map((i) => { return i.id })
+      console.log(selection)
+      this.ids = selection.map((i) => { return i?.id })
     },
     reset() {
       this.prodTypes = []
@@ -349,6 +350,7 @@ export default {
       this.submitLoading = true
       this.$emit('checked', this.ids)
       this.$emit('closeDialog')
+      this.submitLoading = false
     },
     mapReady({ BMap, map }) {
       // console.log(BMap)
@@ -358,6 +360,7 @@ export default {
     markerClick(deviceId) {
       this.$emit('checked', deviceId)
       this.$emit('closeDialog')
+      this.submitLoading = false
     }
   }
 }

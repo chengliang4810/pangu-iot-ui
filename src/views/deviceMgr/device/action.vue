@@ -16,7 +16,7 @@
         v-for="(i, index) in deviceList"
         :key="index"
         :label="i.name"
-        :value="i.deviceId"
+        :value="i.id"
       />
     </el-select>
     <el-select
@@ -37,6 +37,7 @@
     <el-button type="text" :disabled="disabled" class="del" @click="del(ind)">
       <svg-icon icon-class="but_del" />
     </el-button>
+
     <el-dialog
       v-dialogDrag
       :visible.sync="dialogVisible"
@@ -126,16 +127,20 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.prodId) {
+    if (this.item.executeDeviceId && this.item.serviceId) {
+      // this.getService(this.item.executeDeviceId)
+      this.getSer()
+    } else if (this.$route.query.prodId) {
       this.getService(this.$route.query.prodId)
-    } else if (this.item.executeDeviceId && this.item.serviceId) {
-      this.getService(this.item.executeDeviceId)
     }
   },
   methods: {
     checked(ids) {
       // 判断是多选还是单选
-      if (ids.constructor === Array) {
+      if (ids.constructor === Array && ids.length === 1) {
+        this.item.executeDeviceId = ids[0]
+        this.deviceChange(ids[0])
+      } else if (ids.constructor === Array) {
         this.$emit('batch', ids)
       } else {
         this.item.executeDeviceId = ids
@@ -143,8 +148,8 @@ export default {
       }
     },
     getSer() {
-      // console.log(this.item.executeDeviceId)
-      // this.getService(this.item.executeDeviceId)
+      console.log(this.item.executeDeviceId)
+      this.getService(this.item.executeDeviceId)
     },
     getService(prodId) {
       getServiceList({ prodId }).then((res) => {
