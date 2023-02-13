@@ -197,7 +197,9 @@ export default {
   },
   methods: {
     handleProp(row, item) {
+      console.log(4444, item.propDict)
       if (item.propDict) {
+        console.log(2222, item.propDict)
         return this.selectDictLabel(this.farther.dict.type[item.propDict], row[item.prop])
       } else if (item.propEvent) {
         return this.farther[item.propEvent](row[item.prop])

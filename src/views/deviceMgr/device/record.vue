@@ -5,12 +5,12 @@
       <div>
         <div class="zeus-right radio">
           <div v-for="(item, index) in radioList" :key="index" class="radio-button" :class="form.logType === item ? 'activity' :''" @click="changeRadio(item)">
-            {{item}}
+            {{ item }}
           </div>
         </div>
       </div>
       <div style="flex: 1">
-        <SearchForm :params="formParams" :columns="columns" @search="search"/>
+        <SearchForm :params="formParams" :columns="columns" @search="search" />
       </div>
     </div>
     <el-table
@@ -19,12 +19,13 @@
       :data="tableData"
       style="width: 100%;padding: 0 12px 12px 12px;"
       :height="'calc(100% - 242px)'"
-      class="table">
+      class="table"
+    >
       <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label">
         <template slot-scope="scope">
           <span v-if="item.prop === 'buttons'" class="setting-buttons">
             <el-button
-              v-if="scope.row.acknowledged === '未确认' && scope.row.statusName !== '已解决'"
+              v-if="scope.row.acknowledgedStr === '未确认' && scope.row.statusStr !== '已解决'"
               type="text"
               class="setting-button"
               round
@@ -35,7 +36,7 @@
               确认
             </el-button>
             <el-button
-              v-if="scope.row.statusName === '未解决'"
+              v-if="scope.row.statusStr === '未解决'"
               type="text"
               class="setting-button"
               round
@@ -48,6 +49,9 @@
           </span>
           <span v-else-if="item.prop === 'deviceName'" class="event" @click="detail(scope.row.deviceId)">
             {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
+          </span>
+          <span v-else-if="item.prop === 'severity'">
+            <dict-tag :options="dict.type.event_level" :value="scope.row.severity" />
           </span>
           <span v-else>
             {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
@@ -63,7 +67,7 @@
       :h="'calc(100% - 115px)'"
       :icon="$route.meta.icon24"
     />
-    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
   </div>
 </template>
 
@@ -75,6 +79,7 @@ import { getLogByPage } from '@/api/deviceMgr'
 import { acknowledgement, getAlarmByPage, resolve } from '@/api/alarm'
 
 export default {
+  dicts: ['event_level'],
   name: 'Record',
   provide() {
     return {
@@ -95,7 +100,7 @@ export default {
           label: '触发时间'
         }
       ],
-      radioList: ['告警日志', '服务日志', '事件日志'],
+      radioList: ['告警日志', '服务日志'],
       form: {
         logType: '告警日志',
         time: []
@@ -118,7 +123,8 @@ export default {
         },
         {
           label: '告警级别',
-          prop: 'severityName',
+          prop: 'severity',
+          propDict: 'event_level',
           show: true
         },
         {
@@ -128,12 +134,12 @@ export default {
         },
         {
           label: '解决状态',
-          prop: 'statusName',
+          prop: 'statusStr',
           show: true
         },
         {
           label: '确认状态',
-          prop: 'acknowledged',
+          prop: 'acknowledgedStr',
           show: true
         },
         {
@@ -190,10 +196,11 @@ export default {
           this.form.timeFrom = ''
           this.form.timeTill = ''
         }
-        getAlarmByPage({ ...this.form, maxRow: this.size, page: this.page, deviceId: this.$route.query.id }).then((res) => {
+        console.log(this.form)
+        getAlarmByPage({ ...this.form, pageSize: this.size, pageNum: this.page, deviceId: this.$route.query.id }).then((res) => {
           this.loading = false
           if (res.code == 200) {
-            res.data.map((i) => {
+            res.data.rows.map((i) => {
               if (i.rClock == '0') {
                 i.rClock = '-'
               }
@@ -203,8 +210,8 @@ export default {
               }
               return i
             })
-            this.tableData = res.data
-            this.total = res.count
+            this.tableData = res.data.rows
+            this.total = res.data.total
           }
         }).catch(() => {
           this.loading = false
@@ -279,7 +286,7 @@ export default {
           this.getList()
         }
       })
-    },
+    }
   }
 }
 </script>

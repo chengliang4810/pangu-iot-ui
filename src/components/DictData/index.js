@@ -4,11 +4,14 @@ import DataDict from '@/utils/dict'
 import { getDicts as getDicts } from '@/api/system/dict/data'
 
 function searchDictByKey(dict, key) {
-  if (key == null && key == "") {
+  if (key == null && key == '') {
     return null
   }
   try {
+    console.log(key)
+    console.log(dict)
     for (let i = 0; i < dict.length; i++) {
+      console.log('dict[i].key == key', dict[i].key == key)
       if (dict[i].key == key) {
         return dict[i].value
       }
@@ -38,12 +41,12 @@ function install() {
               })
             })
           }
-        },
-      },
-    },
+        }
+      }
+    }
   })
 }
 
 export default {
-  install,
+  install
 }
