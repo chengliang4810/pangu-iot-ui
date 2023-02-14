@@ -79,7 +79,7 @@ import { getLogByPage } from '@/api/deviceMgr'
 import { acknowledgement, getAlarmByPage, resolve } from '@/api/alarm'
 
 export default {
-  dicts: ['event_level'],
+  dicts: ['event_level', 'service_trigger_type'],
   name: 'Record',
   provide() {
     return {
@@ -153,7 +153,7 @@ export default {
         {
           label: '执行类型',
           prop: 'executeType',
-          propEvent: 'executeTypeName',
+          propDict: 'service_trigger_type',
           show: true
         },
         {

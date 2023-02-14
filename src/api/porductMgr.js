@@ -237,7 +237,7 @@ export function deleteService(data) {
 // 产品服务触发
 export function executeService(data) {
   return request({
-    url: '/device/service/execute',
+    url: '/manager/device/service/execute',
     method: 'post',
     data
   })
