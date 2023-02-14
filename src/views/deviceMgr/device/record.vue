@@ -100,7 +100,7 @@ export default {
           label: '触发时间'
         }
       ],
-      radioList: ['告警日志', '服务日志'],
+      radioList: ['告警日志', '功能日志'],
       form: {
         logType: '告警日志',
         time: []
@@ -118,7 +118,7 @@ export default {
         },
         {
           label: '解决时间',
-          prop: 'rClock',
+          prop: 'rclock',
           show: true
         },
         {

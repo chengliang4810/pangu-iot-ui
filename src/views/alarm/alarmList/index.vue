@@ -107,7 +107,7 @@ export default {
         },
         {
           label: '解决时间',
-          prop: 'rClock',
+          prop: 'rclock',
           show: true
         },
         {
