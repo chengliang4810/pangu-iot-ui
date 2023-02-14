@@ -19,7 +19,7 @@ const analyseRouter = {
       meta: {
         title: '全局概览'
       }
-    },
+    }
     // {
     //   path: '/analyse/latest',
     //   component: () => import('@/views/analyse/latest'),

@@ -4,12 +4,12 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar v-if="!hiddenMenu" class="sidebar-container" />
     <div class="main-container" :style="{marginLeft:hiddenMenu?'0':'200px'}">
-      <!--      <div :class="{'fixed-header':fixedHeader}">-->
-      <!--        <navbar />-->
-      <!--      </div>-->
+      <!-- <div :class="{'fixed-header':fixedHeader}">
+        <Navbar />
+      </div> -->
       <app-main />
     </div>
-<!--    <el-button class="float-but" type="primary" icon="el-icon-toilet-paper" circle />-->
+    <!-- <el-button class="float-but" type="primary" icon="el-icon-toilet-paper" circle /> -->
   </div>
 </template>
 
