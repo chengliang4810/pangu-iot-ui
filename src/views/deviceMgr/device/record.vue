@@ -151,18 +151,19 @@ export default {
       ],
       columns2: [
         {
-          label: '日志类型',
-          prop: 'logType',
+          label: '执行类型',
+          prop: 'executeType',
+          propEvent: 'executeTypeName',
           show: true
         },
         {
           label: '触发时间',
-          prop: 'triggerTime',
+          prop: 'createTime',
           show: true
         },
         {
-          label: '内容',
-          prop: 'content',
+          label: '功能名称',
+          prop: 'serviceName',
           show: true
         },
         {
@@ -172,7 +173,8 @@ export default {
         },
         {
           label: '状态',
-          prop: 'status',
+          prop: 'executeStatus',
+          propEvent: 'executeStatus',
           show: true
         }
       ]
@@ -182,6 +184,14 @@ export default {
     this.getList()
   },
   methods: {
+    executeTypeName(item) {
+      // 0手动触发  1场景触发
+      return item == 0 ? '手动触发 ' : '场景触发'
+    },
+    executeStatus(item) {
+      // 0手动触发  1场景触发
+      return item == 0 ? '失败 ' : '成功'
+    },
     search() {
       this.page = 1
       this.getList()
@@ -224,11 +234,11 @@ export default {
           this.form.timeFrom = ''
           this.form.timeTill = ''
         }
-        getLogByPage({ ...this.form, maxRow: this.size, page: this.page, deviceId: this.$route.query.id }).then((res) => {
+        getLogByPage({ ...this.form, pageSize: this.size, pageNum: this.page, deviceId: this.$route.query.id }).then((res) => {
           this.loading = false
           if (res.code == 200) {
-            this.tableData = res.data
-            this.total = res.count
+            this.tableData = res.data.rows
+            this.total = res.data.total
           }
         }).catch(() => {
           this.loading = false

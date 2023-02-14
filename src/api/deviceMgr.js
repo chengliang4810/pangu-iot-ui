@@ -422,9 +422,9 @@ export function createMacro(data) {
 // 设备日志列表
 export function getLogByPage(data) {
   return request({
-    url: '/manager/device/log/getLogByPage',
-    method: 'post',
-    data
+    url: '/manager/device/log/service/list',
+    method: 'get',
+    params: data
   })
 }
 
