@@ -71,16 +71,16 @@ const systemRouter = {
         icon48: 'sysParam48'
       }
     },
-    // {
-    //   path: '/system/transfer',
-    //   component: () => import('@/views/system/transfer'),
-    //   name: '/system/transfer',
-    //   meta: {
-    //     title: 'Transfer 采集器',
-    //     icon24: 'sysParam24',
-    //     icon48: 'sysParam48'
-    //   }
-    // },
+    {
+      path: '/system/transfer',
+      component: () => import('@/views/system/transfer'),
+      name: '/system/transfer',
+      meta: {
+        title: 'Transfer 采集器',
+        icon24: 'sysParam24',
+        icon48: 'sysParam48'
+      }
+    },
     {
       path: '/system/thirdAuth',
       component: () => import('@/views/system/thirdAuth'),

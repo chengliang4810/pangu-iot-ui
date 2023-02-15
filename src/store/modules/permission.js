@@ -26,7 +26,8 @@ export function recursionRouter(userRouter = [], allRouter = []) {
   allRouter.forEach((v) => {
     v.show = false
     userRouter.forEach((item) => {
-      if (v.path && item.url === v.path) {
+      if (v.path) {
+        // 检验菜单权限 if (v.path && item.url === v.path) {
         v.show = true
         const { children } = v
         if (children && children.length) {

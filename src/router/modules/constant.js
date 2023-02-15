@@ -1,5 +1,3 @@
-import Layout from '@/layout/index'
-
 /**
  *
  * 无需权限的页面

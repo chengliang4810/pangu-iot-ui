@@ -20,6 +20,7 @@ import deviceMgrRouter from '@/router/modules/deviceMgr'
 import productMgrRouter from '@/router/modules/productMgr'
 /* 协议管理 */
 // import agreementRouter from '@/router/modules/agreement'
+import driverRouter from '@/router/modules/driver'
 /* 规则引擎 */
 // import ruleRouter from '@/router/modules/rule'
 /* 告警管理 */
@@ -27,11 +28,11 @@ import alarmRouter from '@/router/modules/alarm'
 /* 平台监控 */
 // import realTimeRouter from '@/router/modules/realTime'
 /* 日志查询 */
-// import logRouter from '@/router/modules/log'
+import logRouter from '@/router/modules/log'
 /* 用户管理 */
-// import userRouter from '@/router/modules/user'
+import userRouter from '@/router/modules/user'
 /* 系统管理 */
-// import systemRouter from '@/router/modules/system'
+import systemRouter from '@/router/modules/system'
 
 import Layout from '@/layout/index'
 
@@ -45,14 +46,15 @@ export const asyncRoutes = [
   deviceMgrRouter,
   productMgrRouter,
   // agreementRouter,
+  driverRouter,
   // ruleRouter,
-  alarmRouter
+  alarmRouter,
   //,
   // realTimeRouter,
   // platformLogRouter,
-  // logRouter,
-  // userRouter,
-  // systemRouter
+  logRouter,
+  userRouter,
+  systemRouter
 ]
 export const errorRouters = [
   {

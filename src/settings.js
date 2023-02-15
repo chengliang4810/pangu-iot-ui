@@ -1,5 +1,5 @@
 module.exports = {
-  title: "Pangu IOT",
+  title: 'Pangu IOT',
 
   /**
    * @type {boolean} true | false
@@ -11,5 +11,5 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false,
-};
+  sidebarLogo: false
+}
