@@ -21,7 +21,7 @@
     <div v-if="dialogVisible">
       <FormTemplate :up="'功能列表'" :state="state + '功能'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
-          <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="80px" class="dialog-form">
+          <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="100px" class="dialog-form" size="mini">
             <el-form-item label="功能名称" prop="name">
               <el-input v-model="dialogForm.name" size="mini" :disabled="isDev && dialogForm.inherit == '1'" />
             </el-form-item>
@@ -39,16 +39,83 @@
                 <el-option label="异步" :value="1" />
               </el-select>
             </el-form-item>
-            <el-form-item label="输入参数" prop="productServiceParamList">
+            <!-- <el-form-item label="输入参数" prop="productServiceParamList">
               <Variable
                 ref="variable"
                 v-model="dialogForm.productServiceParamList"
                 :name="'输入参数'"
                 :read="isDev && dialogForm.inherit == '1'"
               />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="描述" prop="remark">
               <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
+            </el-form-item>
+            <el-divider />
+            <el-form-item label="数据类型" prop="type">
+              <el-select v-model="dialogForm.type" size="mini">
+                <el-option
+                  v-for="item in dataTypeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <!-- 整数和小数 -->
+            <div v-show="['integer','decimal'].includes(dialogForm.type)">
+              <el-form-item label="取值范围" prop="">
+                <div class="num-range">
+                  <el-input-number v-model="dialogForm.min" class="flex-1" />
+                  <span>到</span>
+                  <el-input-number v-model="dialogForm.max" class="flex-1" />
+                </div>
+              </el-form-item>
+              <el-form-item label="单位" prop="unit">
+                <el-input v-model="dialogForm.unit" />
+              </el-form-item>
+              <el-form-item label="步长" prop="unit">
+                <el-input-number v-model="dialogForm.step" style="width:100%" />
+              </el-form-item>
+            </div>
+            <!-- 布尔 -->
+            <el-form-item v-show="dialogForm.type == 'bool'" label="0值对应文本">
+              <el-input v-model="dialogForm.falseText" />
+            </el-form-item>
+            <el-form-item v-show="dialogForm.type == 'bool'" label="1值对应文本">
+              <el-input v-model="dialogForm.trueText" />
+            </el-form-item>
+            <el-form-item v-show="dialogForm.type == 'enum'" label="枚举项">
+              <div>
+                <div
+                  v-for="(item,i) in dialogForm.enumList"
+                  :key="i"
+                  class="num-range mb-16px"
+                >
+                  <el-input v-model="item.value" style="width:210px" placeholder="参数值" clearable />
+                  <el-input v-model="item.text" style="width:210px" placeholder="参数描述" clearable />
+                  <el-button v-if="i != 0" type="text" class=" zeus-icon" @click="deleteEnumItem(i)">
+                    <svg-icon icon-class="but_del" />
+                  </el-button>
+                </div>
+                <div class="mt-16px">
+                  <el-button
+                    type="primary"
+                    round
+                    size="mini"
+                    icon="el-icon-plus"
+                    @click="addEnumItem"
+                  >添加枚举项</el-button>
+                </div>
+              </div>
+
+            </el-form-item>
+            <el-form-item v-show="dialogForm.type == 'string'" label="最大长度" prop="maxLength">
+              <el-input-number v-model="dialogForm.maxLength" style="width:100%" />
+            </el-form-item>
+            <el-form-item v-show="dialogForm.type == 'array'" label="数组类型" prop="arrayType">
+              <el-radio-group v-model="dialogForm.arrayType">
+                <el-radio v-for="item in arrayTypeOptions" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-form>
         </template>
@@ -89,6 +156,10 @@ import Variable from '@/components/Detail/Variable'
 import FormTemplate from '@/components/Slots/FormTemplate'
 import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
 
+const mockData = {
+  dataType: 'string',
+  specs: '{"type":"integer","max":123,"min":12,"step":1,"unit":"福特","trueText":"zhen","falseText":"假","arrayType":"string","enumList":[{"text":"正常","value":0},{"text":"手动","value":1}],"maxLength":12}'
+}
 export default {
   dicts: ['execute_type'],
   name: 'Serve',
@@ -136,13 +207,46 @@ export default {
       total: 0,
       size: 10,
       page: 1,
+      dataTypeOptions: [
+        { label: '整数', value: 'integer' },
+        { label: '小数', value: 'decimal' },
+        { label: '布尔', value: 'bool' },
+        { label: '枚举', value: 'enum' },
+        { label: '数组', value: 'array' },
+        { label: '字符串', value: 'string' }
+      ],
+      arrayTypeOptions: [
+        { label: 'int (整数)', value: 'integer' },
+        { label: 'double (小数)', value: 'double' },
+        { label: 'string (字符串)', value: 'string' }
+      ],
       dialogForm: {
         name: '',
         mark: '',
         async: '',
         remark: '',
         relationId: '',
-        productServiceParamList: []
+        productServiceParamList: [],
+        type: 'integer', // 数据类型 integer decimal array bool enum float string
+        // 整数、小数
+        max: undefined,
+        min: undefined,
+        step: undefined,
+        unit: undefined, // 单位
+        // 布尔
+        trueText: undefined,
+        falseText: undefined,
+        // 数组
+        arrayType: undefined, // integer  double string
+        // 枚举
+        enumList: [
+          {
+            text: undefined,
+            value: undefined
+          }
+        ],
+        // 字符串
+        maxLength: undefined // 字符串最大长度
       },
       rules: {
         name: [
@@ -225,6 +329,16 @@ export default {
               show: true
             },
             {
+              label: '数据类型',
+              prop: 'dataType',
+              show: true
+            },
+            {
+              label: '数据定义',
+              prop: 'specs',
+              show: true
+            },
+            {
               label: '来自产品',
               prop: 'inherit',
               show: true
@@ -283,7 +397,7 @@ export default {
       getServiceByPage({ ...this.form, relationId: this.$route.query.id, prodId: this.$route.query.prodId, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data.rows
+          this.tableData = res.data.rows.map(item => Object.assign({}, mockData, item))
           this.total = res.data.total
         }
       }).catch(() => {
@@ -425,6 +539,17 @@ export default {
           }
         }
       })
+    },
+    // 新增枚举项
+    addEnumItem() {
+      this.dialogForm.enumList.push({
+        text: '',
+        value: ''
+      })
+    },
+    // 删除枚举项
+    deleteEnumItem(index) {
+      this.dialogForm.enumList.splice(index, 1)
     }
   }
 }
@@ -432,5 +557,27 @@ export default {
 <style lang="scss" scoped>
 .serve {
   height: 100%;
+}
+.sep{
+  margin:0 16px
+}
+.num-range{
+  widows: 100%;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.flex-1{
+  flex:1
+}
+.justify-between{
+  display: flex;
+  justify-content: space-between;
+}
+.mt-16px{
+  margin-top:16px
+}
+.mb-16px{
+  margin-bottom:16px
 }
 </style>
