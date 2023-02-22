@@ -101,6 +101,9 @@
         <template v-else-if="scope.row.triggerType === '手动' && item.label === '触发主体'">
           {{ scope.row[item.prop] || '-' }}
         </template>
+        <template v-else-if="item.type == 'slot'">
+          <slot :name="item.prop" />
+        </template>
         <template v-else>
           <span v-if="scope.row[item.prop] != undefined" :class="{event: item.event,weight: item.bold}" @click="detail(scope.row,item.event)">
             {{ handleProp(scope.row, item) }}
