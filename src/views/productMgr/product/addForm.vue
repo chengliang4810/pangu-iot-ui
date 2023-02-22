@@ -21,6 +21,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item v-if="form.type === '2'" label="驱动" prop="driver">
+        <el-select v-model="form.drvier" placeholder="请选择驱动" size="mini">
+          <el-option
+            v-for="item in dict.type.device_type"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="厂商">
         <el-input v-model="form.manufacturer" size="mini" />
       </el-form-item>
