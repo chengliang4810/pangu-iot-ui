@@ -3,7 +3,7 @@
   <div class="serve">
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
     <BusinessTable
-      v-if="!dialogVisible"
+      v-show="!dialogVisible"
       :table-data="tableData"
       :columns="columns"
       :loading="loading"
@@ -11,18 +11,20 @@
       :icon="$route.meta.icon24"
       @detail="detail"
     >
-      <template #specs="{row}">
+      <template #specs="{cellValue,row}">
         <div class="specs">
           <template v-if="row.dataType != 'enum'">
-            <div v-for="item in typeFields[row[dataType]]" :key="item" class="specs-item">
-              <span>{{ row.specs[item] }}</span>
-              <span>{{ fieldDesc[item] }}]</span>
+            <div v-for="item in typeFields[row.dataType]" :key="item" class="specs-item">
+              <span>{{ fieldDesc[item] }}</span>
+              <span class="mx-6">:</span>
+              <span>{{ cellValue[item] }}</span>
             </div>
           </template>
           <div v-else class="specs">
-            <div v-for="item in row.specs.enumList" :key="item.value" class="specs-item">
-              <span>{{ item.value }}</span>
+            <div v-for="item in cellValue.enumList" :key="item.value" class="specs-item">
               <span>{{ item.text }}</span>
+              <span class="mx-6">:</span>
+              <span>{{ item.value }}</span>
             </div>
           </div>
         </div>
@@ -173,10 +175,6 @@ import Variable from '@/components/Detail/Variable'
 import FormTemplate from '@/components/Slots/FormTemplate'
 import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
 
-const mockData = {
-  dataType: 'string',
-  specs: '{"type":"integer","max":123,"min":12,"step":1,"unit":"福特","trueText":"zhen","falseText":"假","arrayType":"string","enumList":[{"text":"正常","value":0},{"text":"手动","value":1}],"maxLength":12}'
-}
 const defaultDialogForm = {
   name: '',
   mark: '',
@@ -329,7 +327,8 @@ export default {
           label: '数据定义',
           prop: 'specs',
           show: true,
-          type: 'slot'
+          type: 'slot',
+          minWidth: 200
         },
         {
           label: '调用方式',
@@ -392,7 +391,8 @@ export default {
               label: '数据定义',
               prop: 'specs',
               show: true,
-              type: 'slot'
+              type: 'slot',
+              minWidth: 200
             },
             {
               label: '来自产品',
@@ -452,6 +452,26 @@ export default {
       this.loading = true
       getServiceByPage({ ...this.form, relationId: this.$route.query.id, prodId: this.$route.query.prodId, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
+        // TODO 此来测试数据，用于接口开发，开发完后请删除
+        const mockData = {
+          dataType: 'enum',
+          specs: {
+            'type': 'enum',
+            'max': 123,
+            'min': 12,
+            'step': 1,
+            'unit': '福特',
+            'trueText': 'zhen',
+            'falseText': '假',
+            'arrayType': 'string',
+            'enumList': [
+              { 'text': '正常', 'value': 0 },
+              { 'text': '手动', 'value': 1 },
+              { 'text': '正常88', 'value': 'kr' },
+              { 'text': '手动222', 'value': 'abc' }],
+            'maxLength': 12
+          }
+        }
         if (res.code == 200) {
           this.tableData = res.data.rows.map(item => Object.assign({}, mockData, item))
           this.total = res.data.total
@@ -631,9 +651,15 @@ export default {
 }
 .specs{
   display: flex;
+  flex-wrap: wrap;
 }
 .specs-item{
   width: 50%;
-  margin-bottom: 16px;
+}
+.specs-item:not(:first-child){
+  // margin-bottom: 14px;
+}
+.mx-6{
+  margin:0 8px;
 }
 </style>

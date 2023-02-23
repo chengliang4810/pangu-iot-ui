@@ -56,7 +56,10 @@
       :fixed="item.fixed"
     >
       <template slot-scope="scope">
-        <template v-if="item.prop === 'buttons'">
+        <template v-if="item.type == 'slot'">
+          <slot :name="item.prop" :row="scope.row" :cell-value="scope.row[item.prop]" />
+        </template>
+        <template v-else-if="item.prop === 'buttons'">
           <OperationButtons
             :data-id="scope.row[item.idName]"
             :status="scope.row['status']"
@@ -100,9 +103,6 @@
         </template>
         <template v-else-if="scope.row.triggerType === '手动' && item.label === '触发主体'">
           {{ scope.row[item.prop] || '-' }}
-        </template>
-        <template v-else-if="item.type == 'slot'">
-          <slot :name="item.prop" />
         </template>
         <template v-else>
           <span v-if="scope.row[item.prop] != undefined" :class="{event: item.event,weight: item.bold}" @click="detail(scope.row,item.event)">
@@ -200,9 +200,7 @@ export default {
   },
   methods: {
     handleProp(row, item) {
-      console.log(4444, item.propDict)
       if (item.propDict) {
-        console.log(2222, item.propDict)
         return this.selectDictLabel(this.farther.dict.type[item.propDict], row[item.prop])
       } else if (item.propEvent) {
         return this.farther[item.propEvent](row[item.prop])
