@@ -13,7 +13,7 @@
     >
       <template #specs="{cellValue,row}">
         <div class="specs">
-          <template v-if="row.dataType != 'enum'">
+          <template v-if="row.dataType != 'enums'">
             <div v-for="item in typeFields[row.dataType]" :key="item" class="specs-item">
               <span>{{ fieldDesc[item] }}</span>
               <span class="mx-6">:</span>
@@ -103,7 +103,7 @@
             <el-form-item v-show="dialogForm.dataType == 'bool'" label="1值对应文本">
               <el-input v-model="dialogForm.specs.trueText" />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'enum'" label="枚举项">
+            <el-form-item v-show="dialogForm.dataType == 'enums'" label="枚举项">
               <div>
                 <div
                   v-for="(item,i) in dialogForm.specs.enumList"
@@ -147,7 +147,7 @@
       :close-on-press-escape="false"
       :show-close="false"
       :width="'700px'"
-      @close="serviceParams = []"
+      @close="specs = {}"
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">触发功能</div>
@@ -157,7 +157,7 @@
         </div>
       </div>
       <div class="dialog-body">
-        <Variable ref="variable" v-model="serviceParams" :name="'输入参数'" read />
+        <!-- <Variable ref="variable" v-model="serviceParams" :name="'输入参数'" read /> -->
       </div>
       <el-footer class="dialog-footer-btn">
         <el-button size="mini" round @click="dialogVisible2 = false">取 消</el-button>
@@ -184,7 +184,7 @@ const defaultDialogForm = {
   productServiceParamList: [],
   dataType: 'integer',
   specs: {
-    type: 'integer', // 数据类型 integer decimal array bool enum string
+    type: 'integer', // 数据类型 integer decimal array bool enums string
     // 整数、小数
     max: undefined,
     min: undefined,
@@ -224,7 +224,7 @@ const typeFields = {
   decimal: ['max', 'min', 'step', 'unit'],
   array: ['arrayType'],
   bool: ['trueText', 'falseText'],
-  enum: ['enumList'],
+  enums: ['enumList'],
   string: ['maxLength']
 }
 export default {
@@ -278,7 +278,7 @@ export default {
         { label: '整数', value: 'integer' },
         { label: '小数', value: 'decimal' },
         { label: '布尔', value: 'bool' },
-        { label: '枚举', value: 'enum' },
+        { label: '枚举', value: 'enums' },
         { label: '数组', value: 'array' },
         { label: '字符串', value: 'string' }
       ],
@@ -454,9 +454,9 @@ export default {
         this.loading = false
         // TODO 此来测试数据，用于接口开发，开发完后请删除
         const mockData = {
-          dataType: 'enum',
+          dataType: 'enums',
           specs: {
-            'type': 'enum',
+            'type': 'enums',
             'max': 123,
             'min': 12,
             'step': 1,
@@ -474,6 +474,9 @@ export default {
         }
         if (res.code == 200) {
           this.tableData = res.data.rows.map(item => Object.assign({}, mockData, item))
+          this.tableData.forEach((item) => {
+            item.specs = JSON.parse(item.specs)
+          })
           this.total = res.data.total
         }
       }).catch(() => {
@@ -498,13 +501,14 @@ export default {
       const i = this.tableData.find((item) => {
         return item.id === id
       })
-      if (i.productServiceParamList && i.productServiceParamList.length) {
-        this.serviceParams = JSON.parse(JSON.stringify(i.productServiceParamList))
-        this.dialogVisible2 = true
-      } else {
-        this.serviceParams = []
-        this.triggerService()
-      }
+      this.dialogVisible2 = true
+      // if (i.productServiceParamList && i.productServiceParamList.length) {
+      //   this.serviceParams = JSON.parse(JSON.stringify(i.productServiceParamList))
+      //   this.dialogVisible2 = true
+      // } else {
+      //   this.serviceParams = []
+      //   this.triggerService()
+      // }
     },
     triggerService() {
       executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
@@ -573,12 +577,16 @@ export default {
       }
 
       this.$refs.dialogForm.validate(async(valid) => {
-        if (valid && this.$refs.variable.verification()) {
+        if (valid) {
           this.butLoading = true
-          this.dialogForm.relationId = this.$route.query.id || this.$route.query.prodId
-          this.dialogForm.prodId = this.$route.query.prodId
+          const data = {
+            ...this.dialogForm,
+            relationId: this.$route.query.id || this.$route.query.prodId,
+            prodId: this.$route.query.prodId,
+            specs: JSON.stringify(this.dialogForm.specs)
+          }
           if (this.state === '创建') {
-            createService(this.dialogForm).then((res) => {
+            createService(data).then((res) => {
               if (res.code == 200) {
                 this.$message({
                   message: '创建成功',
@@ -592,7 +600,7 @@ export default {
               this.butLoading = false
             })
           } else {
-            updateService(this.dialogForm).then((res) => {
+            updateService(data).then((res) => {
               if (res.code == 200) {
                 this.$message({
                   message: '修改成功',
