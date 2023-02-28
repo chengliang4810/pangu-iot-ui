@@ -82,25 +82,30 @@
             </el-form-item>
             <!-- 整数和小数 -->
             <div v-show="['integer','decimal'].includes(dialogForm.dataType)">
-              <el-form-item label="取值范围" prop="">
+              <div label="取值范围" prop="" class="range">
+                <div class="el-form-item__label" style="width:100px">取值范围</div>
                 <div class="num-range">
-                  <el-input-number v-model="dialogForm.specs.min" class="flex-1" />
+                  <el-form-item prop="specs.min" label-width="0" style="margin-bottom:0">
+                    <el-input-number v-model="dialogForm.specs.min" />
+                  </el-form-item>
                   <span>到</span>
-                  <el-input-number v-model="dialogForm.specs.max" class="flex-1" />
+                  <el-form-item prop="specs.max" label-width="0" style="margin-bottom:0">
+                    <el-input-number v-model="dialogForm.specs.max" />
+                  </el-form-item>
                 </div>
-              </el-form-item>
-              <el-form-item label="单位" prop="unit">
+              </div>
+              <el-form-item label="单位" prop="specs.unit">
                 <el-input v-model="dialogForm.specs.unit" />
               </el-form-item>
-              <el-form-item label="步长" prop="unit">
+              <el-form-item label="步长" prop="specs.step">
                 <el-input-number v-model="dialogForm.specs.step" style="width:100%" />
               </el-form-item>
             </div>
             <!-- 布尔 -->
-            <el-form-item v-show="dialogForm.dataType == 'bool'" label="0值对应文本">
+            <el-form-item v-show="dialogForm.dataType == 'bool'" label="0值对应文本" prop="specs.falseText">
               <el-input v-model="dialogForm.specs.falseText" />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'bool'" label="1值对应文本">
+            <el-form-item v-show="dialogForm.dataType == 'bool'" label="1值对应文本" prop="specs.trueText">
               <el-input v-model="dialogForm.specs.trueText" />
             </el-form-item>
             <el-form-item v-show="dialogForm.dataType == 'enums'" label="枚举项">
@@ -128,10 +133,13 @@
               </div>
 
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'string'" label="最大长度" prop="maxLength">
-              <el-input-number v-model="dialogForm.maxLength" style="width:100%" />
+            <el-form-item v-show="dialogForm.dataType == 'string'" label="最大长度" prop="specs.maxLength">
+              <el-input-number v-model="dialogForm.specs.maxLength" style="width:100%" />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'array'" label="数组类型" prop="arrayType">
+            <el-form-item v-show="dialogForm.dataType == 'array'" label="元素个数" prop="specs.arrayCount">
+              <el-input-number v-model="dialogForm.specs.arrayCount" style="width:100%" />
+            </el-form-item>
+            <el-form-item v-show="dialogForm.dataType == 'array'" label="数组类型" prop="specs.arrayType">
               <el-radio-group v-model="dialogForm.specs.arrayType">
                 <el-radio v-for="item in arrayTypeOptions" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
               </el-radio-group>
@@ -158,6 +166,50 @@
       </div>
       <div class="dialog-body">
         <!-- <Variable ref="variable" v-model="serviceParams" :name="'输入参数'" read /> -->
+        <el-form :model="triggerFormData" label-width="120px">
+          <el-form-item prop="value" :label="triggerFormOpt.name">
+            <el-switch
+              v-if="triggerFormOpt.type == 'bool'"
+              v-model="triggerFormData.value"
+              :active-text="triggerFormOpt.trueText"
+              :inactive-text="triggerFormOpt.falseText"
+            />
+            <el-input-number
+              v-else-if="['integer','decimal'].includes(triggerFormOpt.type)"
+              v-model="triggerFormData.value"
+              :min="triggerFormOpt.min"
+              :max="triggerFormOpt.max"
+              :step="triggerFormOpt.step"
+            />
+            <template v-else-if="triggerFormOpt.type == 'array'">
+              <el-form-item v-for="i in triggerFormOpt.arrayCount" :key="i">
+                <el-input
+                  v-model="triggerFormData.values[i]"
+                />
+              </el-form-item>
+
+            </template>
+
+            <el-input
+              v-else-if="triggerFormOpt.type == 'string'"
+              v-model="triggerFormData.value"
+              :maxlength="triggerFormOpt.maxLength"
+            />
+            <el-select
+              v-else-if="triggerFormOpt.type == 'enums'"
+              v-model="triggerFormData.value"
+            >
+              <el-option
+                v-for="item in triggerFormOpt.enumList"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.text }}
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
       </div>
       <el-footer class="dialog-footer-btn">
         <el-button size="mini" round @click="dialogVisible2 = false">取 消</el-button>
@@ -171,10 +223,9 @@
 import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
-import Variable from '@/components/Detail/Variable'
 import FormTemplate from '@/components/Slots/FormTemplate'
 import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
-
+import { clone } from '@/utils'
 const defaultDialogForm = {
   name: '',
   mark: '',
@@ -182,9 +233,8 @@ const defaultDialogForm = {
   remark: '',
   relationId: '',
   productServiceParamList: [],
-  dataType: 'integer',
+  dataType: 'integer', // 数据类型 integer decimal array bool enums string
   specs: {
-    type: 'integer', // 数据类型 integer decimal array bool enums string
     // 整数、小数
     max: undefined,
     min: undefined,
@@ -216,13 +266,14 @@ const fieldDesc = {
   trueText: '1值对应文本',
   falseText: '0值对应文本',
   arrayType: '数组类型',
+  arrayCount: '元素个数',
   maxLength: '最大长度'
 }
 // 每种类型对应的字段
 const typeFields = {
   integer: ['max', 'min', 'step', 'unit'],
   decimal: ['max', 'min', 'step', 'unit'],
-  array: ['arrayType'],
+  array: ['arrayType', 'arrayCount'],
   bool: ['trueText', 'falseText'],
   enums: ['enumList'],
   string: ['maxLength']
@@ -239,7 +290,6 @@ export default {
     BusinessTable,
     SearchForm,
     Pagination,
-    Variable,
     FormTemplate
   },
   props: {
@@ -287,7 +337,7 @@ export default {
         { label: 'double (小数)', value: 'double' },
         { label: 'string (字符串)', value: 'string' }
       ],
-      dialogForm: JSON.parse(JSON.stringify(defaultDialogForm)),
+      dialogForm: clone(defaultDialogForm),
       rules: {
         name: [
           { required: true, message: '请输入功能名称', trigger: 'blur' }
@@ -306,6 +356,12 @@ export default {
           event: 'add'
         }
       ],
+      triggerFormOpt: {},
+      triggerFormData: {
+        type: '',
+        value: undefined,
+        values: []
+      },
       columns: [
         {
           label: '功能名称',
@@ -452,31 +508,20 @@ export default {
       this.loading = true
       getServiceByPage({ ...this.form, relationId: this.$route.query.id, prodId: this.$route.query.prodId, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
-        // TODO 此来测试数据，用于接口开发，开发完后请删除
-        const mockData = {
-          dataType: 'enums',
-          specs: {
-            'type': 'enums',
-            'max': 123,
-            'min': 12,
-            'step': 1,
-            'unit': '福特',
-            'trueText': 'zhen',
-            'falseText': '假',
-            'arrayType': 'string',
-            'enumList': [
-              { 'text': '正常', 'value': 0 },
-              { 'text': '手动', 'value': 1 },
-              { 'text': '正常88', 'value': 'kr' },
-              { 'text': '手动222', 'value': 'abc' }],
-            'maxLength': 12
-          }
-        }
         if (res.code == 200) {
-          this.tableData = res.data.rows.map(item => Object.assign({}, mockData, item))
-          this.tableData.forEach((item) => {
-            item.specs = JSON.parse(item.specs)
+          const tableData = res.data.rows.map((item) => {
+            console.log('this.tableData item', item)
+            const specs = item.specs
+              ? Object.assign(JSON.parse(item.specs), clone(defaultDialogForm.specs))
+              : clone(defaultDialogForm.specs)
+            return {
+              ...item,
+              specs
+            }
           })
+          this.tableData = tableData
+          console.log('tableData', tableData)
+
           this.total = res.data.total
         }
       }).catch(() => {
@@ -489,7 +534,7 @@ export default {
     },
     close() {
       this.dialogVisible = false
-      this.dialogForm = JSON.parse(JSON.stringify(defaultDialogForm))
+      this.dialogForm = clone(defaultDialogForm)
       this.$refs.dialogForm.resetFields()
     },
     detail(item) {
@@ -498,17 +543,12 @@ export default {
     /* 触发 */
     trigger(id) {
       this.serviceId = id
-      const i = this.tableData.find((item) => {
+      const data = this.tableData.find((item) => {
         return item.id === id
       })
+      if (!data || !data.specs) return
+      this.triggerFormOpt = { ...data.specs, name: data.name }
       this.dialogVisible2 = true
-      // if (i.productServiceParamList && i.productServiceParamList.length) {
-      //   this.serviceParams = JSON.parse(JSON.stringify(i.productServiceParamList))
-      //   this.dialogVisible2 = true
-      // } else {
-      //   this.serviceParams = []
-      //   this.triggerService()
-      // }
     },
     triggerService() {
       executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
@@ -531,7 +571,8 @@ export default {
       const i = this.tableData.find((item) => {
         return item.id === id
       })
-      this.dialogForm = JSON.parse(JSON.stringify(i))
+      if (!i) return
+      this.dialogForm = clone(i)
       this.state = '编辑'
       this.dialogVisible = true
     },
@@ -579,12 +620,22 @@ export default {
       this.$refs.dialogForm.validate(async(valid) => {
         if (valid) {
           this.butLoading = true
+          const type = this.dialogForm.dataType
+          const specs = {
+            type
+          }
+          typeFields[type].forEach(filed => {
+            specs[filed] = this.dialogForm.specs[filed]
+          })
           const data = {
             ...this.dialogForm,
+            dataType: type,
             relationId: this.$route.query.id || this.$route.query.prodId,
             prodId: this.$route.query.prodId,
-            specs: JSON.stringify(this.dialogForm.specs)
+            specs: JSON.stringify(specs)
           }
+          console.log('dialogForm', this.dialogForm)
+          console.log('data--', data)
           if (this.state === '创建') {
             createService(data).then((res) => {
               if (res.code == 200) {
@@ -619,6 +670,7 @@ export default {
     },
     // 新增枚举项
     addEnumItem() {
+      console.log('this.dialogForm.specs-', this.dialogForm.specs)
       this.dialogForm.specs.enumList.push({
         text: '',
         value: ''
@@ -638,11 +690,18 @@ export default {
 .sep{
   margin:0 16px
 }
-.num-range{
-  widows: 100%;
+.range{
+  margin-bottom: 18px;
   display: flex;
+  align-items: center;
+}
+.num-range{
+  display: inline-flex;
   gap: 16px;
   align-items: center;
+}
+.flex{
+  display: flex;
 }
 .flex-1{
   flex:1
@@ -663,6 +722,7 @@ export default {
 }
 .specs-item{
   width: 50%;
+  white-space: break-spaces;
 }
 .specs-item:not(:first-child){
   // margin-bottom: 14px;
@@ -670,4 +730,5 @@ export default {
 .mx-6{
   margin:0 8px;
 }
+
 </style>
