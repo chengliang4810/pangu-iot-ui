@@ -9,6 +9,15 @@ export function listDriver(query) {
   })
 }
 
+// 查询协议驱动列表
+export function treeDriver(query) {
+  return request({
+    url: '/manager/driver/tree',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询协议驱动详细
 export function getDriver(id) {
   return request({

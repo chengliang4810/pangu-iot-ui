@@ -22,12 +22,12 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="form.type === '2'" label="驱动" prop="driver">
-        <el-select v-model="form.drvier" placeholder="请选择驱动" size="mini">
+        <el-select v-model="form.driver" placeholder="请选择驱动" size="mini" multiple>
           <el-option
-            v-for="item in dict.type.device_type"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in driverList"
+            :key="item.id"
+            :label="item.displayName"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
@@ -65,6 +65,7 @@
 <script>
 import TreeSelect from '@/components/Basics/TreeSelect.vue'
 import { getProductTypeTree, productDetail } from '@/api/porductMgr'
+import { treeDriver } from '@/api/driver'
 export default {
   dicts: ['device_type'],
   components: {
@@ -94,6 +95,7 @@ export default {
   data() {
     return {
       form: {},
+      driverList: [],
       productRules: {
         code: [
           { required: true, message: '请输入产品编号', trigger: 'blur' }
@@ -128,21 +130,19 @@ export default {
   },
   async created() {
     await this.getTypeTree()
-    console.log('Add From产品编号：', this.productId)
     if (this.productId) {
       this.getDetail()
     }
-
-    console.log(this.dict.type.device_type)
+    this.getDriverList()
   },
   methods: {
-    // getDictList() {
-    //   getDictListByCode({ dictTypeCode: 'DEVICE_TYPE' }).then(res => {
-    //     if (res.code == 200) {
-    //       this.dictlist = res.data
-    //     }
-    //   })
-    // },
+    getDriverList() {
+      treeDriver().then(res => {
+        if (res.code == 200) {
+          this.driverList = res.data
+        }
+      })
+    },
     getTypeTree() {
       getProductTypeTree().then(res => {
         if (res.code == 200) {
