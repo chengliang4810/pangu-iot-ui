@@ -48,7 +48,7 @@
               重新发布
             </el-button>
             <el-button
-              v-if="scope.row.status == 2"
+              v-if="scope.row.status == true"
               type="text"
               class="setting-button"
               round
@@ -56,10 +56,10 @@
               @click="unpublish(scope.row.protocolComponentId)"
             >
               <svg-icon icon-class="list_unpublish" />
-              取消发布
+              禁用
             </el-button>
             <el-button
-              v-if="scope.row.status == 1"
+              v-if="scope.row.status == false"
               type="text"
               class="setting-button"
               round
@@ -67,7 +67,7 @@
               @click="publish(scope.row.protocolComponentId)"
             >
               <svg-icon icon-class="list_publish" />
-              发布
+              启用
             </el-button>
             <el-button
               v-if="scope.row.status == 0 || scope.row.status == 1"
@@ -82,15 +82,14 @@
             </el-button>
           </span>
           <div v-else-if="item.prop === 'status'">
-            <span v-if="scope.row.status == 0" style="color: #F1C232">待上传</span>
-            <span v-if="scope.row.status == 1" style="color: #CC3333">未发布</span>
-            <span v-if="scope.row.status == 2" style="color: #128E75">已发布</span>
+            <span v-if="scope.row.status == false" style="color: #CC3333">禁用</span>
+            <span v-if="scope.row.status == true" style="color: #128E75">启用</span>
           </div>
           <span v-else-if="item.event" class="event" @click="upload(scope.row.protocolComponentId)">
             {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
           </span>
           <span v-else>
-            {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
+            {{ scope.row[item.prop] != undefined ? scope.row[item.prop] : '-' }}
           </span>
         </template>
       </el-table-column>
@@ -113,12 +112,12 @@ import moduleForm from '@/views/agreement/module/form'
 import FormTemplate from '@/components/Slots/FormTemplate'
 import {
   createComponent,
-  getProtocolComponentByPage,
   deleteComponent,
   updateComponent,
   unPublish,
   publish
 } from '@/api/agreement'
+import { listDriver } from '@/api/driver'
 
 export default {
   name: 'DriverList',
@@ -157,39 +156,39 @@ export default {
       ],
       columns: [
         {
-          label: '设备协议名称',
-          prop: 'name',
+          label: '驱动名称',
+          prop: 'displayName',
           event: 'detail',
           show: true
         },
         {
-          label: '设备协议ID',
-          prop: 'protocolComponentId',
+          label: '驱动ID',
+          prop: 'name',
           show: true
         },
         {
-          label: '协议识别ID',
-          prop: 'uniqueId',
+          label: '服务名称',
+          prop: 'serviceName',
           show: true
         },
         {
-          label: '发布状态',
+          label: '驱动数量',
+          prop: 'serverNumber',
+          show: true
+        },
+        {
+          label: '启用状态',
           prop: 'status',
           show: true
         },
         {
           label: '描述',
-          prop: 'remark',
+          prop: 'description',
           show: true
         },
         {
-          label: '创建人',
-          prop: 'createUserName',
-          show: true
-        },
-        {
-          label: '创建时间',
-          prop: 'createTime',
+          label: '最后更新时间',
+          prop: 'updateTime',
           show: true
         },
         {
@@ -251,11 +250,11 @@ export default {
     },
     getList() {
       this.loading = true
-      getProtocolComponentByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
+      listDriver({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = res.count
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
@@ -341,6 +340,10 @@ export default {
       this.dialogForm.source = '1'
       this.state = '编辑'
       this.dialogVisible = true
+    },
+    enableFormat(item) {
+      console.log(item)
+      return item == true ? '启用' : '禁用'
     },
     republish(id) {
       this.$confirm('是否确认重新发布?', '提示', {
