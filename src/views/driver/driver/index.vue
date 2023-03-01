@@ -17,12 +17,12 @@
       :height="'calc(100% - 242px)'"
       class="table"
     >
-      <el-table-column width="48">
+      <el-table-column width="48" type="expand">
         <template>
           <svg-icon :icon-class="$route.meta.icon24" style="font-size: 24px" />
         </template>
       </el-table-column>
-      <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label" :width="item.width">
+      <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label" :width="item.width" >
         <template slot-scope="scope">
           <span v-if="item.prop === 'buttons'" class="setting-buttons">
             <el-button
@@ -167,13 +167,13 @@ export default {
           show: true
         },
         {
-          label: '服务名称',
-          prop: 'serviceName',
+          label: '在线数量',
+          prop: 'serverNumber',
           show: true
         },
         {
-          label: '驱动数量',
-          prop: 'serverNumber',
+          label: '在线服务信息',
+          prop: 'onlineService',
           show: true
         },
         {
