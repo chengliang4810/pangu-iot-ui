@@ -103,10 +103,10 @@
               </el-form-item>
             </div>
             <!-- 布尔 -->
-            <el-form-item v-if="dialogForm.dataType == 'bool'" label="0值对应文本" prop="specs.falseText">
+            <el-form-item v-if="dialogForm.dataType == 'bool'" key="falseText" label="0值对应文本" prop="specs.falseText">
               <el-input v-model="dialogForm.specs.falseText" clearable />
             </el-form-item>
-            <el-form-item v-if="dialogForm.dataType == 'bool'" label="1值对应文本" prop="specs.trueText">
+            <el-form-item v-if="dialogForm.dataType == 'bool'" key="trueText" label="1值对应文本" prop="specs.trueText">
               <el-input v-model="dialogForm.specs.trueText" clearable />
             </el-form-item>
             <el-form-item v-if="dialogForm.dataType == 'enums'" label="枚举项">
@@ -130,8 +130,12 @@
                   >
                     <el-input v-model="item.text" style="width:210px" placeholder="参数描述" clearable />
                   </el-form-item>
-
-                  <el-button v-if="i != 0" type="text" class=" zeus-icon" @click="deleteEnumItem(i)">
+                  <el-button
+                    v-if="i != 0"
+                    type="text"
+                    class=" zeus-icon"
+                    @click="deleteEnumItem(i)"
+                  >
                     <svg-icon icon-class="but_del" />
                   </el-button>
                 </div>
@@ -145,15 +149,14 @@
                   >添加枚举项</el-button>
                 </div>
               </div>
-
             </el-form-item>
-            <el-form-item v-if="dialogForm.dataType == 'string'" label="最大长度" prop="specs.maxLength">
+            <el-form-item v-if="dialogForm.dataType == 'string'" key="maxLength" label="最大长度" prop="specs.maxLength">
               <el-input-number v-model="dialogForm.specs.maxLength" style="width:100%" />
             </el-form-item>
-            <el-form-item v-if="dialogForm.dataType == 'array'" label="元素个数" prop="specs.arrayCount">
+            <el-form-item v-if="dialogForm.dataType == 'array'" key="arrayCount" label="元素个数" prop="specs.arrayCount">
               <el-input-number v-model="dialogForm.specs.arrayCount" style="width:100%" />
             </el-form-item>
-            <el-form-item v-if="dialogForm.dataType == 'array'" label="数组类型" prop="specs.arrayType">
+            <el-form-item v-if="dialogForm.dataType == 'array'" key="arrayType" label="数组类型" prop="specs.arrayType">
               <el-radio-group v-model="dialogForm.specs.arrayType">
                 <el-radio v-for="item in arrayTypeOptions" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
               </el-radio-group>
