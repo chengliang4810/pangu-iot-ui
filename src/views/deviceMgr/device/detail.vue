@@ -33,8 +33,7 @@ import variable from '@/views/deviceMgr/device/variable'
 import record from '@/views/deviceMgr/device/record'
 import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
-import { deviceDetail, getDeviceTag } from '@/api/deviceMgr'
-import item from '@/layout/components/Sidebar/Item.vue'
+import { deviceDetail } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
 export default {
   name: 'DeviceDetail',

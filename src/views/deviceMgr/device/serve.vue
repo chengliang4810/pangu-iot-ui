@@ -67,56 +67,70 @@
               />
             </el-form-item> -->
             <el-form-item label="描述" prop="remark">
-              <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
+              <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" clearable />
             </el-form-item>
             <el-divider />
-            <el-form-item label="数据类型" prop="dataType">
+            <el-form-item label="数据类型" prop="dataType" required>
               <el-select v-model="dialogForm.dataType" size="mini">
                 <el-option
                   v-for="item in dataTypeOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                  clearable
                 />
               </el-select>
             </el-form-item>
             <!-- 整数和小数 -->
-            <div v-show="['integer','decimal'].includes(dialogForm.dataType)">
-              <div label="取值范围" prop="" class="range">
+            <div v-if="['integer','decimal'].includes(dialogForm.dataType)">
+              <div label="取值范围" class="range">
                 <div class="el-form-item__label" style="width:100px">取值范围</div>
                 <div class="num-range">
                   <el-form-item prop="specs.min" label-width="0" style="margin-bottom:0">
-                    <el-input-number v-model="dialogForm.specs.min" />
+                    <el-input-number v-model="dialogForm.specs.min" style="width:200px" />
                   </el-form-item>
                   <span>到</span>
                   <el-form-item prop="specs.max" label-width="0" style="margin-bottom:0">
-                    <el-input-number v-model="dialogForm.specs.max" />
+                    <el-input-number v-model="dialogForm.specs.max" style="width:200px" />
                   </el-form-item>
                 </div>
               </div>
               <el-form-item label="单位" prop="specs.unit">
-                <el-input v-model="dialogForm.specs.unit" />
+                <el-input v-model="dialogForm.specs.unit" clearable />
               </el-form-item>
               <el-form-item label="步长" prop="specs.step">
-                <el-input-number v-model="dialogForm.specs.step" style="width:100%" />
+                <el-input-number v-model.number="dialogForm.specs.step" style="width:100%" clearable />
               </el-form-item>
             </div>
             <!-- 布尔 -->
-            <el-form-item v-show="dialogForm.dataType == 'bool'" label="0值对应文本" prop="specs.falseText">
-              <el-input v-model="dialogForm.specs.falseText" />
+            <el-form-item v-if="dialogForm.dataType == 'bool'" label="0值对应文本" prop="specs.falseText">
+              <el-input v-model="dialogForm.specs.falseText" clearable />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'bool'" label="1值对应文本" prop="specs.trueText">
-              <el-input v-model="dialogForm.specs.trueText" />
+            <el-form-item v-if="dialogForm.dataType == 'bool'" label="1值对应文本" prop="specs.trueText">
+              <el-input v-model="dialogForm.specs.trueText" clearable />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'enums'" label="枚举项">
+            <el-form-item v-if="dialogForm.dataType == 'enums'" label="枚举项">
               <div>
                 <div
                   v-for="(item,i) in dialogForm.specs.enumList"
-                  :key="i"
-                  class="num-range mb-16px"
+                  :key="'enumItem'+i"
+                  class="num-range"
                 >
-                  <el-input v-model="item.value" style="width:210px" placeholder="参数值" clearable />
-                  <el-input v-model="item.text" style="width:210px" placeholder="参数描述" clearable />
+                  <el-form-item
+                    label-width="0"
+                    :prop="`specs.enumList[${i}].value`"
+                    :rules="[{ required: true, message: '参数值不能为空'},]"
+                  >
+                    <el-input v-model="item.value" style="width:210px" placeholder="参数值" clearable />
+                  </el-form-item>
+                  <el-form-item
+                    label-width="0"
+                    :prop="`specs.enumList[${i}].text`"
+                    :rules="[{ required: true, message: '参数描述不能为空'},]"
+                  >
+                    <el-input v-model="item.text" style="width:210px" placeholder="参数描述" clearable />
+                  </el-form-item>
+
                   <el-button v-if="i != 0" type="text" class=" zeus-icon" @click="deleteEnumItem(i)">
                     <svg-icon icon-class="but_del" />
                   </el-button>
@@ -133,13 +147,13 @@
               </div>
 
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'string'" label="最大长度" prop="specs.maxLength">
+            <el-form-item v-if="dialogForm.dataType == 'string'" label="最大长度" prop="specs.maxLength">
               <el-input-number v-model="dialogForm.specs.maxLength" style="width:100%" />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'array'" label="元素个数" prop="specs.arrayCount">
+            <el-form-item v-if="dialogForm.dataType == 'array'" label="元素个数" prop="specs.arrayCount">
               <el-input-number v-model="dialogForm.specs.arrayCount" style="width:100%" />
             </el-form-item>
-            <el-form-item v-show="dialogForm.dataType == 'array'" label="数组类型" prop="specs.arrayType">
+            <el-form-item v-if="dialogForm.dataType == 'array'" label="数组类型" prop="specs.arrayType">
               <el-radio-group v-model="dialogForm.specs.arrayType">
                 <el-radio v-for="item in arrayTypeOptions" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
               </el-radio-group>
@@ -154,8 +168,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
-      :width="'700px'"
-      @close="specs = {}"
+      :width="'400px'"
+      @close="resetTrigger"
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">触发功能</div>
@@ -164,39 +178,90 @@
           <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible2 = false" />
         </div>
       </div>
-      <div class="dialog-body">
+      <div class="trigger-body ">
         <!-- <Variable ref="variable" v-model="serviceParams" :name="'输入参数'" read /> -->
-        <el-form :model="triggerFormData" label-width="120px">
-          <el-form-item prop="value" :label="triggerFormOpt.name">
+        <div class="trigger-name">{{ triggerFormOpt.name }}</div>
+        <el-form
+          ref="triggerForm"
+          :model="triggerFormData"
+          size="small"
+          style="width:200px"
+        >
+          <el-form-item
+            v-if="triggerFormOpt.type == 'bool'"
+            style="text-align: center;"
+            prop="value"
+            label-width="0"
+          >
             <el-switch
-              v-if="triggerFormOpt.type == 'bool'"
               v-model="triggerFormData.value"
               :active-text="triggerFormOpt.trueText"
               :inactive-text="triggerFormOpt.falseText"
             />
+          </el-form-item>
+          <el-form-item
+            v-else-if="['integer','decimal'].includes(triggerFormOpt.type)"
+            prop="value"
+            label-width="0"
+            :rules="[
+              { required: true, message: '不能为空'},
+              { type: 'number', message: '必须为数字值'}
+            ]"
+          >
             <el-input-number
-              v-else-if="['integer','decimal'].includes(triggerFormOpt.type)"
               v-model="triggerFormData.value"
               :min="triggerFormOpt.min"
               :max="triggerFormOpt.max"
               :step="triggerFormOpt.step"
+              style="width:100%"
             />
-            <template v-else-if="triggerFormOpt.type == 'array'">
-              <el-form-item v-for="i in triggerFormOpt.arrayCount" :key="i">
+          </el-form-item>
+          <template v-else-if="triggerFormOpt.type == 'array'">
+            <el-form-item
+              v-for="i in triggerFormOpt.arrayCount"
+              :key="i"
+              :prop="`values[${i-1}]`"
+              :rules="[
+                { required: true, message: '不能为空'},
+                getValidator(triggerFormOpt.arrayType)
+              ]"
+            >
+              <template v-if="['string','double'].includes(triggerFormOpt.arrayType)">
                 <el-input
-                  v-model="triggerFormData.values[i]"
+                  v-model="triggerFormData.values[i-1]"
+                  clearable
                 />
-              </el-form-item>
-
-            </template>
-
+              </template>
+              <template v-else>
+                <el-input
+                  v-model.number="triggerFormData.values[i-1]"
+                  clearable
+                />
+              </template>
+            </el-form-item>
+          </template>
+          <el-form-item
+            v-else-if="triggerFormOpt.type == 'string'"
+            prop="value"
+            label-width="0"
+            :rules="[
+              // { required: true, message: '不能为空'},
+              { max: triggerFormOpt.maxLength,required: true, message: `字符长度小于${triggerFormOpt.maxLength}`, trigger: 'blur' }
+            ]"
+          >
             <el-input
-              v-else-if="triggerFormOpt.type == 'string'"
               v-model="triggerFormData.value"
               :maxlength="triggerFormOpt.maxLength"
+              clearable
             />
+          </el-form-item>
+          <el-form-item
+            v-else-if="triggerFormOpt.type == 'enums'"
+            prop="value"
+
+            label-width="0"
+          >
             <el-select
-              v-else-if="triggerFormOpt.type == 'enums'"
               v-model="triggerFormData.value"
             >
               <el-option
@@ -224,7 +289,7 @@ import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import FormTemplate from '@/components/Slots/FormTemplate'
-import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
+import { getServiceByPage, createService, updateService, deleteService } from '@/api/porductMgr'
 import { clone } from '@/utils'
 const defaultDialogForm = {
   name: '',
@@ -277,6 +342,28 @@ const typeFields = {
   bool: ['trueText', 'falseText'],
   enums: ['enumList'],
   string: ['maxLength']
+}
+const getValidator = (type) => {
+  const validatorMap = {
+    integer: { type: 'integer', message: '必须为整数', trigger: 'blur' },
+    decimal: {
+      validator(rule, value, callback) {
+        return !isNaN(value)
+      },
+      message: '必须为数字', trigger: 'blur'
+    },
+    double: {
+      validator(rule, value, callback) {
+        console.log('value in validator', value)
+        isNaN(value)
+          ? callback(new Error(`${value} is not equal to 'test'.`))
+          : callback()
+      },
+      message: '必须为数字', trigger: 'blur'
+    },
+    string: { type: 'number', message: '必须为字符串', trigger: 'blur' }
+  }
+  return validatorMap[type]
 }
 export default {
   dicts: ['execute_type'],
@@ -347,6 +434,30 @@ export default {
         ],
         async: [
           { required: true, message: '请选择调用方式', trigger: 'change' }
+        ],
+        dataType: [
+          { required: true, message: '请选择数据类型', trigger: 'change' }
+        ],
+        'specs.min': [
+          { required: true, message: '请填写最小值', trigger: 'blur' }
+        ],
+        'specs.max': [
+          { required: true, message: '请填写最大值', trigger: 'blur' }
+        ],
+        'specs.falseText': [
+          { required: true, message: '请填写0值对应文本', trigger: 'blur' }
+        ],
+        'specs.trueText': [
+          { required: true, message: '请填写1值对应文本', trigger: 'blur' }
+        ],
+        'specs.maxLength': [
+          { required: true, message: '请填写最大长度', trigger: 'blur' }
+        ],
+        'specs.arrayCount': [
+          { required: true, message: '请填写元素个数', trigger: 'blur' }
+        ],
+        'specs.arrayType': [
+          { required: true, message: '请填写数组元素类型', trigger: 'change' }
         ]
       },
       buttons: [
@@ -358,8 +469,7 @@ export default {
       ],
       triggerFormOpt: {},
       triggerFormData: {
-        type: '',
-        value: undefined,
+        value: '',
         values: []
       },
       columns: [
@@ -510,9 +620,8 @@ export default {
         this.loading = false
         if (res.code == 200) {
           const tableData = res.data.rows.map((item) => {
-            console.log('this.tableData item', item)
             const specs = item.specs
-              ? Object.assign(JSON.parse(item.specs), clone(defaultDialogForm.specs))
+              ? Object.assign(clone(defaultDialogForm.specs), JSON.parse(item.specs))
               : clone(defaultDialogForm.specs)
             return {
               ...item,
@@ -551,21 +660,33 @@ export default {
       this.dialogVisible2 = true
     },
     triggerService() {
-      executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
-        if (res.code == 200) {
-          this.$message({
-            message: '功能触发成功',
-            type: 'success'
-          })
-          this.dialogVisible2 = false
-        }
-      }).catch(() => {
-        this.$message({
-          message: '功能触发失败',
-          type: 'error'
-        })
-        this.dialogVisible2 = false
+      console.log('triggerService')
+      this.$refs.triggerForm.validate(async(valid) => {
+        console.log('triggerForm valid'.valid)
       })
+      // executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
+      //   if (res.code == 200) {
+      //     this.$message({
+      //       message: '功能触发成功',
+      //       type: 'success'
+      //     })
+      //     this.dialogVisible2 = false
+      //   }
+      // }).catch(() => {
+      //   this.$message({
+      //     message: '功能触发失败',
+      //     type: 'error'
+      //   })
+      //   this.dialogVisible2 = false
+      // })
+    },
+    resetTrigger() {
+      this.triggerFormOpt = {}
+      this.triggerFormData = {
+        type: '',
+        value: '',
+        values: []
+      }
     },
     edit(id) {
       const i = this.tableData.find((item) => {
@@ -576,6 +697,7 @@ export default {
       this.state = '编辑'
       this.dialogVisible = true
     },
+    getValidator,
     delete(id) {
       const i = this.tableData.find((item) => {
         return item.id === id
@@ -634,8 +756,6 @@ export default {
             prodId: this.$route.query.prodId,
             specs: JSON.stringify(specs)
           }
-          console.log('dialogForm', this.dialogForm)
-          console.log('data--', data)
           if (this.state === '创建') {
             createService(data).then((res) => {
               if (res.code == 200) {
@@ -696,8 +816,9 @@ export default {
   align-items: center;
 }
 .num-range{
-  display: inline-flex;
-  gap: 16px;
+  display: flex;
+  gap:20px;
+  justify-content: space-between;
   align-items: center;
 }
 .flex{
@@ -730,5 +851,19 @@ export default {
 .mx-6{
   margin:0 8px;
 }
-
+.trigger-body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+.trigger-name{
+  margin-bottom: 20px;
+  color: #36435c;
+  border-bottom: 1px solid #ccd3db;
+  border-radius: 4px 4px 0px 0px;
+  line-height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+}
 </style>

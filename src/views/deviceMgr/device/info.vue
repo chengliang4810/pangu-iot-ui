@@ -312,7 +312,7 @@ export default {
         background: #F9FBFD;
         border: 1px solid #EFF4F9;
         display: flex;
-        align-items: end;
+        align-items: flex-end;
         margin-bottom: 6px;
         margin-left: 0px !important;
         margin-right: 0px !important;
