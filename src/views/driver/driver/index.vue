@@ -11,42 +11,34 @@
     <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :batch-buttons="batchButtons" :columns="columns" @search="search" />
     <el-table
       v-if="!dialogVisible"
+      ref="tableRef"
       v-loading="loading"
       :data="tableData"
       style="width: 100%;padding: 0 12px 12px 12px;"
       :height="'calc(100% - 242px)'"
       class="table"
+      @row-click="handleRowClick"
     >
       <el-table-column width="48" type="expand">
-        <template>
-          <svg-icon :icon-class="$route.meta.icon24" style="font-size: 24px" />
+        <template slot-scope="scope">
+          <el-row :gutter="12">
+            <el-col v-for="(item) in scope.row.serviceList" :key="item.id" :span="6">
+              <el-descriptions title="" size="mini" :column="2" :border="true">
+                <el-descriptions-item label="服务名称">{{ item.serviceName }}</el-descriptions-item>
+                <el-descriptions-item label="状态">
+                  <el-tag v-if="item.onlineStatus == true" size="mini" type="success">在线</el-tag>
+                  <el-tag v-else size="mini" type="danger">离线</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="IP"> {{ item.host }}</el-descriptions-item>
+                <el-descriptions-item label="端口号">{{ item.port }}</el-descriptions-item>
+              </el-descriptions>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
-      <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label" :width="item.width" >
+      <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label" :width="item.width">
         <template slot-scope="scope">
           <span v-if="item.prop === 'buttons'" class="setting-buttons">
-            <el-button
-              v-if="scope.row.status == 0"
-              type="text"
-              class="setting-button"
-              round
-              size="mini"
-              @click="upload(scope.row.protocolComponentId)"
-            >
-              <svg-icon icon-class="list_upload" />
-              上传
-            </el-button>
-            <el-button
-              v-if="scope.row.status == 2"
-              type="text"
-              class="setting-button"
-              round
-              size="mini"
-              @click="republish(scope.row.protocolComponentId)"
-            >
-              <svg-icon icon-class="list_republish" />
-              重新发布
-            </el-button>
             <el-button
               v-if="scope.row.status == true"
               type="text"
@@ -69,7 +61,7 @@
               <svg-icon icon-class="list_publish" />
               启用
             </el-button>
-            <el-button
+            <!-- <el-button
               v-if="scope.row.status == 0 || scope.row.status == 1"
               type="text"
               class="setting-button"
@@ -77,10 +69,14 @@
               size="mini"
               @click="del(scope.row.protocolComponentId)"
             >
-              <svg-icon icon-class="list-del" />
+            <svg-icon icon-class="list-del" />
               删除
-            </el-button>
+            </el-button> -->
           </span>
+          <div v-else-if="item.prop === 'displayName'" class="event" @click="upload(scope.row.protocolComponentId)">
+            <svg-icon :icon-class="$route.meta.icon24" style="font-size: 24px" />
+            {{ scope.row[item.prop] != undefined ? scope.row[item.prop] : '-' }}
+          </div>
           <div v-else-if="item.prop === 'status'">
             <span v-if="scope.row.status == false" style="color: #CC3333">禁用</span>
             <span v-if="scope.row.status == true" style="color: #128E75">启用</span>
@@ -172,11 +168,6 @@ export default {
           show: true
         },
         {
-          label: '在线服务信息',
-          prop: 'onlineService',
-          show: true
-        },
-        {
           label: '启用状态',
           prop: 'status',
           show: true
@@ -240,6 +231,9 @@ export default {
     await this.getList()
   },
   methods: {
+    handleRowClick(row) {
+      this.$refs.tableRef.toggleRowExpansion(row)
+    },
     search() {
       this.page = 1
       this.getList()
