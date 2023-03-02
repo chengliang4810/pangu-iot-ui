@@ -1,5 +1,23 @@
 import request from '@/utils/request'
 
+/**
+ *  批量更新点位属性配置信息
+ * @param {
+*  deviceId: 设备ID
+*  deviceAttributeId: 设备属性ID
+*  attributeValue: {
+*     [attributeId]: value
+*  }
+* } data 参数
+ */
+export function updateDriverPointInfoBatch(data) {
+  return request({
+    url: '/manager/driver/point/info/batch',
+    method: 'post',
+    data: data
+  })
+}
+
 // 查询点位属性配置信息列表
 export function listDriverPointInfo(query) {
   return request({
