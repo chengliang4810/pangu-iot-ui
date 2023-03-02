@@ -5,12 +5,12 @@ import request from '@/utils/request'
  * @param {
  *  deviceId: 设备ID
  *  attributeValue: {
- *  "attributeId": "属性ID",
- *    "value": "属性值"
+ *  [attributeId]: value
+ *
  *  }
  * } data 参数
  */
-export function addDriverInfoBatch(data) {
+export function updateDriverInfoBatch(data) {
   return request({
     url: '/manager/driver/info/batch',
     method: 'post',

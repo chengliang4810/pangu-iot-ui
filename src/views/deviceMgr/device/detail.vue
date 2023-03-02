@@ -3,19 +3,22 @@
   <div class="device-detail">
     <DetailTemplate :up="'设备'" :title="title" :subhead="subhead" :detail-list="detailList" :tabs="tabs" @changeTabs="changeTabs">
       <template v-slot:main>
-        <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
-        <driverConfig v-else-if="activity === '驱动配置'" :driver-config="driverConfigList" />
-        <attribute v-else-if="activity === '属性'" />
-        <record v-else-if="activity === '日志'" />
-        <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
-        <incident v-else-if="activity ==='事件管理'" is-dev />
-        <serve v-else-if="activity === '功能管理'" is-dev />
-        <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
-        <alarm v-else-if="activity === '告警规则'" is-dev />
-        <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
-        <variable v-else-if="activity === '变量'" is-dev />
-        <mapping v-else-if="activity === '值映射方案'" is-dev />
-        <subset v-else-if="activity === '子设备'" />
+        <keep-alive>
+          <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
+          <driverConfig v-else-if="activity === '驱动配置'" :device-id="info.id" />
+          <attribute v-else-if="activity === '属性'" />
+          <record v-else-if="activity === '日志'" />
+          <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
+          <incident v-else-if="activity ==='事件管理'" is-dev />
+          <serve v-else-if="activity === '功能管理'" is-dev />
+          <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
+          <alarm v-else-if="activity === '告警规则'" is-dev />
+          <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
+          <variable v-else-if="activity === '变量'" is-dev />
+          <mapping v-else-if="activity === '值映射方案'" is-dev />
+          <subset v-else-if="activity === '子设备'" />
+        </keep-alive>
+
       </template>
     </DetailTemplate>
   </div>
@@ -37,7 +40,6 @@ import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
 import { deviceDetail } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
-import { driverConfigByDeviceId } from '@/api/driver'
 export default {
   name: 'DeviceDetail',
   components: {
@@ -58,7 +60,6 @@ export default {
   },
   data() {
     return {
-      driverConfigList: [],
       detailList: [],
       tabs: [
         {
@@ -131,17 +132,12 @@ export default {
     if (this.$route.query.id) {
       this.deviceId = this.$route.query.id
       await this.getDetail()
-      await this.getDriverConfig()
     }
     if (this.$route.query.tabsName) {
       this.activity = this.$route.query.tabsName
     }
   },
   methods: {
-    async getDriverConfig() {
-      const { data } = await driverConfigByDeviceId(this.info.id)
-      this.driverConfigList = data
-    },
     changeTabs(name) {
       this.activity = name
     },

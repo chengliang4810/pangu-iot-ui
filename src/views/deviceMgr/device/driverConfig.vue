@@ -1,75 +1,28 @@
 <!-- 驱动配置页面 -->
 <template>
-  <div v-show="!dialogVisible" class="info">
-    <div v-for="item in driverConfig" :key="item.id" class="zeus-product basics">
-      <div class="content">
-        <el-card class="card">
-          <div slot="header" class="header">
-            <span>{{ item.displayName }} ({{ item.name }})
-              <span v-if="item.status === true">
-                <svg-icon icon-class="online" />
-              </span>
-              <span v-else>
-                <svg-icon icon-class="offline" />
-              </span>
-            </span>
-            <el-button size="mini" round @click="handleEditShow(item)">
-              <svg-icon icon-class="dialog_edit" style="margin-right: 5px" />
-              编辑
-            </el-button>
-          </div>
-          <el-row :gutter="18" class="row">
-            <el-col v-for="(attribute) in item.attributeList" :key="attribute.id" :span="6">
-              <div class="info_i">
-                <div class="con">{{ attribute.value || '-' }}</div>
-                <div class="tit">{{ attribute.displayName }}</div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card></div>
-    </div>
-    <div v-if="dialogVisible">
-      <FormTemplate :up="'驱动配置'" :state="'编辑配置信息'" :but-loading="butLoading" @submit="submit" @cancel="dialogVisible = false">
-        <template v-slot:main>
-          <deviceForm ref="deviceForm" v-model="dialogForm" :state="'编辑'" :product-list="productList" :device-group="deviceGroup" />
-        </template>
-      </FormTemplate>
-    </div>
+  <div class="info">
+    <el-empty v-if="driverConfigList.length == 0" description="暂无驱动配置" />
+    <template>
+      <DeviceDriver v-for="item in driverConfigList" :key="item.id" v-bind="item" :device-id="deviceId" @update="handleUpdate" />
+    </template>
   </div>
 </template>
 
 <script>
-import FormTemplate from '@/components/Slots/FormTemplate'
-import deviceForm from '@/views/deviceMgr/device/deviceForm'
+import DeviceDriver from './components/DeviceDriver.vue'
+import { driverConfigByDeviceId } from '@/api/driver'
 
 export default {
   name: 'DriverConfig',
   components: {
-    deviceForm,
-    FormTemplate
+    DeviceDriver
   },
   props: {
-    infoData: {
-      type: Object,
-      default() {
-        return {}
-      }
-
-    },
-    driverConfig: {
-      type: Array,
-      default() {
-        return []
-      }
-    }
+    deviceId: { type: String, required: true }
   },
   data() {
     return {
       // 搜索关键字
-      keyword: '',
-      dialogVisible: false,
-      butLoading: false,
-      dialogForm: {},
       rules: {
         name: [
           { required: true, message: '请输入设备名称', trigger: 'blur' }
@@ -80,14 +33,15 @@ export default {
       },
       productList: [],
       deviceGroup: [],
-      dialogMap: false
+      dialogMap: false,
+      driverConfigList: []
     }
   },
   watch: {
 
   },
   created() {
-
+    this.getDriverConfig(this.deviceId)
   },
   methods: {
     /**
@@ -96,26 +50,12 @@ export default {
     handleEditShow() {
       this.dialogVisible = true
     },
-    search(e) {
-      console.log(e)
+    async getDriverConfig() {
+      const { data } = await driverConfigByDeviceId(this.deviceId)
+      this.driverConfigList = data
     },
-    submit() {
-      if (this.$refs.deviceForm.validateForm()) {
-        this.butLoading = true
-        // updateDevice(this.dialogForm).then((res) => {
-        //   if (res.code == 200) {
-        //     this.$message({
-        //       message: '修改成功',
-        //       type: 'success'
-        //     })
-        //     this.dialogVisible = false
-        //     this.$emit('updata')
-        //   }
-        //   this.butLoading = false
-        // }).catch(() => {
-        //   this.butLoading = false
-        // })
-      }
+    async handleUpdate() {
+      this.getDriverConfig()
     }
   }
 }
@@ -150,98 +90,5 @@ export default {
     }
   }
 
-  .basics {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-
-    .left {
-      flex: 0 0 84px;
-      background: #F9FBFD;
-      border-radius: 4px;
-      padding: 15px 19px;
-    }
-
-    .content {
-      flex: 1;
-      margin: 0 14px;
-       .card {
-        .header{
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .el-button {
-            padding: 3px 20px;
-            border: 1px solid #EFF4F9;
-            background: #EFF4F9;
-        }
-       }
-      .row {
-        min-height: 64px;
-        border-radius: 4px;
-        background: #F9FBFD;
-        border: 1px solid #EFF4F9;
-        display: flex;
-        align-items: flex-end;
-        flex-wrap: wrap;
-        margin-bottom: 6px;
-        margin-left: 0px !important;
-        margin-right: 0px !important;
-
-        .info_i {
-          padding: 15px 9px;
-          width: 100%;
-
-          .con {
-            width: 100%;
-            //text-overflow: ellipsis;
-            //white-space: nowrap;
-            //overflow: hidden;
-            font-size: 13px;
-            color: #242E42;
-            font-weight: bold;
-            margin-bottom: 5px;
-            word-wrap:break-word;
-          }
-
-          .group-item {
-            display: inline-block;
-            background-color: #E3E9EF;
-            padding: 4px 5px;
-            margin-right: 5px;
-            margin-bottom: 2px;
-            margin-top: 2px;
-            border-radius: 2px;
-          }
-
-          .show-map {
-            font-size: 12px;
-            color: #1A84F9;
-          }
-
-          .tit {
-            font-size: 12px;
-            color: #79879C;
-          }
-        }
-      }
-    }
-
-    .right {
-      flex: 0 0 62px;
-
-      .el-button {
-        padding: 5px 9px;
-        border: 1px solid #EFF4F9;
-        background: #EFF4F9;
-      }
-
-      .el-button:hover {
-        border: 1px solid #CCD3DB;
-        background: #E3E9EF;
-      }
-    }
-  }
 }
 </style>
