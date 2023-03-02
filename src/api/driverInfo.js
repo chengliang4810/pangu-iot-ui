@@ -6,7 +6,6 @@ import request from '@/utils/request'
  *  deviceId: 设备ID
  *  attributeValue: {
  *  [attributeId]: value
- *
  *  }
  * } data 参数
  */
