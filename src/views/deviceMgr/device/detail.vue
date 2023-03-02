@@ -4,6 +4,7 @@
     <DetailTemplate :up="'设备'" :title="title" :subhead="subhead" :detail-list="detailList" :tabs="tabs" @changeTabs="changeTabs">
       <template v-slot:main>
         <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
+        <driverConfig v-else-if="activity === '驱动配置'" :driver-config="driverConfigList" />
         <attribute v-else-if="activity === '属性'" />
         <record v-else-if="activity === '日志'" />
         <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
@@ -26,6 +27,7 @@ import mapping from '@/views/deviceMgr/device/mapping'
 import tag from '@/views/deviceMgr/device/tag'
 import info from '@/views/deviceMgr/device/info'
 import incident from '@/views/deviceMgr/device/incident'
+import driverConfig from '@/views/deviceMgr/device/driverConfig'
 import serve from '@/views/deviceMgr/device/serve'
 import alarm from '@/views/deviceMgr/device/alarm'
 import subset from '@/views/deviceMgr/device/subset'
@@ -35,9 +37,11 @@ import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
 import { deviceDetail } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
+import { driverConfigByProductId } from '@/api/driver'
 export default {
   name: 'DeviceDetail',
   components: {
+    driverConfig,
     DetailTemplate,
     attribute,
     mapping,
@@ -54,11 +58,17 @@ export default {
   },
   data() {
     return {
+      driverConfigList: [],
       detailList: [],
       tabs: [
         {
           label: '基础信息',
           name: '基础信息'
+        },
+        {
+          label: '驱动配置',
+          name: '驱动配置',
+          show: false
         },
         {
           label: '属性',
@@ -121,12 +131,23 @@ export default {
     if (this.$route.query.id) {
       this.deviceId = this.$route.query.id
       await this.getDetail()
+      await this.getDriverConfig()
     }
     if (this.$route.query.tabsName) {
       this.activity = this.$route.query.tabsName
     }
   },
   methods: {
+    async getDriverConfig() {
+      if (this.info.type == '2') {
+        this.tabs.push({
+          label: '驱动配置',
+          name: '驱动配置'
+        })
+      }
+      const { data } = await driverConfigByProductId(this.info.productId)
+      this.driverConfigList = data
+    },
     changeTabs(name) {
       this.activity = name
     },

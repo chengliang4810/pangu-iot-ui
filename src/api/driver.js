@@ -1,4 +1,11 @@
 import request from '@/utils/request'
+// 根据产品ID查询驱动配置信息
+export function driverConfigByProductId(productId) {
+  return request({
+    url: `/manager/driver/attribute/product/${productId}`,
+    method: 'get'
+  })
+}
 
 // 查询协议驱动列表
 export function listDriver(query) {
