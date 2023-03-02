@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 // 根据产品ID查询驱动配置信息
-export function driverConfigByProductId(productId) {
+export function driverConfigByDeviceId(deviceId) {
   return request({
-    url: `/manager/driver/attribute/product/${productId}`,
+    url: `/manager/driver/attribute/device/${deviceId}`,
     method: 'get'
   })
 }

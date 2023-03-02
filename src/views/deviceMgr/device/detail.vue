@@ -37,7 +37,7 @@ import attributeMgr from '@/views/deviceMgr/device/attributeMgr'
 import offLineRule from '@/views/deviceMgr/device/offLineRule'
 import { deviceDetail } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
-import { driverConfigByProductId } from '@/api/driver'
+import { driverConfigByDeviceId } from '@/api/driver'
 export default {
   name: 'DeviceDetail',
   components: {
@@ -139,13 +139,7 @@ export default {
   },
   methods: {
     async getDriverConfig() {
-      if (this.info.type == '2') {
-        this.tabs.push({
-          label: '驱动配置',
-          name: '驱动配置'
-        })
-      }
-      const { data } = await driverConfigByProductId(this.info.productId)
+      const { data } = await driverConfigByDeviceId(this.info.id)
       this.driverConfigList = data
     },
     changeTabs(name) {

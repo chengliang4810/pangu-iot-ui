@@ -102,19 +102,19 @@ export default {
     submit() {
       if (this.$refs.deviceForm.validateForm()) {
         this.butLoading = true
-        updateDevice(this.dialogForm).then((res) => {
-          if (res.code == 200) {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
-            this.dialogVisible = false
-            this.$emit('updata')
-          }
-          this.butLoading = false
-        }).catch(() => {
-          this.butLoading = false
-        })
+        // updateDevice(this.dialogForm).then((res) => {
+        //   if (res.code == 200) {
+        //     this.$message({
+        //       message: '修改成功',
+        //       type: 'success'
+        //     })
+        //     this.dialogVisible = false
+        //     this.$emit('updata')
+        //   }
+        //   this.butLoading = false
+        // }).catch(() => {
+        //   this.butLoading = false
+        // })
       }
     }
   }
