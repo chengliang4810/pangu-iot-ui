@@ -72,6 +72,7 @@ export default {
   },
   methods: {
     handleClick(eventName) {
+      console.log('this.father---', this.father)
       this.farther[eventName](this.dataId)
     }
   }

@@ -1,7 +1,7 @@
 <!-- 驱动配置页面 -->
 <template>
   <div class="info">
-    <el-empty v-if="driverConfigList.length == 0" description="暂无驱动配置" />
+    <el-empty v-if="!driverConfigList || driverConfigList.length == 0" description="暂无驱动配置" />
     <template>
       <DeviceDriver v-for="item in driverConfigList" :key="item.id" v-bind="item" :device-id="deviceId" @update="handleUpdate" />
     </template>

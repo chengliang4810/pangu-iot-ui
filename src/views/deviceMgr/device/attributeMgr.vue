@@ -1,9 +1,9 @@
 <!--设备详情-属性管理页面 -->
 <template>
   <div class="attribute-mgr">
-    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
+    <SearchForm v-if="!dialogVisible && !collectVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
     <BusinessTable
-      v-if="!dialogVisible"
+      v-if="!dialogVisible && !collectVisible"
       :table-data="tableData"
       :columns="columns"
       :loading="loading"
@@ -12,16 +12,23 @@
       @detail="detail"
     />
     <Pagination
-      v-if="!dialogVisible"
+      v-if="!dialogVisible && !collectVisible"
       :total="total"
       :size="size"
       :current-page="page"
       @handleCurrentChange="handleCurrentChange"
     />
     <div v-if="dialogVisible">
-      <FormTemplate :up="'属性列表'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="close">
+      <FormTemplate :up="'属性管理'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
           <attributeForm v-if="dialogVisible" ref="attributeForm" v-model="dialogForm" :pro-id="proId" is-dev />
+        </template>
+      </FormTemplate>
+    </div>
+    <div v-if="collectVisible">
+      <FormTemplate :up="'属性管理'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
+        <template v-slot:main>
+          1234
         </template>
       </FormTemplate>
     </div>
@@ -84,6 +91,7 @@ export default {
       loading: false,
       butLoading: false,
       dialogVisible: false,
+      collectVisible: false,
       dialogForm: {},
       state: '',
       total: 0,
@@ -140,7 +148,7 @@ export default {
           prop: 'buttons',
           show: true,
           width: 280,
-          idName: 'attrId',
+          idName: 'id',
           buttons: [
             {
               label: '编辑',
@@ -153,7 +161,7 @@ export default {
               icon: 'list-del'
             }, {
               label: '采集配置',
-              event: 'edit',
+              event: 'collect',
               icon: 'list-edit'
             }
           ]
@@ -272,6 +280,16 @@ export default {
     close() {
       this.dialogForm = {}
       this.dialogVisible = false
+    },
+    handleCollect(id) {
+      console.log('handleCollect id', id)
+    },
+    collect(id) {
+      this.collectVisible = true
+      console.log('id--', id)
+    },
+    closeCollect() {
+      this.collectVisible = false
     }
   }
 }
