@@ -24,8 +24,8 @@
           </div>
           <div v-else-if="item.key.indexOf('ID') > -1 && item.value" class="detail-list-r">
             <span class="id_field">{{ item.value }} </span>
-            <el-button type="text" class="copy" v-clipboard:copy="item.value" v-clipboard:success="onCopy" v-clipboard:error="onError">
-              <svg-icon icon-class="copy"></svg-icon>
+            <el-button v-clipboard:copy="item.value" v-clipboard:success="onCopy" v-clipboard:error="onError" type="text" class="copy">
+              <svg-icon icon-class="copy" />
             </el-button>
           </div>
           <div v-else-if="item.key === '设备组'" class="detail-list-r">
@@ -47,7 +47,7 @@
     </div>
     <div class="detail-template-right">
       <div class="detail-template-head">
-        <el-button v-for="(item, index) in tabs" :key="index" :class="item.name === activity ? 'activity' : ''" class="but" type="primary" plain @click="change(item.name)">{{ item.label }}</el-button>
+        <el-button v-for="(item, index) in newColumns" v-show="tabShow" :key="index" :class="item.name === activity ? 'activity' : ''" class="but" type="primary" plain @click="change(item.name)">{{ item.label }}</el-button>
         <div v-if="showTime" class="date">
           <el-date-picker
             v-model="time"
@@ -107,11 +107,23 @@ export default {
         return []
       }
     },
+    tabShow: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    },
     showTime: Boolean
   },
   data() {
     return {
       activity: this.tabs.length ? this.tabs[0].name : null
+    }
+  },
+  computed: {
+    /* 过滤列表字段 */
+    newColumns() {
+      return this.tabs.filter(item => item.show !== false)
     }
   },
   created() {

@@ -1,7 +1,7 @@
 <!-- 设备详情页面 -->
 <template>
   <div class="device-detail">
-    <DetailTemplate :up="'设备'" :title="title" :subhead="subhead" :detail-list="detailList" :tabs="tabs" @changeTabs="changeTabs">
+    <DetailTemplate :up="'设备'" :tab-show="tabShow" :title="title" :subhead="subhead" :detail-list="detailList" :tabs="tabs" @changeTabs="changeTabs">
       <template v-slot:main>
         <keep-alive>
           <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      tabShow: false,
       detailList: [],
       tabs: [
         {
@@ -99,19 +100,6 @@ export default {
           label: '告警规则',
           name: '告警规则'
         }
-        // ,
-        // {
-        //   label: '标签',
-        //   name: '标签'
-        // },
-        // {
-        //   label: '变量',
-        //   name: '变量'
-        // },
-        // {
-        //   label: '值映射方案',
-        //   name: '值映射方案'
-        // }
       ],
       subhead: '',
       title: '',
@@ -132,6 +120,7 @@ export default {
     if (this.$route.query.id) {
       this.deviceId = this.$route.query.id
       await this.getDetail()
+      this.tabShow = true
     }
     if (this.$route.query.tabsName) {
       this.activity = this.$route.query.tabsName
@@ -149,6 +138,9 @@ export default {
             res.data.typeName = typeObj.dictLabel || ''
           }
           this.info = res.data
+          if (this.info.type == '2') {
+            this.tabs[1].show = true
+          }
           this.proId = res.data.productId
           const groupList = res.data.groupList || []
           this.info.groupIds = []
@@ -156,7 +148,7 @@ export default {
             this.info.groupIds.push(element.id)
           })
           const groupNames = groupList.map((item) => item.name)
-          if (this.info.type == '3') {
+          if (this.info.type == '2') {
             this.tabs.push({
               label: '子设备',
               name: '子设备'

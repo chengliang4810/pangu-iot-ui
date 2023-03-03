@@ -39,7 +39,7 @@ import deviceForm from '@/views/deviceMgr/device/deviceForm'
 import {
   getDeviceByPage,
   createDevice,
-  updateDevice,
+  // updateDevice,
   deleteDevice,
   getDeviceGrpList, modifyStatusDev
 } from '@/api/deviceMgr'
