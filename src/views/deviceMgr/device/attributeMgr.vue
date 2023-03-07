@@ -26,9 +26,9 @@
       </FormTemplate>
     </div>
     <div v-if="collectVisible">
-      <FormTemplate :up="'属性管理'" :state="state + '属性'" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
+      <FormTemplate :up="'属性管理'" :state="undefined" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
         <template v-slot:main>
-          1234
+          <AttrCollect v-for="attrItem in attrList" :key="attrItem.id" v-bind="attrItem" :device-id="deviceId" />
         </template>
       </FormTemplate>
     </div>
@@ -41,6 +41,8 @@ import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import attributeForm from '@/views/deviceMgr/device/attributeForm'
 import FormTemplate from '@/components/Slots/FormTemplate'
+import AttrCollect from './components/AttrCollect.vue'
+import { getDriverPointConfigByDeviceId } from '@/api/pointAttribute'
 import {
   createAttrTrapper,
   deleteAttrTrapper,
@@ -62,12 +64,17 @@ export default {
     SearchForm,
     Pagination,
     attributeForm,
-    FormTemplate
+    FormTemplate,
+    AttrCollect
   },
   props: {
     proId: {
       type: String,
       default: ''
+    },
+    deviceId: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -92,6 +99,7 @@ export default {
       butLoading: false,
       dialogVisible: false,
       collectVisible: false,
+      attrList: [],
       dialogForm: {},
       state: '',
       total: 0,
@@ -162,7 +170,7 @@ export default {
             }, {
               label: '采集配置',
               event: 'collect',
-              icon: 'list-edit'
+              icon: 'list-trigger'
             }
           ]
         }
@@ -170,13 +178,12 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.id) {
-      this.form.deviceId = this.$route.query.id
-      this.getList()
-    }
-    if (this.$route.query.prodId) {
-      this.form.prodId = this.$route.query.prodId
-    }
+    this.form.deviceId = this.deviceId || this.$route.query.id
+    this.getList()
+    this.form.prodId = this.prodId || this.$route.query.prodId
+  },
+  mounted() {
+
   },
   methods: {
     search() {
@@ -281,15 +288,23 @@ export default {
       this.dialogForm = {}
       this.dialogVisible = false
     },
-    handleCollect(id) {
-      console.log('handleCollect id', id)
-    },
     collect(id) {
       this.collectVisible = true
-      console.log('id--', id)
+      this.getAttrList(id)
     },
     closeCollect() {
       this.collectVisible = false
+    },
+    getAttrList(attrId) {
+      getDriverPointConfigByDeviceId({
+        deviceId: this.deviceId,
+        attributeId: attrId
+      }).then(res => {
+        const { code, data } = res
+        if (code == 200) {
+          this.attrList = data
+        }
+      })
     }
   }
 }

@@ -2,14 +2,14 @@
   <div class="form_template">
     <div class="head">
       <span class="zeus-cursor-pointer zeus-inline-block back" @click="cancel">
-        <i class="el-icon-arrow-left zeus-cursor-pointer zeus-bold"/>
+        <i class="el-icon-arrow-left zeus-cursor-pointer zeus-bold" />
         返回{{ up }}
       </span>
     </div>
     <div class="main">
-      <div class="title">
-        <svg-icon v-if="state.indexOf('创建') > -1" icon-class="dialog_add"/>
-        <svg-icon v-if="state.indexOf('编辑') > -1" icon-class="dialog_edit"/>
+      <div v-if="state" class="title">
+        <svg-icon v-if="state.indexOf('创建') > -1" icon-class="dialog_add" />
+        <svg-icon v-if="state.indexOf('编辑') > -1" icon-class="dialog_edit" />
         {{ state }}
       </div>
       <slot name="main" />
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'formTemplate',
+  name: 'FormTemplate',
   props: {
     up: {
       type: String,

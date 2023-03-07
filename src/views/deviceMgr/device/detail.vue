@@ -5,10 +5,10 @@
       <template v-slot:main>
         <keep-alive>
           <info v-if="activity === '基础信息'" :info-data="info" @updata="getDetail" />
-          <driverConfig v-else-if="activity === '驱动配置'" :device-id="info.id" />
+          <driverConfig v-else-if="activity === '驱动配置'" :device-id="deviceId" />
           <attribute v-else-if="activity === '属性'" />
           <record v-else-if="activity === '日志'" />
-          <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" />
+          <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" :device-id="deviceId" />
           <incident v-else-if="activity ==='事件管理'" is-dev />
           <serve v-else-if="activity === '功能管理'" is-dev />
           <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
