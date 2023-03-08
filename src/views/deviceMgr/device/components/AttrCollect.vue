@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { updateDriverPointAttribute } from '@/api/pointAttribute'
+import { updateDriverPointInfoBatch } from '@/api/pointInfo'
 export default {
   name: 'DriverConfig',
   components: {
@@ -73,8 +73,8 @@ export default {
     name: { type: String, default: '' },
     status: Boolean,
     attributeList: { type: Array, default: () => [] },
-    deviceId: { type: String, required: true }
-
+    deviceId: { type: String, required: true },
+    deviceAttributeId: { type: String, default: '' }
   },
   data: function() {
     return {
@@ -109,8 +109,9 @@ export default {
         if (valid) {
           this.loading = true
           try {
-            const res = await updateDriverPointAttribute({
+            const res = await updateDriverPointInfoBatch({
               deviceId: this.deviceId,
+              deviceAttributeId: this.deviceAttributeId,
               attributeValue: this.attr
             })
             if (res && res.code == 200) {

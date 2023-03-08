@@ -2,18 +2,7 @@
   <div ref="DeviceSelect" class="DeviceSelect">
     <div class="zeus-pt-15 zeus-pb-15 zeus-pl-10 zeus-pr-10 screen">
       <el-row :gutter="10">
-        <el-col :span="7">
-          <el-cascader
-            v-model="prodTypes"
-            class="zeus-w100"
-            size="mini"
-            placeholder="请选择产品分类"
-            popper-class="device-cascader"
-            :options="productTypeList"
-            :show-all-levels="false"
-            :props="{ expandTrigger: 'hover',multiple: true,children: 'childrenNodes', checkStrictly: true,value: 'id', label: 'name' }"
-          />
-        </el-col>
+
         <el-col :span="7">
           <el-select v-model="form.productIds" multiple filterable size="mini" placeholder="请选择产品" class="zeus-w100">
             <el-option
@@ -31,6 +20,17 @@
               :key="item.deviceGroupId"
               :label="item.name"
               :value="item.deviceGroupId"
+            />
+          </el-select>
+        </el-col>
+
+        <el-col :span="7">
+          <el-select v-model="form.type" filterable size="mini" placeholder="请选择设备类型" class="zeus-w100">
+            <el-option
+              v-for="item in dict.type.device_type"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </el-col>
@@ -112,6 +112,7 @@ import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
 import { BmMarker, BmlMarkerClusterer, BmLabel } from 'vue-baidu-map'
 
 export default {
+  dicts: ['device_type'],
   name: 'DeviceSelect',
   provide() {
     return {
@@ -127,16 +128,21 @@ export default {
   },
   props: {
     deviceIds: {
-      type: [Number, String],
+      type: [Number, String, Array],
       default() {
         return ''
       }
     },
-    multiple: Boolean
+    multiple: Boolean,
+    deviceType: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
       form: {
+        type: '',
         prodTypes: [],
         productIds: [],
         name: '',
@@ -177,6 +183,12 @@ export default {
         {
           label: '产品',
           prop: 'productName',
+          show: true
+        },
+        {
+          label: '设备类型',
+          prop: 'type',
+          propDict: 'device_type',
           show: true
         },
         {
@@ -225,9 +237,13 @@ export default {
     if (localStorage.getItem('prodTypes')) {
       this.prodTypes = JSON.parse(localStorage.getItem('prodTypes'))
     }
-    if (localStorage.getItem('devForm')) {
+
+    if (this.deviceType) {
+      this.form.type = this.deviceType
+    } else if (localStorage.getItem('devForm')) {
       this.form = JSON.parse(localStorage.getItem('devForm'))
     }
+
     this.init()
     this.getList(true)
     this.$nextTick(() => {
@@ -244,7 +260,6 @@ export default {
       localStorage.setItem('devForm', JSON.stringify(this.form))
       this.page = 1
       this.tableData = []
-      console.log('search')
       this.getList()
     },
     init() {
@@ -283,8 +298,9 @@ export default {
           this.tableData = res.data.rows
           this.count = res.data.total
           if (tage && this.deviceIds) {
+            const ids = Array.isArray(this.deviceIds) ? this.deviceIds : [this.deviceIds]
             const dev = this.tableData.find((i) => {
-              return i.id === this.deviceIds
+              return ids.some(item => item === i.id)
             })
             dev && this.$refs.DeviceSelectTable.setSelection(dev)
           }
@@ -341,7 +357,6 @@ export default {
     },
     load() {
       if (this.tableData.length < this.count) {
-        console.log('加载....')
         this.page++
         this.getList()
       }

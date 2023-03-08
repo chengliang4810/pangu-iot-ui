@@ -8,7 +8,7 @@
           <driverConfig v-else-if="activity === '驱动配置'" :device-id="deviceId" />
           <attribute v-else-if="activity === '属性'" />
           <record v-else-if="activity === '日志'" />
-          <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" :device-id="deviceId" />
+          <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" :device-id="deviceId" :device="info" />
           <incident v-else-if="activity ==='事件管理'" is-dev />
           <serve v-else-if="activity === '功能管理'" is-dev />
           <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
@@ -101,6 +101,20 @@ export default {
           name: '告警规则'
         }
       ],
+      gatewayTabs: [
+        {
+          label: '基础信息',
+          name: '基础信息'
+        },
+        {
+          label: '驱动配置',
+          name: '驱动配置'
+        },
+        {
+          label: '子设备',
+          name: '子设备'
+        }
+      ],
       subhead: '',
       title: '',
       activity: '基础信息',
@@ -149,10 +163,7 @@ export default {
           })
           const groupNames = groupList.map((item) => item.name)
           if (this.info.type == '2') {
-            this.tabs.push({
-              label: '子设备',
-              name: '子设备'
-            })
+            this.tabs = this.gatewayTabs
           }
           this.detailList = [
             {

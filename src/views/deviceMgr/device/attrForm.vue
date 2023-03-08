@@ -366,9 +366,9 @@ export default {
           this.processStepList = []
           for (const item of res.data.processStepList) {
             let obj = {}
+            const arr = item.params.split('\\\\n')
             switch (item.type) {
               case '25':
-                const arr = item.params.split('\\\\n')
                 obj = {
                   type: item.type,
                   value: arr[0],

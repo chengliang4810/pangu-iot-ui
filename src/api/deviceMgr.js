@@ -1,5 +1,26 @@
 import request from '@/utils/request'
 
+/**
+ * 查询网关设备bind id列表
+ * @param {*} id 网关ID
+ * @returns 设备ID 列表
+ */
+export function gatewayDeviceBindIds(id) {
+  return request({
+    url: `/manager/device/gateway/bind/${id}`,
+    method: 'get'
+  })
+}
+
+// 设备组列表
+export function gatewayDeviceBind(data) {
+  return request({
+    url: '/manager/device/gateway/bind',
+    method: 'put',
+    data
+  })
+}
+
 // 设备组列表
 export function getDeviceGrpByPage(data) {
   return request({
@@ -47,6 +68,15 @@ export function deleteDeviceGroup(data) {
 export function getDeviceByPage(data) {
   return request({
     url: '/manager/device/list',
+    method: 'get',
+    params: data
+  })
+}
+
+// 网关子设备列表
+export function getGatewayChildDeviceByPage(data) {
+  return request({
+    url: '/manager/device/gateway/child/list',
     method: 'get',
     params: data
   })

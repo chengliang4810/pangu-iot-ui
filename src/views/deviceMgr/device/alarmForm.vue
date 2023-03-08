@@ -25,16 +25,16 @@
         active-color="#55BC8A"
         inactive-color="#AB2F29"
         :disabled="formData.inherit =='1'"
-      />
-      <div
-        class="
+      >
+        <div
+          class="
         el-form-item-tips
         zeu
         s-inline-block"
-      >
-        <svg-icon icon-class="tips" class="icon" />
-        <span>包括平台内部和外部的所有通知。</span>
-      </div>
+        >
+          <svg-icon icon-class="tips" class="icon" />
+          <span>包括平台内部和外部的所有通知。</span>
+        </div>
       </el-switch>
     </el-form-item>
     <el-form-item label="描述" prop="remark">

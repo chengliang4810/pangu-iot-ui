@@ -28,7 +28,7 @@
     <div v-if="collectVisible">
       <FormTemplate :up="'属性管理'" :state="undefined" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
         <template v-slot:main>
-          <AttrCollect v-for="attrItem in attrList" :key="attrItem.id" v-bind="attrItem" :device-id="deviceId" />
+          <AttrCollect v-for="attrItem in attrList" :key="attrItem.id" v-bind="attrItem" :device-attribute-id="deviceAttributeId" :device-id="deviceId" />
         </template>
       </FormTemplate>
     </div>
@@ -75,10 +75,15 @@ export default {
     deviceId: {
       type: String,
       required: true
+    },
+    device: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
     return {
+      deviceAttributeId: '',
       formParams: [
         {
           componentName: 'InputTemplate',
@@ -167,10 +172,11 @@ export default {
               label: '删除',
               event: 'delete',
               icon: 'list-del'
-            }, {
-              label: '采集配置',
+            },
+            {
+              label: '采集',
               event: 'collect',
-              icon: 'list-trigger'
+              icon: 'list-edit'
             }
           ]
         }
@@ -291,6 +297,7 @@ export default {
     collect(id) {
       this.collectVisible = true
       this.getAttrList(id)
+      this.deviceAttributeId = id
     },
     closeCollect() {
       this.collectVisible = false

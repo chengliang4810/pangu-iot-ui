@@ -15,14 +15,14 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      :width="'700px'"
+      :width="'1234px'"
       :show-close="false"
+      class="device_select_dialog"
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon v-if="state === '创建'" icon-class="dialog_add" />
-          <svg-icon v-if="state === '编辑'" icon-class="dialog_edit" />
-          {{ state }}子设备
+          <svg-icon icon-class="dialog_add" />
+          绑定子设备
         </div>
         <div class="right">
           <svg-icon icon-class="dialog_close" class="closeicon" />
@@ -30,12 +30,14 @@
         </div>
       </div>
       <div class="dialog-body">
-        <deviceForm ref="deviceForm" v-model="dialogForm" :state="state" :product-list="productList" :device-group="deviceGroup" />
+        <deivceSelect
+          :device-ids="deviceIds"
+          device-type="3"
+          :multiple="true"
+          @closeDialog="dialogVisible = false"
+          @checked="checked"
+        />
       </div>
-      <el-footer class="dialog-footer-btn">
-        <el-button size="mini" round @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="mini" round @click="submit">确 定</el-button>
-      </el-footer>
     </el-dialog>
   </div>
 </template>
@@ -44,13 +46,14 @@
 import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
-import deviceForm from '@/views/deviceMgr/device/deviceForm'
-import { getDeviceGrpList } from '@/api/deviceMgr'
+import deivceSelect from '@/components/Basics/DeviceSelect'
+import { getDeviceGrpList, gatewayDeviceBind, gatewayDeviceBindIds, getGatewayChildDeviceByPage } from '@/api/deviceMgr'
 import { getDictListByCode } from '@/api/system'
 import { getProductList } from '@/api/porductMgr'
 
 export default {
   name: 'Alarm',
+  dicts: ['device_type'],
   provide() {
     return {
       farther: this
@@ -60,10 +63,11 @@ export default {
     BusinessTable,
     SearchForm,
     Pagination,
-    deviceForm
+    deivceSelect
   },
   data() {
     return {
+      deviceIds: [],
       formParams: [],
       deviceGroup: [],
       productList: [],
@@ -81,11 +85,11 @@ export default {
       size: 10,
       page: 1,
       buttons: [
-        // {
-        //   type: 'primary',
-        //   label: '创建',
-        //   event: 'add'
-        // }
+        {
+          type: 'primary',
+          label: '添加子设备',
+          event: 'add'
+        }
       ],
       columns: [
         {
@@ -95,7 +99,7 @@ export default {
         },
         {
           label: '设备ID',
-          prop: 'deviceId',
+          prop: 'code',
           show: true
         },
         {
@@ -105,17 +109,20 @@ export default {
         },
         {
           label: '设备类型',
-          prop: 'typeName',
+          prop: 'type',
+          propDict: 'device_type',
           show: true
         },
         {
           label: '状态',
-          prop: 'statusName',
+          prop: 'status',
+          status: true,
           show: true
         },
         {
           label: '设备组',
-          prop: 'groupName',
+          prop: 'groupList',
+          propEvent: 'convertGroupName',
           show: true
         },
         {
@@ -130,7 +137,7 @@ export default {
         },
         {
           label: '最近在线时间',
-          prop: 'code',
+          prop: 'latestOnline',
           show: true
         },
         {
@@ -140,11 +147,12 @@ export default {
           width: 160,
           idName: 'deviceId',
           buttons: [
-            // {
-            //   label: '编辑',
-            //   event: 'detail',
-            //   icon: 'list-edit'
-            // },
+            {
+              label: '编辑',
+              event: 'detail',
+              icon: 'list-edit'
+            }
+            //,
             // {
             //   label: '删除',
             //   event: 'delete',
@@ -164,8 +172,31 @@ export default {
   created() {
     this.searchInit()
     this.getList()
+    gatewayDeviceBindIds(this.$route.query.id).then((res) => {
+      if (res.code == 200) {
+        this.deviceIds = res.data
+      }
+    })
   },
   methods: {
+    convertGroupName(groupList) {
+      let str = ''
+      groupList.forEach((item) => {
+        str += item.name + ','
+      })
+      return str.substring(0, str.length - 1)
+    },
+    async checked(val) {
+      const ids = val instanceof Array ? val : [val]
+      const deviceId = this.$route.query.id
+      gatewayDeviceBind({ gatewayDeviceId: deviceId, deviceIds: ids }).then((res) => {
+        if (res.code == 200) {
+          this.$message.success('绑定成功')
+          this.dialogVisible = false
+          this.getList()
+        }
+      })
+    },
     async searchInit() {
       // 获取设备组列表
       await getDeviceGrpList({}).then((res) => {
@@ -196,14 +227,6 @@ export default {
         },
         {
           componentName: 'SelectTemplate',
-          keyName: 'prodType',
-          label: '设备类型',
-          optionId: 'code',
-          optionName: 'name',
-          options: this.typeList
-        },
-        {
-          componentName: 'SelectTemplate',
           keyName: 'productId',
           label: '产品',
           optionId: 'productId',
@@ -222,20 +245,21 @@ export default {
       this.getList()
     },
     add() {
-      this.state = '创建'
+      this.state = '添加子设备'
       this.dialogVisible = true
     },
     getList() {
-      // this.loading = true
-      // getDeviceByPage({ ...this.form, maxRow: this.size, page: this.page }).then((res) => {
-      //   this.loading = false
-      //   if (res.code == 200) {
-      //     this.tableData = res.data
-      //     this.total = res.count
-      //   }
-      // }).catch(() => {
-      //   this.loading = false
-      // })
+      this.loading = true
+      this.form.gatewayDeviceId = this.$route.query.id
+      getGatewayChildDeviceByPage({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
+        this.loading = false
+        if (res.code == 200) {
+          this.tableData = res.data.rows
+          this.total = res.data.total
+        }
+      }).catch(() => {
+        this.loading = false
+      })
     },
     detail(item) {
       // deviceId
@@ -252,32 +276,33 @@ export default {
         remark: ''
       }
     },
-    submit() {
-      if (this.$refs.deviceForm.validateForm()) {
-        if (this.dialogForm.deviceId) {
-          // updateDevice(this.dialogForm).then(async(res) => {
-          //   if (res.code == 200) {
-          //     this.$message({
-          //       message: '修改成功',
-          //       type: 'success'
-          //     })
-          //     this.dialogVisible = false
-          //     await this.getList()
-          //   }
-          // })
-        } else {
-          // createDevice(this.dialogForm).then(async(res) => {
-          //   if (res.code == 200) {
-          //     this.$message({
-          //       message: '添加成功',
-          //       type: 'success'
-          //     })
-          //     this.dialogVisible = false
-          //     await this.getList()
-          //   }
-          // })
-        }
-      }
+    submit(val) {
+      console.log('submit：', val)
+      // if (this.$refs.deviceForm.validateForm()) {
+      //   if (this.dialogForm.deviceId) {
+      //     // updateDevice(this.dialogForm).then(async(res) => {
+      //     //   if (res.code == 200) {
+      //     //     this.$message({
+      //     //       message: '修改成功',
+      //     //       type: 'success'
+      //     //     })
+      //     //     this.dialogVisible = false
+      //     //     await this.getList()
+      //     //   }
+      //     // })
+      //   } else {
+      //     // createDevice(this.dialogForm).then(async(res) => {
+      //     //   if (res.code == 200) {
+      //     //     this.$message({
+      //     //       message: '添加成功',
+      //     //       type: 'success'
+      //     //     })
+      //     //     this.dialogVisible = false
+      //     //     await this.getList()
+      //     //   }
+      //     // })
+      //   }
+      // }
     }
   }
 }
