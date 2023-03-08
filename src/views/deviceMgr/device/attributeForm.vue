@@ -13,8 +13,13 @@
       </div>
     </el-form-item>
     <el-form-item label="来源类型" prop="source">
-      <el-select v-model="formData.source" size="mini" placeholder="请选择来源类型" :disabled="disabled"
-        @change="sourceChange">
+      <el-select
+        v-model="formData.source"
+        size="mini"
+        placeholder="请选择来源类型"
+        :disabled="disabled"
+        @change="sourceChange"
+      >
         <el-option v-for="item in dict.type.attr_type" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </el-form-item>
@@ -34,14 +39,23 @@
     <el-form-item v-if="formData.valueType == '3' || formData.valueType == '0'" label="单位">
       <el-select v-model="formData.unit" filterable clearable size="mini" placeholder="请选择单位" :disabled="disabled">
         <el-option-group v-for="group in unitsList" :key="group.label" :label="group.label">
-          <el-option v-for="item in group.options" :key="item.dictValue" :label="item.dictLabel"
-            :value="item.dictValue" />
+          <el-option
+            v-for="item in group.options"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
         </el-option-group>
       </el-select>
     </el-form-item>
     <el-form-item v-if="formData.source === '0'" label="取数间隔" prop="delay">
-      <el-input v-model.number="formData.delay" placeholder="请输入取数间隔" size="mini" class="input-with-select w500"
-        @input="delayChange" />
+      <el-input
+        v-model.number="formData.delay"
+        placeholder="请输入取数间隔"
+        size="mini"
+        class="input-with-select w500"
+        @input="delayChange"
+      />
       <el-select v-model="formData.unit" size="mini" placeholder="请选择" class="w100">
         <el-option label="秒" value="s" />
         <el-option label="分" value="m" />
@@ -62,7 +76,6 @@
       </div>
     </el-form-item> -->
 
-
     <!-- <el-form-item label="值映射">
       <el-select v-model="formData.valueMapId" clearable size="mini" placeholder="请选择值映射" :disabled="disabled">
         <el-option v-for="item in mapList" :key="item.valuemapid" :label="item.name" :value="item.valuemapid" />
@@ -71,7 +84,6 @@
         <svg-icon icon-class="tips" class="icon" />若配置，则实际保存的依然是原始值。只是方便让展现数据的可读性更好。
       </div>
     </el-form-item> -->
-
 
     <!-- <el-form-item label="标签">
       <Tag ref="tag" v-model="formData.tags" />
