@@ -116,8 +116,13 @@ export default {
           label: '创建',
           event: 'add'
         }
-      ],
-      columns: [
+      ]
+
+    }
+  },
+  computed: {
+    columns() {
+      return [
         {
           label: '属性名称',
           prop: 'name',
@@ -173,11 +178,11 @@ export default {
               event: 'delete',
               icon: 'list-del'
             },
-            {
-              label: '采集',
+            this.device.type == 3 ? {
+              label: '采集配置',
               event: 'collect',
               icon: 'list-edit'
-            }
+            } : undefined
           ]
         }
       ]

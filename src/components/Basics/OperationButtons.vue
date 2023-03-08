@@ -57,6 +57,7 @@ export default {
     buttonList() {
       const arr = []
       this.buttons.forEach((item) => {
+        if (!item) return
         if (this.status === true && item.label !== '启用') {
           arr.push(item)
         }
