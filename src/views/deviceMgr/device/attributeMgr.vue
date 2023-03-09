@@ -26,7 +26,7 @@
       </FormTemplate>
     </div>
     <div v-if="collectVisible">
-      <FormTemplate :up="'属性管理'" :state="undefined" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
+      <FormTemplate :up="'属性管理'" :button-show="false" :state="undefined" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
         <template v-slot:main>
           <AttrCollect v-for="attrItem in attrList" :key="attrItem.id" v-bind="attrItem" :device-attribute-id="deviceAttributeId" :device-id="deviceId" />
         </template>

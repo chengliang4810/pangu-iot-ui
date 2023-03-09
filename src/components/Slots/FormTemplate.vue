@@ -14,7 +14,7 @@
       </div>
       <slot name="main" />
     </div>
-    <div class="foot zeus-pt-10 zeus-pb-10" :class="width === 0 ? 'zeus-text-align-c' : ''" :style="{paddingLeft: width === 0 ? 0 :(width / 2 - 52.58) + 'px'}">
+    <div v-if="buttonShow" class="foot zeus-pt-10 zeus-pb-10" :class="width === 0 ? 'zeus-text-align-c' : ''" :style="{paddingLeft: width === 0 ? 0 :(width / 2 - 52.58) + 'px'}">
       <el-button size="mini" style="background-color: #EFF4F9" round @click="cancel">取 消</el-button>
       <el-button :disabled="butLoading" type="primary" size="mini" round @click="submit">确 定</el-button>
     </div>
@@ -40,6 +40,10 @@ export default {
     butLoading: {
       type: Boolean,
       default: false
+    },
+    buttonShow: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
