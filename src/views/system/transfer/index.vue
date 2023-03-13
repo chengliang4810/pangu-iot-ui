@@ -3,14 +3,19 @@
   <div class="transfer">
     <ListHeadTemplate>
       <template v-slot:logo>
-        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px"/>
+        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>Transfer 采集器</template>
       <template v-slot:subhead>平台通过 Transfer 采集器来获取 Zabbix 的时序数据，以便后续将其写入涛思数据库中。采集器的数量应该与 Zabbix 的 StartDBSyncers 相同。
       </template>
     </ListHeadTemplate>
-    <SearchForm :columns="columns" :buttons="buttons" :batch-buttons="batchButtons" :selected="ids.length > 0"
-                @cancel="ids = []"/>
+    <SearchForm
+      :columns="columns"
+      :buttons="buttons"
+      :batch-buttons="batchButtons"
+      :selected="ids.length > 0"
+      @cancel="ids = []"
+    />
     <BusinessTable
       :table-data="tableData"
       :columns="columns"
@@ -20,7 +25,7 @@
       @select="handleSelect"
       @switchChange="switchChange"
     />
-    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
   </div>
 </template>
 
@@ -29,7 +34,7 @@ import ListHeadTemplate from '@/components/Slots/ListHeadTemplate'
 import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
-import {createTransfer, deleteTransfer, getTransfer, runTransfer} from '@/api/system'
+import { createTransfer, deleteTransfer, getTransfer, runTransfer } from '@/api/system'
 
 export default {
   name: 'Transfer',
@@ -65,7 +70,7 @@ export default {
       ],
       rules: {
         name: [
-          {required: true, message: '请输入名称', trigger: 'blur'}
+          { required: true, message: '请输入名称', trigger: 'blur' }
         ]
       },
       columns: [
@@ -174,7 +179,7 @@ export default {
       })
     },
     add() {
-      createTransfer().then(async (res) => {
+      createTransfer().then(async(res) => {
         if (res.code == 200) {
           this.$message({
             message: '添加成功',
@@ -187,7 +192,7 @@ export default {
     switchChange(val) {
       const run = val.status === 'ENABLE'
       this.loading = true
-      runTransfer({run, names: [val.name]}).then(async (res) => {
+      runTransfer({ run, names: [val.name] }).then(async(res) => {
         if (res.code == 200) {
           this.$message({
             message: '修改成功',
@@ -203,7 +208,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteTransfer({names: this.ids}).then(async (res) => {
+        deleteTransfer({ names: this.ids }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',

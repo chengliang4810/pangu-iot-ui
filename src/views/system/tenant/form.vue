@@ -3,25 +3,25 @@
   <div class="tenant-form">
     <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="120px" class="dialog-form">
       <el-form-item label="租户名称" prop="name">
-        <el-input v-model="dialogForm.name" size="mini"/>
+        <el-input v-model="dialogForm.name" size="mini" />
       </el-form-item>
       <el-form-item label="租户管理员账号" prop="account">
         <el-input v-model="dialogForm.account" size="mini" :disabled="isEdit" />
       </el-form-item>
       <el-form-item v-if="!isEdit" label="租户管理员密码" prop="pass">
-        <el-input v-model="dialogForm.pass" type="password" size="mini"/>
+        <el-input v-model="dialogForm.pass" type="password" size="mini" />
       </el-form-item>
       <el-form-item v-if="!isEdit" label="确认密码" prop="password1">
-        <el-input v-model="dialogForm.password1" type="password" size="mini"/>
+        <el-input v-model="dialogForm.password1" type="password" size="mini" />
       </el-form-item>
       <el-form-item label="联系人" prop="contact">
-        <el-input v-model="dialogForm.contact" size="mini"/>
+        <el-input v-model="dialogForm.contact" size="mini" />
       </el-form-item>
       <el-form-item label="手机号" prop="phone">
-        <el-input v-model="dialogForm.phone" size="mini"/>
+        <el-input v-model="dialogForm.phone" size="mini" />
       </el-form-item>
       <el-form-item label="描述" prop="remark">
-        <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini"/>
+        <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
       </el-form-item>
     </el-form>
   </div>
@@ -30,7 +30,7 @@
 <script>
 
 export default {
-  name: 'tenantForm',
+  name: 'TenantForm',
   props: {
     value: {
       type: Object,

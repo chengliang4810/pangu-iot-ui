@@ -1,9 +1,9 @@
 <!--搜索栏标签组件-->
 <template>
   <div class="KeyValueTemplate">
-    <el-input v-model.trim="farther.form[keyName].key" class="" size="mini" :placeholder="label + 'key'" clearable :style="{width:w +'px'}"></el-input>
+    <el-input v-model.trim="farther.form[keyName].key" class="" size="mini" :placeholder="label + 'key'" clearable :style="{width:w +'px'}" />
     :
-    <el-input v-model.trim="farther.form[keyName].value" class="" size="mini" :placeholder="label + 'value'" clearable :style="{width:w +'px'}"></el-input>
+    <el-input v-model.trim="farther.form[keyName].value" class="" size="mini" :placeholder="label + 'value'" clearable :style="{width:w +'px'}" />
   </div>
 </template>
 <script>

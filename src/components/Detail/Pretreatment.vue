@@ -20,13 +20,13 @@
           </el-select>
         </div>
         <div v-if="item.type !== '7' && item.type !== '8' && item.type !== '25' && item.type !== '21' && item.type !== '13' && item.type !== '19'" class="zeus-list-item">
-          <el-input v-model="item.value" size="mini" :placeholder="tipsText(item.type)" :disabled="disabled"/>
+          <el-input v-model="item.value" size="mini" :placeholder="tipsText(item.type)" :disabled="disabled" />
         </div>
         <div v-if="item.type === '25'" class="zeus-list-item">
-          <el-input v-model="item.value" size="mini" placeholder="被替换文本" :disabled="disabled"/>
+          <el-input v-model="item.value" size="mini" placeholder="被替换文本" :disabled="disabled" />
         </div>
         <div v-if="item.type === '25'" class="zeus-list-item">
-          <el-input v-model="item.value2" size="mini" placeholder="替换为" :disabled="disabled"/>
+          <el-input v-model="item.value2" size="mini" placeholder="替换为" :disabled="disabled" />
         </div>
         <div v-if="item.type === '13'" class="zeus-list-item">
           <el-input v-model.number="item.value" size="mini" placeholder="最小值" :disabled="disabled" />
@@ -35,11 +35,11 @@
           <el-input v-model.number="item.value2" size="mini" placeholder="最大值" :disabled="disabled" />
         </div>
         <div v-if="item.type === '21'" class="zeus-list-item" @click="changeJs(index)">
-          <el-input v-model="item.value" class="attr-js" size="mini" disabled placeholder="script" suffix-icon="el-icon-edit-outline"/>
+          <el-input v-model="item.value" class="attr-js" size="mini" disabled placeholder="script" suffix-icon="el-icon-edit-outline" />
         </div>
       </div>
-      <el-button v-if="!disabled" type="text" class=" zeus-icon"  @click="formData.splice(index, 1)">
-        <svg-icon icon-class="but_del"></svg-icon>
+      <el-button v-if="!disabled" type="text" class=" zeus-icon" @click="formData.splice(index, 1)">
+        <svg-icon icon-class="but_del" />
       </el-button>
     </div>
     <el-button class="add-btn" plain icon="el-icon-plus" size="mini" :disabled="disabled" @click="add">增加预处理步骤</el-button>
@@ -51,21 +51,21 @@
       :append-to-body="true"
       :show-close="false"
       :width="'700px'"
-      @close = "jsValue = ''"
+      @close="jsValue = ''"
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="dialog_edit"/>
+          <svg-icon icon-class="dialog_edit" />
           Java Script
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="jsVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="jsVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
         <p>function (value) {</p>
-        <json-editor ref="JsonEditor" :mode="'text/javascript'" :json="jsValue" @change="handleJsonChange"/>
+        <json-editor ref="JsonEditor" :mode="'text/javascript'" :json="jsValue" @change="handleJsonChange" />
         <p>}</p>
       </div>
       <el-footer class="dialog-footer-btn">

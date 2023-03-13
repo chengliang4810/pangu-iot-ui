@@ -3,7 +3,7 @@
   <div class="info">
     <div v-if="!dialogVisible" class="zeus-product basics">
       <div class="left">
-        <svg-icon icon-class="big-tenant" style="font-size: 46px"/>
+        <svg-icon icon-class="big-tenant" style="font-size: 46px" />
       </div>
       <div class="content">
         <el-row :gutter="18" class="row">
@@ -45,7 +45,7 @@
       </div>
       <div class="right">
         <el-button size="mini" round @click="dialogVisible = true">
-          <svg-icon icon-class="dialog_edit" style="margin-right: 5px"/>
+          <svg-icon icon-class="dialog_edit" style="margin-right: 5px" />
           编辑
         </el-button>
       </div>
@@ -62,7 +62,7 @@
 
 <script>
 import tenantForm from '@/views/system/tenant/form'
-import FormTemplate from "@/components/Slots/FormTemplate";
+import FormTemplate from '@/components/Slots/FormTemplate'
 import { updateTenant } from '@/api/system'
 
 export default {
@@ -79,6 +79,13 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      dialogVisible: false,
+      butLoading: false,
+      dialogForm: {}
+    }
+  },
   watch: {
     infoData: {
       immediate: true,
@@ -87,13 +94,6 @@ export default {
           this.dialogForm = JSON.parse(JSON.stringify(val))
         }
       }
-    }
-  },
-  data() {
-    return {
-      dialogVisible: false,
-      butLoading: false,
-      dialogForm: {},
     }
   },
   created() {},

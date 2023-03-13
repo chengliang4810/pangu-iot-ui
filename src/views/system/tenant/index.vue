@@ -2,7 +2,7 @@
   <div class="tenant">
     <ListHeadTemplate>
       <template v-slot:logo>
-        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px"/>
+        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>租户管理</template>
       <template v-slot:subhead>租户可以用来实现不同租户间的数据隔离。</template>
@@ -17,7 +17,7 @@
       :icon="$route.meta.icon24"
       @detail="detail"
     />
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
     <div v-if="dialogVisible">
       <FormTemplate :up="'租户列表'" :state="state + '租户'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
@@ -34,7 +34,7 @@ import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import TenantForm from '@/views/system/tenant/form'
-import FormTemplate from "@/components/Slots/FormTemplate";
+import FormTemplate from '@/components/Slots/FormTemplate'
 import { createTenant, deleteTenant, getTenantByPage, resetTenantPass, statusTenant } from '@/api/system'
 
 export default {
@@ -43,7 +43,7 @@ export default {
       farther: this
     }
   },
-  name: 'tenant',
+  name: 'Tenant',
   components: {
     ListHeadTemplate,
     BusinessTable,
@@ -65,7 +65,7 @@ export default {
           label: '租户名称'
         }
       ],
-      dialogForm:{},
+      dialogForm: {},
       buttons: [
         {
           type: 'primary',
@@ -159,7 +159,7 @@ export default {
       page: 1,
       ids: [],
       state: '创建',
-      dialogVisible: false,
+      dialogVisible: false
     }
   },
   created() {

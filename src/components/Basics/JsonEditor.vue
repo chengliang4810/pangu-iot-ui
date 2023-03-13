@@ -33,7 +33,7 @@ export default {
     mode: {
       type: String,
       default: 'application/json'
-    },
+    }
   },
   data() {
     return {

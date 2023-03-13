@@ -3,12 +3,12 @@
   <div class="thirdAuth">
     <ListHeadTemplate>
       <template v-slot:logo>
-        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px"/>
+        <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>三方授权</template>
       <template v-slot:subhead>三方授权后，三方平台可以通过授权码获取本平台的API权限。</template>
     </ListHeadTemplate>
-    <SearchForm :params="formParams" :columns="columns" :buttons="buttons" :batch-buttons="batchButtons" :selected="ids.length > 0" @search="search" @cancel="ids = []"/>
+    <SearchForm :params="formParams" :columns="columns" :buttons="buttons" :batch-buttons="batchButtons" :selected="ids.length > 0" @search="search" @cancel="ids = []" />
     <BusinessTable
       :table-data="tableData"
       :columns="columns"
@@ -18,7 +18,7 @@
       @select="handleSelect"
       @switchChange="switchChange"
     />
-    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange"/>
+    <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
     <el-dialog
       v-dialogDrag
       :visible.sync="dialogVisible"
@@ -30,26 +30,26 @@
     >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
-          <svg-icon icon-class="dialog_add"/>
+          <svg-icon icon-class="dialog_add" />
           创建三方授权
         </div>
         <div class="right">
-          <svg-icon icon-class="dialog_close" class="closeicon"/>
-          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false"/>
+          <svg-icon icon-class="dialog_close" class="closeicon" />
+          <svg-icon icon-class="dialog_onclose" class="closeicon" @click="dialogVisible = false" />
         </div>
       </div>
       <div class="dialog-body">
         <el-form ref="dialogForm" :rules="rules" :model="dialogForm" label-width="80px" label-position="top" class="dialog-form">
           <el-form-item label="名称" prop="name">
-            <el-input v-model="dialogForm.name" size="mini"/>
+            <el-input v-model="dialogForm.name" size="mini" />
           </el-form-item>
           <el-form-item label="过期时间" prop="time">
             <el-date-picker
               v-model="dialogForm.time"
               size="mini"
               type="datetime"
-              placeholder="选择过期时间">
-            </el-date-picker>
+              placeholder="选择过期时间"
+            />
             <div class="el-form-item-tips zeus-inline-block zeus-ml-15">
               <svg-icon icon-class="tips" class="icon" />不填则不会过期
             </div>
@@ -62,11 +62,11 @@
               active-text="启用"
               inactive-text="禁用"
               active-color="#55BC8A"
-              inactive-color="#AB2F29">
-            </el-switch>
+              inactive-color="#AB2F29"
+            />
           </el-form-item>
           <el-form-item label="描述" prop="remark">
-            <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini"/>
+            <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" />
           </el-form-item>
         </el-form>
       </div>
@@ -146,10 +146,10 @@ export default {
       ],
       rules: {
         name: [
-          {required: true, message: '请输入名称', trigger: 'blur'},
+          { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         status: [
-          {required: true, message: '请选择状态', trigger: 'change'},
+          { required: true, message: '请选择状态', trigger: 'change' }
         ]
       },
       columns: [
@@ -271,7 +271,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const i = this.tableData.find((item) => {
+        this.tableData.find((item) => {
           return item.id === id
         })
 
@@ -288,34 +288,7 @@ export default {
       })
     },
     submit() {
-      return
-      this.$refs.dialogForm.validate(async (valid, errorFields) => {
-        if (valid) {
-          if (this.dialogForm.id) {
-            // updateProxy({name: this.dialogForm.name, id: this.dialogForm.id}).then(async (res) => {
-            //   if (res.code == 200) {
-            //     this.$message({
-            //       message: '修改成功',
-            //       type: 'success'
-            //     })
-            //     this.dialogVisible = false
-            //     await this.getList()
-            //   }
-            // })
-          } else {
-            // createProxy({name: this.dialogForm.name}).then(async (res) => {
-            //   if (res.code == 200) {
-            //     this.$message({
-            //       message: '添加成功',
-            //       type: 'success'
-            //     })
-            //     this.dialogVisible = false
-            //     await this.getList()
-            //   }
-            // })
-          }
-        }
-      })
+
     }
   }
 }
