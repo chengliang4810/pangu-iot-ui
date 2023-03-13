@@ -10,6 +10,7 @@ import './utils/directives.js'
 import '@/permission' // permission control
 // import VueSocketIO from 'vue-socket.io'
 import moment from 'dayjs'
+import mqtt from 'mqtt'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -24,13 +25,20 @@ Vue.prototype.handleTree = handleTree
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.use(ElementUI)
 Vue.use(VueClipboard)
-// Vue.use(new VueSocketIO({
-//   // debug: true,
-//   connection: `http://${process.env.VUE_APP_SOCKET_PATH}:9080?token=user&userId=` + localStorage.getItem('userid'),
-//   // options: {
-//   //   transports: ['websocket']
-//   // }
-// }))
+
+// 连接选项
+const options = {
+  clean: true, // true: 清除会话, false: 保留会话
+  connectTimeout: 4000, // 超时时间
+  // 认证信息
+  clientId: 'webui-' + new Date().getTime(),
+  username: 'web',
+  password: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+}
+
+const connectUrl = 'ws://10.0.0.34:8083/mqtt'
+const client = mqtt.connect(connectUrl, options)
+Vue.prototype.$mqttClient = client
 Vue.prototype.moment = moment
 Vue.config.productionTip = false
 Vue.prototype.$stringToHex = function(str) {

@@ -6,6 +6,7 @@
 
 <script>
 import EventBus from '@/utils/event-bus'
+import { off } from 'process'
 
 export default {
   name: 'App',
@@ -32,7 +33,14 @@ export default {
     return {
       msg: '',
       msgObj: {},
-      socket: null
+      socket: null,
+      levelList: [
+        { label: '信息', value: 1 },
+        { label: '低级', value: 2 },
+        { label: '中级', value: 3 },
+        { label: '高级', value: 4 },
+        { label: '紧急', value: 5 }
+      ]
     }
   },
   watch: {
@@ -75,33 +83,80 @@ export default {
     }
   },
   async created() {
-    console.log(location)
-    console.log(this.$route)
+    const self = this
+
     if (location.hash.indexOf('#/login') === -1) {
       this.$store.dispatch('user/getMember').then(() => {})
     }
-    // EventBus.$on("openSocket", "app", () => {
-    //   this.$socket.emit("connect");
-    // });
-    // EventBus.$on("closeSocket", "app", () => {
-    //   this.$socket.emit("disconnect");
-    // });
-    // EventBus.$emit("openSocket", "app");
+
+    if (this.$mqttClient.connected === true) {
+      // 订阅实时数据主题
+      this.$mqttClient.subscribe('iot/device/+/attribute/+', { qos: 0 })
+    }
+
+    this.$mqttClient.on('connect', (error) => {
+      console.log('连接成功:', error)
+      this.$mqttClient.subscribe('iot/device/+/attribute/+', { qos: 0 }, (err) => {
+        if (err) {
+          console.log('订阅失败:', err)
+        } else {
+          console.log('iot/device/+/attribute/+ 订阅成功')
+        }
+      })
+      this.$mqttClient.subscribe('iot/device/+/problem/+', { qos: 0 }, (err) => {
+        if (err) {
+          console.log('订阅失败:', err)
+        } else {
+          console.log('iot/device/+/problem/+ 订阅成功')
+        }
+      })
+    })
+
+    this.$mqttClient.on('reconnect', (error) => {
+      console.log('正在重连:', error)
+    })
+
+    this.$mqttClient.on('error', (error) => {
+      console.log('连接失败:', error)
+    })
+
+    this.$mqttClient.on('message', (topic, message) => {
+      const msgObj = JSON.parse(message.toString())
+
+      console.log('收到消息：', topic, message.toString())
+      if (msgObj.type === 'alarm') {
+        self.$notify.closeAll()
+        const levelObj = this.levelList.find((item) => {
+          if (item.value === msgObj.level) {
+            return item
+          }
+        })
+        self.$notify({
+          title: levelObj.label + '告警',
+          iconClass: 'el-icon-warning-outline',
+          customClass: 'msg-pop',
+          duration: 20000,
+          type: false ? 'success' : 'warning',
+          dangerouslyUseHTMLString: true,
+          message: `<div>${msgObj.eventName}</div>`,
+          onClose() {},
+          onClick() {
+          // if (self.$route.path !== '/alarmMgr/alarmCurrent') {
+          //   self.$router.push({
+          //     path: '/alarmMgr/alarmCurrent'
+          //   })
+          // }
+            self.$notify.closeAll()
+          }
+        })
+      }
+    })
   },
   mounted() {
-    // this.$socket.on('broadcast', (data) => {
-    //   console.log(data)
-    // })
-    // const singleRequest = {
-    //   fromUid: 'token',
-    //   toUid: 'toUserId',
-    //   message: 'xiaoyao'
-    // };
-    // this.$socket.emit('chat', singleRequest)
-    // this.$socket.connect(`http://${process.env.VUE_APP_API_HOST}:9080?token=user002&userId=1`)
+
   },
   beforeDestroy() {
-    EventBus.$emit('closeSocket', 'app')
+
   }
 }
 </script>
