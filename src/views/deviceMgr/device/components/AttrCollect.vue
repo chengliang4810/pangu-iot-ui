@@ -74,7 +74,8 @@ export default {
     status: Boolean,
     attributeList: { type: Array, default: () => [] },
     deviceId: { type: String, required: true },
-    deviceAttributeId: { type: String, default: '' }
+    deviceAttributeId: { type: String, default: '' },
+    isFunction: { type: Boolean, default: false }
   },
   data: function() {
     return {

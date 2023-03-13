@@ -1,9 +1,9 @@
 <!--详情-功能页面 -->
 <template>
   <div class="serve">
-    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
+    <SearchForm v-if="!dialogVisible && !collectVisible" :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
     <BusinessTable
-      v-show="!dialogVisible"
+      v-show="!dialogVisible && !collectVisible"
       :table-data="tableData"
       :columns="columns"
       :loading="loading"
@@ -31,7 +31,7 @@
       </template>
     </BusinessTable>
     <Pagination
-      v-if="!dialogVisible"
+      v-if="!dialogVisible && !collectVisible"
       :total="total"
       :size="size"
       :current-page="page"
@@ -284,6 +284,15 @@
         <el-button type="primary" size="mini" round @click="triggerService">触 发</el-button>
       </el-footer>
     </el-dialog>
+
+    <div v-if="collectVisible">
+      <FormTemplate :up="'功能管理'" :button-show="false" :state="undefined" :but-loading="butLoading" @submit="submit" @cancel="closeCollect">
+        <template v-slot:main>
+          <AttrCollect v-for="attrItem in attrList" :key="attrItem.id" is-function v-bind="attrItem" :device-attribute-id="deviceAttributeId" :device-id="deviceId" />
+        </template>
+      </FormTemplate>
+    </div>
+
   </div>
 </template>
 
@@ -292,7 +301,9 @@ import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import FormTemplate from '@/components/Slots/FormTemplate'
-import { getServiceByPage, createService, updateService, deleteService } from '@/api/porductMgr'
+import { getServiceByPage, createService, updateService, deleteService, executeService } from '@/api/porductMgr'
+import { getDriverPointConfigByDeviceId } from '@/api/pointAttribute'
+import AttrCollect from './components/AttrCollect.vue'
 import { clone } from '@/utils'
 const defaultDialogForm = {
   name: '',
@@ -380,13 +391,21 @@ export default {
     BusinessTable,
     SearchForm,
     Pagination,
-    FormTemplate
+    FormTemplate,
+    AttrCollect
   },
   props: {
-    isDev: Boolean
+    isDev: Boolean,
+    device: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
+      deviceId: this.device.id,
+      collectVisible: false,
+      attrList: [],
       formParams: [
         {
           componentName: 'InputTemplate',
@@ -583,7 +602,7 @@ export default {
               label: '',
               prop: 'buttons',
               show: true,
-              width: 250,
+              width: 350,
               idName: 'id',
               buttons: [
                 {
@@ -591,6 +610,11 @@ export default {
                   event: 'trigger',
                   icon: 'list-trigger'
                 },
+                this.device.type == 3 ? {
+                  label: '点位配置',
+                  event: 'collect',
+                  icon: 'list-edit'
+                } : undefined,
                 {
                   label: '编辑',
                   event: 'edit',
@@ -612,6 +636,25 @@ export default {
     this.getList()
   },
   methods: {
+    collect(id) {
+      this.collectVisible = true
+      this.getAttrList(id)
+      this.deviceAttributeId = id
+    },
+    closeCollect() {
+      this.collectVisible = false
+    },
+    getAttrList(attrId) {
+      getDriverPointConfigByDeviceId({
+        deviceId: this.deviceId,
+        attributeId: attrId
+      }).then(res => {
+        const { code, data } = res
+        if (code == 200) {
+          this.attrList = data
+        }
+      })
+    },
     search() {
       this.page = 1
       this.getList()
@@ -659,29 +702,27 @@ export default {
         return item.id === id
       })
       if (!data || !data.specs) return
-      this.triggerFormOpt = { ...data.specs, name: data.name }
+      this.triggerFormOpt = { ...data.specs, name: data.name, mark: data.mark }
       this.dialogVisible2 = true
     },
     triggerService() {
-      console.log('triggerService')
       this.$refs.triggerForm.validate(async(valid) => {
-        console.log('triggerForm valid'.valid)
+        executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, value: this.triggerFormData.value || this.triggerFormData.values }).then((res) => {
+          if (res.code == 200) {
+            this.$message({
+              message: '功能触发成功',
+              type: 'success'
+            })
+            this.dialogVisible2 = false
+          }
+        }).catch(() => {
+          this.$message({
+            message: '功能触发失败',
+            type: 'error'
+          })
+          this.dialogVisible2 = false
+        })
       })
-      // executeService({ deviceId: this.$route.query.id, serviceId: this.serviceId, serviceParams: this.serviceParams }).then((res) => {
-      //   if (res.code == 200) {
-      //     this.$message({
-      //       message: '功能触发成功',
-      //       type: 'success'
-      //     })
-      //     this.dialogVisible2 = false
-      //   }
-      // }).catch(() => {
-      //   this.$message({
-      //     message: '功能触发失败',
-      //     type: 'error'
-      //   })
-      //   this.dialogVisible2 = false
-      // })
     },
     resetTrigger() {
       this.triggerFormOpt = {}

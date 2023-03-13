@@ -10,7 +10,7 @@
           <record v-else-if="activity === '日志'" />
           <attributeMgr v-else-if="activity === '属性管理'" :pro-id="proId" :device-id="deviceId" :device="info" />
           <incident v-else-if="activity ==='事件管理'" is-dev />
-          <serve v-else-if="activity === '功能管理'" is-dev />
+          <serve v-else-if="activity === '功能管理'" is-dev :device="info" />
           <offLineRule v-else-if="activity === '上下线规则'" is-dev :product-id="proId" />
           <alarm v-else-if="activity === '告警规则'" is-dev />
           <tag v-else-if="activity === '标签'" is-dev @updata="getDetail" />
@@ -18,7 +18,6 @@
           <mapping v-else-if="activity === '值映射方案'" is-dev />
           <subset v-else-if="activity === '子设备'" />
         </keep-alive>
-
       </template>
     </DetailTemplate>
   </div>

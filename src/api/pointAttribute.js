@@ -8,6 +8,7 @@ export function getDriverPointConfigByDeviceId(data) {
     method: 'get'
   })
 }
+
 // 查询点位属性列表
 export function listDriverPointAttribute(query) {
   return request({
