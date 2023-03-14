@@ -2,11 +2,22 @@
 <template>
   <div class="alarm">
     <SearchForm :params="formParams" :buttons="buttons" :columns="columns" @search="search" />
-    <BusinessTable :table-data="tableData" :columns="columns" :loading="loading" :icon="$route.meta.icon24"
-      :h="'calc(100% - 115px)'" />
+    <BusinessTable
+      :table-data="tableData"
+      :columns="columns"
+      :loading="loading"
+      :icon="$route.meta.icon24"
+      :h="'calc(100% - 115px)'"
+    />
     <Pagination :total="total" :size="size" :current-page="page" @handleCurrentChange="handleCurrentChange" />
-    <el-dialog v-dialogDrag :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false"
-      :width="'700px'" :show-close="false">
+    <el-dialog
+      v-dialogDrag
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :width="'700px'"
+      :show-close="false"
+    >
       <div slot="title" class="dialog-title zeus-flex-between">
         <div class="left">
           <svg-icon v-if="state === '创建'" icon-class="dialog_add" />
@@ -19,8 +30,14 @@
         </div>
       </div>
       <div class="dialog-body">
-        <deviceForm ref="deviceForm" v-model="dialogForm" is-product :state="state" :product-list="productList"
-          :device-group="deviceGroup" />
+        <deviceForm
+          ref="deviceForm"
+          v-model="dialogForm"
+          is-product
+          :state="state"
+          :product-list="productList"
+          :device-group="deviceGroup"
+        />
       </div>
       <el-footer class="dialog-footer-btn">
         <el-button size="mini" round @click="dialogVisible = false">取 消</el-button>

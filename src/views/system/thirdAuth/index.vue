@@ -1,6 +1,6 @@
 <!-- 三方授权页面 -->
 <template>
-  <div class="thirdAuth">
+  <div class="view">
     <ListHeadTemplate>
       <template v-slot:logo>
         <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
@@ -43,11 +43,12 @@
           <el-form-item label="名称" prop="name">
             <el-input v-model="dialogForm.name" size="mini" />
           </el-form-item>
-          <el-form-item label="过期时间" prop="time">
+          <el-form-item label="过期时间" prop="expirationTime">
             <el-date-picker
-              v-model="dialogForm.time"
+              v-model="dialogForm.expirationTime"
               size="mini"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择过期时间"
             />
             <div class="el-form-item-tips zeus-inline-block zeus-ml-15">
@@ -57,8 +58,8 @@
           <el-form-item label="启用" prop="status">
             <el-switch
               v-model="dialogForm.status"
-              active-value="ENABLE"
-              inactive-value="DISABLE"
+              :active-value="true"
+              :inactive-value="false"
               active-text="启用"
               inactive-text="禁用"
               active-color="#55BC8A"
@@ -83,7 +84,7 @@ import ListHeadTemplate from '@/components/Slots/ListHeadTemplate'
 import BusinessTable from '@/components/Basics/BusinessTable'
 import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
-// import {createProxy, deleteProxy, getProxyByPage, updateProxy} from '@/api/system'
+import { getTokenPageList, createToken, resetToken, deleteToken } from '@/api/token'
 
 export default {
   name: 'ThirdAuth',
@@ -107,24 +108,7 @@ export default {
           label: '名称'
         }
       ],
-      tableData: [
-        {
-          id: 1,
-          name: '假数据',
-          status: 'ENABLE',
-          time1: '2021-09-02 00:00:00',
-          time2: '2021-09-02 00:00:00',
-          time3: '2021-09-02 00:00:00'
-        },
-        {
-          id: 2,
-          name: '假数据2',
-          status: 'DISABLE',
-          time1: '2021-09-02 00:00:00',
-          time2: '2021-09-02 00:00:00',
-          time3: '2021-09-02 00:00:00'
-        }
-      ],
+      tableData: [],
       loading: false,
       dialogVisible: false,
       state: '',
@@ -133,8 +117,8 @@ export default {
       page: 1,
       dialogForm: {
         name: '',
-        time: null,
-        status: 'ENABLE',
+        expirationTime: null,
+        status: true,
         remark: ''
       },
       buttons: [
@@ -166,17 +150,18 @@ export default {
         },
         {
           label: '过期时间',
-          prop: 'time1',
-          show: true
+          prop: 'expirationTime',
+          show: true,
+          placeholder: '永不过期'
         },
         {
           label: '创建时间',
-          prop: 'time2',
+          prop: 'createTime',
           show: true
         },
         {
-          label: '末次调用时间',
-          prop: 'time3',
+          label: '更新时间',
+          prop: 'updateTime',
           show: true
         },
         {
@@ -187,8 +172,8 @@ export default {
           idName: 'id',
           buttons: [
             {
-              label: '生成token',
-              event: 'createToken',
+              label: '重置token',
+              event: 'handleResetToken',
               icon: 'list_token'
             }
           ]
@@ -201,12 +186,6 @@ export default {
           event: 'delete'
         }
       ],
-      deviceList: [],
-      attrList: [],
-      attributeList: [],
-      form: {
-        name: ''
-      },
       ids: []
     }
   },
@@ -219,16 +198,16 @@ export default {
       this.getList()
     },
     getList() {
-      // this.loading = true
-      // getProxyByPage({...this.form, maxRow: this.size, page: this.page}).then((res) => {
-      //   this.loading = false
-      //   if (res.code == 200) {
-      //     this.tableData = res.data
-      //     this.total = res.count
-      //   }
-      // }).catch(() => {
-      //   this.loading = false
-      // })
+      this.loading = true
+      getTokenPageList({ ...this.form, pageSize: this.size, pageNum: this.page }).then((res) => {
+        this.loading = false
+        if (res.code == 200) {
+          this.tableData = res.data.rows
+          this.total = res.data.total
+        }
+      }).catch(() => {
+        this.loading = false
+      })
     },
     handleCurrentChange(val) {
       this.page = val
@@ -246,51 +225,96 @@ export default {
       this.state = '创建'
       this.dialogVisible = true
     },
+    // 删除
     delete() {
       this.$confirm('是否确认删除选中的数据?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // deleteProxy({ids: this.ids}).then(async (res) => {
-        //   if (res.code == 200) {
-        //     this.$message({
-        //       message: '删除成功',
-        //       type: 'success'
-        //     })
-        //     this.ids = []
-        //     // 删除后重新请求数据
-        //     await this.getList()
-        //   }
-        // })
-      })
-    },
-    createToken(id) {
-      this.$confirm('确认生成新的token? 本授权之前的token将会失效', '生成token', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.tableData.find((item) => {
-          return item.id === id
-        })
-
-        this.$alert('<h4>token: sfasdfadfadfadfadsfadsfdsfdafasdfdasf</h4><div class="el-form-item-tips"><svg-icon icon-class="tips" />请自行保存token，关闭本窗口后将无法再查看本token。</div>', '生成token', {
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: '复制',
-          callback: action => {
+        deleteToken(this.ids).then(async(res) => {
+          if (res.code == 200) {
             this.$message({
-              type: 'info',
-              message: `复制成功`
+              message: '删除成功',
+              type: 'success'
             })
+            this.ids = []
+            // 删除后重新请求数据
+            await this.getList()
           }
         })
       })
     },
-    submit() {
+    handleResetToken(checkId) {
+      this.$confirm('确认生成新的token? 本授权之前的token将会失效', '生成token', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        console.log(this.tableData)
+        // 表格数据中找到该数据
+        const { id } = this.tableData.find((item) => item.id == checkId)
 
+        // 请求重置Token值接口
+        const { data, code, msg } = await resetToken(id)
+
+        if (code !== 200) this.showErrorMessage(this, msg)
+
+        // 重置成功后， 展示token
+        this.showToken(data)
+      })
+    },
+    // 错误信息窗口
+    showErrorMessage(that, msg) {
+      that.$message({
+        message: msg,
+        type: 'error'
+      })
+    },
+    async submit() {
+      // 表单校验
+      const check = await this.$refs['dialogForm'].validate()
+      if (!check) return
+      const formData = {
+        ...this.dialogForm
+      }
+
+      // 请求接口
+      const { data, code, msg } = await createToken(formData)
+
+      if (code !== 200) {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+        return
+      }
+
+      this.dialogVisible = false
+
+      this.showToken(data)
+    },
+    showToken(token, flush = true) {
+      this.$alert(`<h4>token: ${token}</h4><div class="el-form-item-tips"><svg-icon icon-class="tips" />请自行保存token，关闭本窗口后将无法再查看本token。</div>`, '生成token', {
+        dangerouslyUseHTMLString: true,
+        confirmButtonText: '已保存',
+        callback: action => {
+          // 重新请求数据
+          if (flush) this.getList()
+          // 复制到剪切板
+          // this.$message({
+          //   type: 'info',
+          //   message: `复制成功`
+          // })
+        }
+      })
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+.view {
+  height: 100%;
+}
+</style>

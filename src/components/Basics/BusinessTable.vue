@@ -54,6 +54,7 @@
       :sort-method="sortMethod"
       show-overflow-tooltip
       :fixed="item.fixed"
+      :formatter="item.formatter"
     >
       <template slot-scope="scope">
         <template v-if="item.type == 'slot'">
@@ -109,7 +110,7 @@
             {{ handleProp(scope.row, item) }}
             <span v-if="item.unit">{{ item.unit }}</span>
           </span>
-          <span v-else>-</span>
+          <span v-else>{{ item.placeholder|| '-' }}</span>
         </template>
       </template>
     </el-table-column>
@@ -204,6 +205,9 @@ export default {
         return this.selectDictLabel(this.farther.dict.type[item.propDict], row[item.prop])
       } else if (item.propEvent) {
         return this.farther[item.propEvent](row[item.prop])
+      } else if (item.formatter && typeof item.formatter === 'function') {
+        console.log('formatter', item.formatter(row))
+        return item.formatter(row)
       } else {
         return row[item.prop]
       }
