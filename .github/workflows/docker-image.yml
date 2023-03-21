@@ -42,13 +42,7 @@ jobs:
         with:
           context: .
           push: true
-          tags:  ${{ secrets.DOCKER_USERNAME }}/pangu-ui:${{ steps.version.outputs.version }}
-      - name: Build and push Docker image Latest
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/pangu-ui:latest
+          tags:  ${{ secrets.DOCKER_USERNAME }}/pangu-ui:${{ steps.version.outputs.version }},${{ secrets.DOCKER_USERNAME }}/pangu-ui:latest
 
 
 
