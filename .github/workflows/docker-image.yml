@@ -42,6 +42,6 @@ jobs:
         with:
           context: .
           push: true
-          tags:
+          tags: |
             chengliang4810/pangu-ui:${{ steps.version.outputs.version }}
             chengliang4810/pangu-ui:latest
