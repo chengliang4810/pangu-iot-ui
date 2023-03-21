@@ -42,6 +42,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/pangu-ui:${{ steps.version.outputs.version }}
-            ${{ secrets.DOCKER_USERNAME }}/pangu-ui:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/pangu-ui:latest
