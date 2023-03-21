@@ -14,7 +14,8 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          npm install
+          npm install -g pnpm
+          pnpm install
           pnpm run build
 
       - name: Login to Docker Hub
