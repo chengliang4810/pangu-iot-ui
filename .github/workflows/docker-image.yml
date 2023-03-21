@@ -35,7 +35,7 @@ jobs:
 
       - name: Get version from package.json
         id: get_version
-        run: echo "::set-output name=version::$(node -p 'require(\\"./package.json\\").version')"
+        run: echo "::set-output name=version::$(node -e "(function () { console.log(require('./package.json').version) })()")"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
