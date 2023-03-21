@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: '14.x'
           cache: "pnpm"
+      - name: Set up pnpm environment
         uses: pnpm/action-setup@v2
         with:
           version: 6.32.9
