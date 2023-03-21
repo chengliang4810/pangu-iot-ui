@@ -38,10 +38,10 @@ jobs:
         run: echo "::set-output name=version::$(node -e "(function () { console.log(require('./package.json').version) })()")"
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: true
           tags: |
-            chengliang4810/pangu-ui:${{ steps.version.outputs.version }}
-            chengliang4810/pangu-ui:latest
+            ${{ secrets.DOCKER_USERNAME }}/pangu-ui:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKER_USERNAME }}/pangu-ui:latest
