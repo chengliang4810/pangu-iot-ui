@@ -4,6 +4,10 @@
     <el-form ref="productForm" :rules="productRules" :model="form" label-width="80px" class="dialog-form">
       <el-form-item label="产品编号" prop="code">
         <el-input v-model="form.code" size="mini" />
+        <div class="el-form-item-tips">
+          <svg-icon icon-class="tips" class="icon" />
+          若不填写产品编号，则由系统自动生成，且不再可以编辑
+        </div>
       </el-form-item>
       <el-form-item label="产品名称" prop="name">
         <el-input v-model="form.name" size="mini" />
@@ -97,9 +101,6 @@ export default {
       form: {},
       driverList: [],
       productRules: {
-        code: [
-          { required: true, message: '请输入产品编号', trigger: 'blur' }
-        ],
         name: [
           { required: true, message: '请输入产品名称', trigger: 'blur' }
         ],
