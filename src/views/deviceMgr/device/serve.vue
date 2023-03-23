@@ -58,14 +58,7 @@
                 <el-option label="异步" :value="1" />
               </el-select>
             </el-form-item>
-            <!-- <el-form-item label="输入参数" prop="productServiceParamList">
-              <Variable
-                ref="variable"
-                v-model="dialogForm.productServiceParamList"
-                :name="'输入参数'"
-                :read="isDev && dialogForm.inherit == '1'"
-              />
-            </el-form-item> -->
+
             <el-form-item label="描述" prop="remark">
               <el-input v-model="dialogForm.remark" type="textarea" rows="2" size="mini" clearable />
             </el-form-item>
@@ -403,7 +396,7 @@ export default {
   },
   data() {
     return {
-      deviceId: this.device.id,
+      deviceId: this.device?.id,
       collectVisible: false,
       attrList: [],
       formParams: [
