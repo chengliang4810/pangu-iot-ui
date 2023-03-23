@@ -173,8 +173,8 @@ export default {
           componentName: 'SelectTemplate',
           keyName: 'type',
           label: '设备类型',
-          optionId: 'dictValue',
-          optionName: 'dictLabel',
+          optionId: 'value',
+          optionName: 'label',
           options: this.dict.type.device_type
         },
         {
