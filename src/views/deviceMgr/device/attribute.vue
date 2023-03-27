@@ -1,17 +1,13 @@
 <!-- 设备详情-属性页面 -->
 <template>
   <div style="height: 100%">
-    <div class="zeus-mb-10 zeus-text-align-r">
-      <a class="but" :class="switchover ? 'activity' : ''" @click="switchover = true"><svg-icon :icon-class="switchover ? 'attr_mode_activity' : 'attr_mode'" /></a>
-      <!-- <a class="but zeus-ml-5" :class="switchover ? '' : 'activity'" @click="switchover = false"><svg-icon :icon-class="switchover ? 'attr_list' : 'attr_list_activity'" /></a> -->
-    </div>
     <div class="attribute">
       <div v-if="switchover" v-loading="loading" class="list">
         <el-row v-if="tableData.length" :gutter="10">
           <el-col v-for="(item, index) in tableData" :key="index" :span="12" class="zeus-mb-10">
             <el-card class="box-card" shadow="hover">
               <div class="zeus-mb-15 title">
-                <span class="c-gray">{{ item.attrName }}</span>
+                <span class="c-gray">{{ item.name }}</span>
                 <el-button class="zeus-right" size="mini" round @click="history(item)">
                   <svg-icon icon-class="attr_history" />
                   历史数据
@@ -493,6 +489,10 @@ export default {
       })
     },
     history2(attrId) {
+      this.$message({
+        message: '功能待确认',
+        type: 'warning'
+      })
       //
       return false
       // const i = this.tableData.find((item) => {
@@ -501,6 +501,10 @@ export default {
       // this.history(i)
     },
     history(item) {
+      this.$message({
+        message: '功能待确认',
+        type: 'warning'
+      })
       return false
       // this.itemData = item
       // this.getList2()
