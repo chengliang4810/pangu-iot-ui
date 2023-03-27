@@ -52,7 +52,7 @@
           </el-col>
           <el-col :span="12">
             <div class="info_i">
-              <div class="con">{{ infoData.addr || '-' }}</div>
+              <div class="con">{{ infoData.address || '-' }}</div>
               <div class="tit">位置信息</div>
             </div>
           </el-col>
