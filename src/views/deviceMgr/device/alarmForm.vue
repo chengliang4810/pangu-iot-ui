@@ -65,7 +65,7 @@
       <el-button class="add-btn" :disabled="formData.inherit =='1' && isDev" plain icon="el-icon-plus" size="mini" @click="addTrigger">增加触发条件
       </el-button>
     </el-form-item>
-    <el-form-item label="执行功能">
+    <!-- <el-form-item label="执行功能">
       <action
         v-for="(item, index) in formData.deviceServices"
         :key="item.guid"
@@ -86,7 +86,7 @@
         @click="addAction"
       >增加执行功能
       </el-button>
-    </el-form-item>
+    </el-form-item> -->
     <!-- <el-form-item label="标签">
       <Tag ref="tag" v-model="formData.tags"/>
     </el-form-item> -->

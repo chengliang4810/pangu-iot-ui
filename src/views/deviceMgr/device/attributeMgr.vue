@@ -109,14 +109,15 @@ export default {
       state: '',
       total: 0,
       size: 10,
-      page: 1,
-      buttons: [
-        {
-          type: 'primary',
-          label: '创建',
-          event: 'add'
-        }
-      ]
+      page: 1
+      // ,
+      // buttons: [
+      //   {
+      //     type: 'primary',
+      //     label: '创建',
+      //     event: 'add'
+      //   }
+      // ]
 
     }
   },
@@ -165,19 +166,19 @@ export default {
           label: '',
           prop: 'buttons',
           show: true,
-          width: 280,
+          width: 100,
           idName: 'id',
           buttons: [
-            {
-              label: '编辑',
-              event: 'edit',
-              icon: 'list-edit'
-            },
-            {
-              label: '删除',
-              event: 'delete',
-              icon: 'list-del'
-            },
+            // {
+            //   label: '编辑',
+            //   event: 'edit',
+            //   icon: 'list-edit'
+            // },
+            // {
+            //   label: '删除',
+            //   event: 'delete',
+            //   icon: 'list-del'
+            // },
             this.device.type == 3 ? {
               label: '采集配置',
               event: 'collect',
