@@ -110,6 +110,13 @@ export default {
           console.log('iot/device/+/problem/+ 订阅成功')
         }
       })
+      this.$mqttClient.subscribe('iot/device/+/status/+', { qos: 0 }, (err) => {
+        if (err) {
+          console.log('订阅失败:', err)
+        } else {
+          console.log('iot/device/+/status/+ 订阅成功')
+        }
+      })
     })
 
     this.$mqttClient.on('reconnect', (error) => {
@@ -122,10 +129,18 @@ export default {
 
     this.$mqttClient.on('message', (topic, message) => {
       const msgObj = JSON.parse(message.toString())
-
-      console.log('收到消息：', topic, message.toString())
-      if (msgObj.type === 'alarm') {
-        self.$notify.closeAll()
+      self.$notify.closeAll()
+      if (msgObj.type === 'online' || msgObj.type === 'offline') {
+        // 设备上线/下线
+        self.$notify({
+          title: `${msgObj.value}` + (msgObj.type === 'online' ? '上线' : '下线'),
+          iconClass: 'el-icon-warning-outline',
+          customClass: 'msg-pop',
+          duration: 20000,
+          type: msgObj.type === 'online' ? 'success' : 'warning',
+          dangerouslyUseHTMLString: true
+        })
+      } else if (msgObj.type === 'alarm') {
         const levelObj = this.levelList.find((item) => {
           if (item.value === msgObj.level) {
             return item
