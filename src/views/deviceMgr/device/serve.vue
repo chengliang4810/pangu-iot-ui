@@ -709,10 +709,6 @@ export default {
             this.dialogVisible2 = false
           }
         }).catch(() => {
-          this.$message({
-            message: '功能触发失败',
-            type: 'error'
-          })
           this.dialogVisible2 = false
         })
       })
