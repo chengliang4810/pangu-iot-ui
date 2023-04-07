@@ -38,9 +38,10 @@ const actions = {
           commit('SET_TOKEN', 'Bearer ' + data.access_token)
           commit('SET_NAME', data.name)
           getUserInfo().then((res) => {
-            commit('SET_NAME', res.data.sysUser.name)
-            localStorage.setItem('username', res.data.sysUser.name)
-            localStorage.setItem('userid', res.data.sysUser.userId)
+            commit('SET_NAME', res.data.user.nickName)
+            localStorage.setItem('username', res.data.user.nickName)
+            localStorage.setItem('userid', res.data.user.userId)
+            console.log('登录用户信息:', res.data.user)
           })
           setToken('Bearer ' + data.access_token)
           resolve(data)
