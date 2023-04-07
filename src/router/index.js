@@ -30,7 +30,7 @@ import alarmRouter from '@/router/modules/alarm'
 /* 日志查询 */
 import logRouter from '@/router/modules/log'
 /* 用户管理 */
-import userRouter from '@/router/modules/user'
+// import userRouter from '@/router/modules/user'
 /* 系统管理 */
 import systemRouter from '@/router/modules/system'
 
@@ -53,7 +53,7 @@ export const asyncRoutes = [
   // realTimeRouter,
   // platformLogRouter,
   logRouter,
-  userRouter,
+  // userRouter,
   systemRouter
 ]
 export const errorRouters = [

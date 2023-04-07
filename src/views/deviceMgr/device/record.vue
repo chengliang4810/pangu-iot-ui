@@ -206,7 +206,6 @@ export default {
           this.form.timeFrom = ''
           this.form.timeTill = ''
         }
-        console.log(this.form)
         getAlarmByPage({ ...this.form, pageSize: this.size, pageNum: this.page, deviceId: this.$route.query.id }).then((res) => {
           this.loading = false
           if (res.code == 200) {
@@ -255,24 +254,31 @@ export default {
     },
     /* 解决 */
     solve(eventId) {
-      const i = this.tableData.find((item) => {
-        return item.eventId === eventId
-      })
-      if (i.statusName === '已解决') {
-        this.$message({
-          message: '当前记录已解决,不可重复操作',
-          type: 'warning'
+      // 确认框
+      this.$confirm('是否确认并解决该告警?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const i = this.tableData.find((item) => {
+          return item.eventId === eventId
         })
-        return false
-      }
-      resolve({ eventId }).then((res) => {
-        if (res.code == '200') {
+        if (i.statusName === '已解决') {
           this.$message({
-            message: '操作成功',
-            type: 'success'
+            message: '当前记录已解决,不可重复操作',
+            type: 'warning'
           })
-          this.getList()
+          return false
         }
+        resolve({ eventId }).then((res) => {
+          if (res.code == '200') {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getList()
+          }
+        })
       })
     },
     /* 确认 */

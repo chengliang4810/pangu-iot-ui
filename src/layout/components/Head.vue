@@ -3,17 +3,17 @@
   <div>
     <div class="Head zeus-flex-between">
       <router-link key="expand" class="sidebar-logo-link" to="/">
-        <!-- <img src="@/assets/logo-.png" width="250"> -->
+        <img src="@/assets/logo-test.png" width="250">
         <!-- <svg-icon class="" icon-class="logo" style="font-size: 30px" /> -->
-        <span class="head-title zeus-bold zeus-ml-10 ">Pangu IOT</span>
+        <!-- <span class="head-title zeus-bold zeus-ml-10 ">Pangu IOT</span> -->
       </router-link>
       <div class="right-menu">
-        <!-- <el-button round size="small" type="text" class="head-but" @click="doc">
+        <el-button round size="small" type="text" class="head-but" @click="doc">
           <svg-icon icon-class="doc" class="zeus-mr-5" />文档
         </el-button>
         <el-button round size="small" type="text" class="head-but" @click="dialogAbout = true">
           <svg-icon icon-class="about" class="zeus-mr-5" />关于
-        </el-button> -->
+        </el-button>
         <el-dropdown class="avatar-container zeus-ml-25" trigger="click">
           <div class="avatar-wrapper zeus-flex-default">
             <img src="../../assets/avater.jpg" class="user-avatar">
@@ -40,38 +40,19 @@
     >
       <div class="brief">
         <img src="@/assets/logo-.png">
-        <div class="text">Zeus IoT是一个集设备数据采集、存储、分析、观测为一体的开源物联网平台，全球首创基于Zabbix的物联网分布式数据采集架构，具备超百万级IoT设备的并发监控能力。致力于让设备接入和数据处理变得开箱即用，使物联网企业得以聚焦行业应用开发，极大的缩短物联网系统的开发周期，成为物联网项目提效降本的贴身伴侣。</div>
-        <div class="version">Zeus IoT 版本：1.0.0-BETA</div>
+        <div class="text">Pangu IoT是一个集设备数据采集、存储、分析、观测为一体的开源物联网平台, 基于Zabbix的物联网分布式数据采集架构, 具备超百万级IoT设备的并发监控能力。致力于让设备接入和数据处理变得开箱即用，使物联网企业得以聚焦行业应用开发，极大的缩短物联网系统的开发周期，成为物联网项目提效降本的贴身伴侣。</div>
+        <div class="version">Pangu IoT 版本: 1.0.0</div>
       </div>
       <div class="info">
         <div>
           <div class="info-t zeus-inline-block zeus-mr-20">
             <svg-icon icon-class="about-github" class="zeus-mr-10" />
             <span class="zeus-mr-10">技术请求</span>
-            <a href="https://github.com/zmops/zeus-iot" target="_blank">github.com/zmops/zeus-iot</a>
+            <a href="https://github.com/chengliang4810/pangu-iot-cloud" target="_blank">github.com/chengliang4810/pangu-iot-cloud</a>
           </div>
           <svg-icon icon-class="about-feedback" class="zeus-mr-10" />
           <span class="zeus-mr-10">意见反馈</span>
-          <span class="zeus-mr-10">0519-83611968</span>
-          <a href="mailto:support@zmops.com" target="_blank">support@zmops.com</a>
-        </div>
-        <div class="zeus-mt-15">
-          <div class="info-t zeus-inline-block zeus-mr-20">
-            <svg-icon icon-class="about-support" class="zeus-mr-10" />
-            <span class="zeus-mr-10">服务支持</span>
-            <a href="https://www.zmops.com" target="_blank">www.zmops.com</a>
-          </div>
-          <svg-icon icon-class="about-add" class="zeus-mr-10" />
-          <span class="zeus-mr-10">联系地址</span>
-          <span>江苏省常州市新北区府琛商务广场2幢1227-1229室</span>
-        </div>
-        <div class="qr-code zeus-inline-block">
-          <img src="@/assets/about-qq.png">
-          <div class="zeus-mt-10">官方技术交流群</div>
-        </div>
-        <div class="qr-code zeus-ml-20 zeus-inline-block">
-          <img src="@/assets/about-wechat.jpg">
-          <div class="zeus-mt-10">Zeus IoT官方公众号</div>
+          <a href="mailto:chengliang4810@163.com" target="_blank">chengliang4810@163.com</a>
         </div>
       </div>
     </el-dialog>
@@ -149,7 +130,7 @@ export default {
       this.$refs.dialogForm.validate(async(valid, errorFields) => {
         if (valid) {
           const { oldPassword, newPassword } = this.dialogForm
-          changePwd({ oldPassword: this.$stringToHex(oldPassword), newPassword: this.$stringToHex(newPassword) }).then(async(res) => {
+          changePwd({ oldPassword: oldPassword, newPassword: newPassword }).then(async(res) => {
             if (res.code == 200) {
               this.$message({
                 message: '修改成功',
@@ -169,7 +150,7 @@ export default {
       }
     },
     doc() {
-      window.open('https://www.zmops.com/docs', '_blank')
+      window.open('https://github.com/chengliang4810/pangu-iot-cloud', '_blank')
     }
   }
 }
@@ -341,7 +322,7 @@ export default {
     }
 
     .info-t{
-      width: 240px;
+      width: 340px;
       border-right: 2px #E9EDF1 solid;
     }
   }

@@ -51,8 +51,8 @@ export function logout() {
 // 修改密码
 export function changePwd(data) {
   return request({
-    url: '/sys/user/changePwd',
-    method: 'post',
+    url: '/system/user/profile/updatePwd',
+    method: 'put',
     data
   })
 }
