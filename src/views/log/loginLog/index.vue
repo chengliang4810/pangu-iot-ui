@@ -6,7 +6,7 @@
         <svg-icon :icon-class="$route.meta.icon48" style="font-size: 48px" />
       </template>
       <template v-slot:title>登录日志</template>
-      <template v-slot:subhead></template>
+      <template v-slot:subhead />
     </ListHeadTemplate>
     <SearchForm :params="formParams" @search="search" />
     <el-table
@@ -15,7 +15,8 @@
       style="width: 100%"
       size="small"
       :height="'calc(100% - 242px)'"
-      class="table">
+      class="table"
+    >
       <el-table-column width="48">
         <template>
           <svg-icon :icon-class="$route.meta.icon24" style="font-size: 24px" />
@@ -23,15 +24,19 @@
       </el-table-column>
       <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label">
         <template slot-scope="scope">
-          <span v-if="item.prop === 'message'">
-            <el-button type="text" class="copy" v-clipboard:copy="scope.row[item.prop]" v-clipboard:success="onCopy" v-clipboard:error="onError">
-              <svg-icon icon-class="copy"></svg-icon>
+          <span v-if="item.prop === 'msg'">
+            <el-button v-clipboard:copy="scope.row[item.prop]" v-clipboard:success="onCopy" v-clipboard:error="onError" type="text" class="copy">
+              <svg-icon icon-class="copy" />
             </el-button>
             <el-tooltip v-if="scope.row[item.prop]" effect="dark" :content="scope.row[item.prop]" placement="left" class="zeus-inline-block">
               <span class="massage zeus-inline-block">
                 {{ scope.row[item.prop] }}</span>
             </el-tooltip>
             <span v-else class="massage zeus-inline-block">-</span>
+          </span>
+          <span v-else-if="item.prop === 'status'">
+            <el-tag v-if="scope.row[item.prop] == 0" type="success">成功</el-tag>
+            <el-tag v-else type="danger">失败</el-tag>
           </span>
           <span v-else>
             {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
@@ -46,7 +51,6 @@
 <script>
 import ListHeadTemplate from '@/components/Slots/ListHeadTemplate'
 import SearchForm from '@/components/Basics/SearchForm'
-import BusinessTable from '@/components/Basics/BusinessTable'
 import Pagination from '@/components/Basics/Pagination'
 import { getLoginLogList } from '@/api/log'
 export default {
@@ -59,7 +63,6 @@ export default {
   components: {
     ListHeadTemplate,
     SearchForm,
-    BusinessTable,
     Pagination
   },
   data() {
@@ -69,8 +72,8 @@ export default {
         logType: '',
         beginTime: '',
         endTime: '',
-        maxRow: 20,
-        page: 1
+        pageSize: 20,
+        pageNum: 1
       },
       tableData: [],
       loading: false,
@@ -78,32 +81,28 @@ export default {
       columns: [
         {
           label: '创建时间',
-          prop: 'createTime',
+          prop: 'accessTime',
           show: true
         },
         {
           label: '操作人',
-          prop: 'createUserName',
+          prop: 'userName',
           show: true
         },
         {
           label: 'IP地址',
-          prop: 'ipAddress',
-          show: true
-        },
-        {
-          label: '日志名称',
-          prop: 'logName',
+          prop: 'ipaddr',
           show: true
         },
         {
           label: '状态',
-          prop: 'succeed',
+          prop: 'status',
+
           show: true
         },
         {
           label: '备注信息',
-          prop: 'message',
+          prop: 'msg',
           show: true
         }
       ],
@@ -135,21 +134,21 @@ export default {
       getLoginLogList(this.form).then((res) => {
         this.loading = false
         if (res.code == 200) {
-          this.tableData = res.data
-          this.total = Number(res.count)
+          this.tableData = res.data.rows
+          this.total = res.data.total
         }
       }).catch(() => {
         this.loading = false
       })
     },
     handleCurrentChange(val) {
-      this.form.page = val
+      this.form.pageNum = val
       this.getList()
     },
     onCopy() {
       this.$message({
         message: '复制成功',
-        type: 'success',
+        type: 'success'
       })
     },
     onError() {
