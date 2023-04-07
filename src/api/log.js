@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 操作日志
 export function getLogList(params) {
   return request({
-    url: '/log/getOperationLogByPage',
+    url: '/system/operlog/list',
     method: 'get',
     params
   })
