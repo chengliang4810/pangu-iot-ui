@@ -1,9 +1,9 @@
 const state = {
-  dict: new Array()
+  dict: []
 }
 const mutations = {
   SET_DICT: (state, { key, value }) => {
-    if (key !== null && key !== "") {
+    if (key !== null && key !== '') {
       state.dict.push({
         key: key,
         value: value
@@ -19,10 +19,11 @@ const mutations = {
         }
       }
     } catch (e) {
+      return true
     }
   },
   CLEAN_DICT: (state) => {
-    state.dict = new Array()
+    state.dict = []
   }
 }
 

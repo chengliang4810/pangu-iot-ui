@@ -4,23 +4,18 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar v-if="!hiddenMenu" class="sidebar-container" />
     <div class="main-container" :style="{marginLeft:hiddenMenu?'0':'200px'}">
-      <!-- <div :class="{'fixed-header':fixedHeader}">
-        <Navbar />
-      </div> -->
       <app-main />
     </div>
-    <!-- <el-button class="float-but" type="primary" icon="el-icon-toilet-paper" circle /> -->
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, Head } from './components'
+import { Sidebar, AppMain, Head } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
   name: 'Layout',
   components: {
-    Navbar,
     Sidebar,
     AppMain,
     Head
