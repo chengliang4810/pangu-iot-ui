@@ -5,9 +5,6 @@
 </template>
 
 <script>
-import EventBus from '@/utils/event-bus'
-import { off } from 'process'
-
 export default {
   name: 'App',
   sockets: {
@@ -151,7 +148,7 @@ export default {
           iconClass: 'el-icon-warning-outline',
           customClass: 'msg-pop',
           duration: 20000,
-          type: false ? 'success' : 'warning',
+          type: 'warning',
           dangerouslyUseHTMLString: true,
           message: `<div>${msgObj.eventName}</div>`,
           onClose() {},
