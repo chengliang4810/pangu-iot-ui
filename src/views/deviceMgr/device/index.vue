@@ -351,7 +351,7 @@ export default {
     close() {
       this.dialogVisible = false
       this.dialogForm = {
-        code: '',
+        code: undefined,
         name: '',
         productId: '',
         groupIds: [],

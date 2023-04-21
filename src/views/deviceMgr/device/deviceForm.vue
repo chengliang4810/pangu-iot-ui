@@ -106,7 +106,6 @@
 
 <script>
 import BaiduMap from 'vue-baidu-map/components/map/Map'
-import { getProxyList } from '@/api/system'
 import { BmAutoComplete, BmControl, BmGeolocation, BmLocalSearch, BmMarker, BmNavigation } from 'vue-baidu-map/index'
 import { getProductAttrTrapperList } from '@/api/porductMgr'
 
@@ -199,7 +198,7 @@ export default {
   beforeDestroy() {
     this.keyword = ''
     this.dialogForm = {
-      code: '',
+      code: undefined,
       name: '',
       productId: '',
       groupIds: [],
