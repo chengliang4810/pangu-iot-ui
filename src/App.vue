@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import mqtt from 'mqtt'
+import { getMqttConfig } from './api/config.js'
 export default {
   name: 'App',
   sockets: {
@@ -85,6 +88,21 @@ export default {
     if (location.hash.indexOf('#/login') === -1) {
       this.$store.dispatch('user/getMember').then(() => {})
     }
+
+    const { data } = await getMqttConfig()
+    console.log(data)
+    // 连接选项
+    const options = {
+      clean: true, // true: 清除会话, false: 保留会话
+      connectTimeout: 4000, // 超时时间
+      // 认证信息
+      clientId: 'webui-' + new Date().getTime(),
+      username: data.user,
+      password: data.password
+    }
+
+    const client = mqtt.connect(data.address, options)
+    Vue.prototype.$mqttClient = { client }
 
     if (this.$mqttClient.connected === true) {
       // 订阅实时数据主题
