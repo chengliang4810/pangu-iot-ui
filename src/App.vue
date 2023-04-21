@@ -102,7 +102,7 @@ export default {
     }
 
     const client = mqtt.connect(data.address, options)
-    Vue.prototype.$mqttClient = { client }
+    Vue.prototype.$mqttClient = client
 
     if (this.$mqttClient.connected === true) {
       // 订阅实时数据主题
