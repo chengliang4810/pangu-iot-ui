@@ -154,7 +154,6 @@
 </template>
 
 <script>
-import SearchForm from '@/components/Basics/SearchForm'
 import Pagination from '@/components/Basics/Pagination'
 import attributeForm from '@/views/deviceMgr/device/attributeForm'
 import {
@@ -166,7 +165,6 @@ import {
   getHistory,
   getCharts
 } from '@/api/deviceMgr'
-import { ftimestampToData } from '@/utils/index'
 import BusinessTable from '@/components/Basics/BusinessTable'
 
 export default {
@@ -178,13 +176,13 @@ export default {
     }
   },
   components: {
-    SearchForm,
     Pagination,
     attributeForm,
     BusinessTable
   },
   data() {
     return {
+      timer: null,
       form: {
         attrName: '',
         key: ''
@@ -205,7 +203,6 @@ export default {
       size2: 10,
       page2: 1,
       itemData: {},
-      item: {},
       dialogForm: {},
       // dialogTime: [
       //   this.ftimestampToData(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
@@ -345,6 +342,14 @@ export default {
       this.form.deviceId = this.$route.query.id
       this.getList()
     }
+  },
+  activated() {
+    this.timer = setInterval(() => {
+      this.getList()
+    }, 1000)
+  },
+  deactivated() {
+    clearInterval(this.timer)
   },
   methods: {
     getList() {
