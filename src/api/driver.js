@@ -8,6 +8,14 @@ export function driverConfigByDeviceId(deviceId) {
 }
 
 // 查询协议驱动列表
+export function updateDriverConfigById(id) {
+  return request({
+    url: `/manager/driver/metadata/update/${id}`,
+    method: 'get'
+  })
+}
+
+// 查询协议驱动列表
 export function listDriver(query) {
   return request({
     url: '/manager/driver/list',
