@@ -8,10 +8,23 @@
       <template v-slot:title>驱动</template>
       <template v-slot:subhead>驱动组件是主动获取/被动接收设备数据以及控制设备的重要组件。</template>
     </ListHeadTemplate>
-    <SearchForm v-if="!dialogVisible" :params="formParams" :buttons="buttons" :batch-buttons="batchButtons"
-      :columns="columns" @search="search" />
-    <el-table v-if="!dialogVisible" ref="tableRef" v-loading="loading" :data="tableData"
-      style="width: 100%;padding: 0 12px 12px 12px;" :height="'calc(100% - 242px)'" class="table">
+    <SearchForm
+      v-if="!dialogVisible"
+      :params="formParams"
+      :buttons="buttons"
+      :batch-buttons="batchButtons"
+      :columns="columns"
+      @search="search"
+    />
+    <el-table
+      v-if="!dialogVisible"
+      ref="tableRef"
+      v-loading="loading"
+      :data="tableData"
+      style="width: 100%;padding: 0 12px 12px 12px;"
+      :height="'calc(100% - 242px)'"
+      class="table"
+    >
       <!-- @row-click="handleRowClick" -->
       <el-table-column width="48" type="expand">
         <template slot-scope="scope">
@@ -33,11 +46,20 @@
       <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label" :width="item.width">
         <template slot-scope="scope">
 
-          <el-button type="text" class="setting-button" round size="mini" @click="update(scope.row.id)">
-            <svg-icon icon-class="list_unpublish" />
-            更新驱动配置
-          </el-button>
-
+          <span
+            v-if="item.prop === 'buttons'"
+            class="setting-buttons"
+          >
+            <el-button
+              type="text"
+              round
+              size="mini"
+              @click="update(scope.row.id)"
+            >
+              <svg-icon icon-class="list_unpublish" />
+              更新驱动配置
+            </el-button>
+          </span>
           <!-- <span v-if="item.prop === 'buttons'" class="setting-buttons">
             <el-button
               v-if="scope.row.status == true"
@@ -73,10 +95,10 @@
               删除
             </el-button> -->
           <!-- </span> -->
-          <div v-else-if="item.prop === 'displayName'" class="event" @click="upload(scope.row.protocolComponentId)">
+          <!-- <div v-else-if="item.prop === 'displayName'" class="event" @click="upload(scope.row.protocolComponentId)">
             <svg-icon :icon-class="$route.meta.icon24" style="font-size: 24px" />
             {{ scope.row[item.prop] != undefined ? scope.row[item.prop] : '-' }}
-          </div>
+          </div> -->
           <div v-else-if="item.prop === 'status'">
             <span v-if="scope.row.status == false" style="color: #CC3333">禁用</span>
             <span v-if="scope.row.status == true" style="color: #128E75">启用</span>
@@ -90,8 +112,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <Pagination v-if="!dialogVisible" :total="total" :size="size" :current-page="page"
-      @handleCurrentChange="handleCurrentChange" />
+    <Pagination
+      v-if="!dialogVisible"
+      :total="total"
+      :size="size"
+      :current-page="page"
+      @handleCurrentChange="handleCurrentChange"
+    />
     <div v-if="dialogVisible">
       <FormTemplate :up="'协议组件列表'" :state="state + '协议组件'" :but-loading="butLoading" @submit="submit" @cancel="close">
         <template v-slot:main>
@@ -233,7 +260,7 @@ export default {
   },
   methods: {
     update(id) {
-      updateDriverConfigById(id);
+      updateDriverConfigById(id)
     },
     handleRowClick(row) {
       this.$refs.tableRef.toggleRowExpansion(row)
@@ -290,7 +317,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteComponent({ protocolComponentIds: [id] }).then(async (res) => {
+        deleteComponent({ protocolComponentIds: [id] }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '删除成功',
@@ -349,7 +376,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        publish({ protocolComponentId: id }).then(async (res) => {
+        publish({ protocolComponentId: id }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '操作成功',
@@ -367,7 +394,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        unPublish({ protocolComponentId: id }).then(async (res) => {
+        unPublish({ protocolComponentId: id }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '操作成功',
@@ -385,7 +412,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        publish({ protocolComponentId: id }).then(async (res) => {
+        publish({ protocolComponentId: id }).then(async(res) => {
           if (res.code == 200) {
             this.$message({
               message: '操作成功',

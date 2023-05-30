@@ -166,7 +166,7 @@ export default {
           label: '',
           prop: 'buttons',
           show: true,
-          width: 100,
+          width: 180,
           idName: 'id',
           buttons: [
             // {
