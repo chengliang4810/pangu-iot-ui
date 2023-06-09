@@ -24,6 +24,7 @@
       style="width: 100%;padding: 0 12px 12px 12px;"
       :height="'calc(100% - 242px)'"
       class="table"
+      @row-click="handleRowClick"
     >
       <!-- @row-click="handleRowClick" -->
       <el-table-column width="48" type="expand">
@@ -103,9 +104,9 @@
             <span v-if="scope.row.status == false" style="color: #CC3333">禁用</span>
             <span v-if="scope.row.status == true" style="color: #128E75">启用</span>
           </div>
-          <span v-else-if="item.event" class="event" @click="upload(scope.row.protocolComponentId)">
+          <!-- <span v-else-if="item.event" class="event" @click="upload(scope.row.protocolComponentId)">
             {{ scope.row[item.prop] ? scope.row[item.prop] : '-' }}
-          </span>
+          </span> -->
           <span v-else>
             {{ scope.row[item.prop] != undefined ? scope.row[item.prop] : '-' }}
           </span>
