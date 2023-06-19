@@ -9,9 +9,9 @@
           <el-form-item label="显示名称" prop="displayName">
             <el-input v-model="queryParams.displayName" placeholder="请输入显示名称" clearable @keyup.enter="handleQuery" />
           </el-form-item>
-          <el-form-item label="启用" prop="enable">
+          <!-- <el-form-item label="启用" prop="enable">
             <el-input v-model="queryParams.enable" placeholder="请输入启用" clearable @keyup.enter="handleQuery" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
