@@ -74,6 +74,11 @@
             <span>{{getProduct(scope.row.productId)?.name}}</span>
           </template>
         </el-table-column>
+        <el-table-column label="设备类型" prop="deviceType" >
+          <template #default="scope">
+            <dict-tag :options="iot_device_type" :value="scope.row.deviceType)" />
+          </template>
+        </el-table-column>
         <!-- <el-table-column label="设备分组ID" align="center" prop="groupId" /> -->
         <el-table-column label="设备地址" align="center" prop="address" />
         <el-table-column label="坐标" align="center" prop="position" />
@@ -86,6 +91,7 @@
         <el-table-column label="描述" align="center" prop="remark" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
+            <el-button link type="primary" v-hasPermi="['manager:device:edit']">子设备(0)</el-button>
             <el-tooltip content="修改" placement="top">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:device:edit']"></el-button>
             </el-tooltip>
@@ -110,7 +116,7 @@
         <el-form-item label="设备名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入设备名称" />
         </el-form-item>
-        <el-form-item label="产品" prop="code">
+        <el-form-item label="产品" prop="product" >
           <el-select v-model="form.productId" placeholder="请选择产品" clearable style="width:100%">
             <el-option v-for="item in productTree" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
@@ -150,6 +156,7 @@ import { ElForm } from 'element-plus';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_enable_status } = toRefs<any>(proxy?.useDict('iot_enable_status'));
+const { iot_device_type } = toRefs<any>(proxy?.useDict('iot_device_type'));
 
 const productTree = ref<ProductVO[]>([]);
 const deviceList = ref<DeviceVO[]>([]);
@@ -277,8 +284,11 @@ const handleSelectionChange = (selection: DeviceVO[]) => {
 const handleAdd = () => {
   dialog.visible = true;
   dialog.title = "添加设备";
+
   nextTick(() => {
     reset();
+    // 根据查询条件选择产品
+    form.value.productId = queryParams.value.productId || form.value.productId
   });
 }
 
