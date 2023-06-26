@@ -16,6 +16,14 @@ export const listProduct = (query?: ProductQuery): AxiosPromise<ProductVO[]> => 
   });
 };
 
+export const treeProduct = (query?: ProductQuery): AxiosPromise<ProductVO[]> => {
+  return request({
+    url: '/manager/product/tree',
+    method: 'get',
+    params: query
+  });
+};
+
 /**
  * 查询产品详细
  * @param id
