@@ -17,6 +17,19 @@ export const listDriver = (query?: DriverQuery): AxiosPromise<DriverVO[]> => {
 };
 
 /**
+ * 查询驱动列表
+ * @param query
+ * @returns {*}
+ */
+export const treeDriver = (query?: DriverQuery): AxiosPromise<DriverVO[]> => {
+  return request({
+    url: '/manager/driver/tree',
+    method: 'get',
+    params: query
+  });
+};
+
+/**
  * 查询驱动详细
  * @param id
  */
