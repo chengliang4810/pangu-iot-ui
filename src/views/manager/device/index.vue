@@ -93,15 +93,13 @@
         </el-table-column>
         <!-- <el-table-column label="设备分组ID" align="center" prop="groupId" /> -->
         <el-table-column label="设备地址" align="center" prop="address" />
-        <el-table-column label="坐标" align="center" prop="position" />
         <el-table-column label="启用状态" align="center" prop="status">
           <template #default=" scope ">
             <dict-tag :options=" iot_enable_status " :value=" scope.row.status " />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" />
-        <el-table-column label="描述" align="center" prop="remark" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="创建时间" align="center" prop="createTime" min-width="100px" />
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="120px">
           <template #default=" scope ">
             <el-button link type="primary" v-if="scope.row.deviceType === 2" v-hasPermi=" ['manager:device:edit'] ">子设备(0)</el-button>
             <el-tooltip content="修改" placement="top">

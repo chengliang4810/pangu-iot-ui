@@ -31,7 +31,7 @@
             <div style="width: 100px; text-align: center;">属性222</div>
           </template>
         </el-tab-pane>
-        <el-tab-pane label="属性管理" name="attributeMgr">Config</el-tab-pane>
+        <el-tab-pane label="属性管理" name="attributeMgr"></el-tab-pane>
         <el-tab-pane label="功能管理" name="function">Role</el-tab-pane>
         <!-- <el-tab-pane label="告警规则" name="alarm">Task</el-tab-pane> -->
         <el-tab-pane label="日志" name="log">Task</el-tab-pane>
