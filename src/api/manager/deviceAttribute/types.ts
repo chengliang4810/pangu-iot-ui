@@ -48,7 +48,6 @@ export interface DeviceAttributeVO {
    * 描述
    */
   remark: string;
-
 }
 
 export interface DeviceAttributeForm extends BaseEntity {
@@ -101,7 +100,6 @@ export interface DeviceAttributeForm extends BaseEntity {
    * 描述
    */
   remark?: string;
-
 }
 
 export interface DeviceAttributeQuery extends PageQuery {
@@ -115,4 +113,13 @@ export interface DeviceAttributeQuery extends PageQuery {
    */
   identifier?: string | number;
 
+  /**
+   * 设备编号
+   */
+  deviceId?: string | number;
+
+  /**
+   * 产品ID
+   */
+  productId?: string | number;
 }

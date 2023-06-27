@@ -28,10 +28,15 @@
       <el-tabs v-model="activeName" class="demo-tabs">
         <el-tab-pane name="attribute">
           <template v-slot:label>
-            <div style="width: 100px; text-align: center;">属性222</div>
+            <div style="width: 100px; text-align: center;">属性</div>
           </template>
         </el-tab-pane>
-        <el-tab-pane label="属性管理" name="attributeMgr"></el-tab-pane>
+        <el-tab-pane label="属性管理" name="attributeMgr">
+          <template v-slot:label>
+            <div style="width: 100px; text-align: center;">属性管理</div>
+          </template>
+          <attributeMgr :productId="device.productId" :deviceId="device.id"></attributeMgr>
+        </el-tab-pane>
         <el-tab-pane label="功能管理" name="function">Role</el-tab-pane>
         <!-- <el-tab-pane label="告警规则" name="alarm">Task</el-tab-pane> -->
         <el-tab-pane label="日志" name="log">Task</el-tab-pane>
@@ -40,119 +45,6 @@
         <el-tab-pane label="子设备" v-if="device.deviceType === 2" name="childDevice">Task</el-tab-pane>
       </el-tabs>
     </el-card>
-
-    <el-card shadow="never">
-      <template #header>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['manager:device:add']">新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['manager:device:edit']"
-              >修改</el-button
-            >
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['manager:device:remove']"
-              >删除</el-button
-            >
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['manager:device:export']">导出</el-button>
-          </el-col>
-          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
-        </el-row>
-      </template>
-
-      <el-table v-loading="loading" :data="deviceList" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="设备主键" align="center" prop="id" v-if="false" />
-        <el-table-column label="设备名称" align="center" prop="name">
-          <template #default="scope">
-            <el-button type="primary" @click="detailHandler(scope.row)" link>{{ scope.row.name }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备编号" align="center" prop="code" />
-        <el-table-column label="产品" align="center" prop="productId">
-          <template #default="scope">
-            <span>{{ getProduct(scope.row.productId)?.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="设备类型" prop="deviceType">
-          <template #default=" scope ">
-            <dict-tag :options="iot_device_type" :value="scope.row.deviceType" />
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="设备分组ID" align="center" prop="groupId" /> -->
-        <el-table-column label="设备地址" align="center" prop="address" />
-        <el-table-column label="坐标" align="center" prop="position" />
-        <el-table-column label="启用状态" align="center" prop="status">
-          <template #default=" scope ">
-            <dict-tag :options=" iot_enable_status " :value=" scope.row.status " />
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" />
-        <el-table-column label="描述" align="center" prop="remark" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template #default=" scope ">
-            <el-button link type="primary" v-if="scope.row.deviceType === 2" v-hasPermi=" ['manager:device:edit'] ">子设备(0)</el-button>
-            <el-tooltip content="修改" placement="top">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi=" ['manager:device:edit'] "></el-button>
-            </el-tooltip>
-            <el-tooltip content="删除" placement="top">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi=" ['manager:device:remove'] "></el-button>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <pagination
-        v-show=" total > 0 "
-        :total=" total "
-        v-model:page=" queryParams.pageNum "
-        v-model:limit=" queryParams.pageSize "
-        @pagination=" getList "
-      />
-    </el-card>
-    <!-- 添加或修改设备对话框 -->
-    <el-dialog :title="dialog.title " v-model="dialog.visible " width="500px" append-to-body>
-      <el-form ref="deviceFormRef" :model=" form " :rules=" rules " label-width="80px">
-        <!-- <el-form-item label="设备分组ID" prop="groupId">
-          <el-input v-model="form.groupId" placeholder="请输入设备分组ID" />
-        </el-form-item> -->
-        <el-form-item label="设备编号" prop="code">
-          <el-input v-model=" form.code " placeholder="请输入设备编号" />
-        </el-form-item>
-        <el-form-item label="设备名称" prop="name">
-          <el-input v-model=" form.name " placeholder="请输入设备名称" />
-        </el-form-item>
-        <el-form-item label="产品" prop="product">
-          <el-select v-model=" form.productId " placeholder="请选择产品" clearable style="width:100%">
-            <el-option v-for="item in productTree" :key=" item.id " :label=" item.name " :value=" item.id " />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="设备地址" prop="address">
-          <el-input v-model=" form.address " placeholder="请输入设备地址" />
-        </el-form-item>
-        <el-form-item label="地址坐标" prop="position">
-          <el-input v-model=" form.position " placeholder="请输入地址坐标" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model=" form.status ">
-            <el-radio v-for="dict in iot_enable_status" :key=" dict.value " :label=" parseInt(dict.value) ">{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input v-model=" form.remark " type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button :loading=" buttonLoading " type="primary" @click=" submitForm ">确 定</el-button>
-          <el-button @click=" cancel ">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -164,6 +56,7 @@ import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 import router from '@/router';
+import attributeMgr from '@/views/manager/device/attributeMgr';
 
 const route = useRoute();
 
