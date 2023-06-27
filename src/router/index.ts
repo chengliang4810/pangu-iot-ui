@@ -58,6 +58,11 @@ export const constantRoutes: RouteOption[] = [
     hidden: true
   },
   {
+    path: '/404',
+    component: () => import('@/views/error/404.vue'),
+    hidden: true
+  },
+  {
     path: '/401',
     component: () => import('@/views/error/401.vue'),
     hidden: true
@@ -160,6 +165,20 @@ export const dynamicRoutes: RouteOption[] = [
         component: () => import('@/views/tool/gen/editTable.vue'),
         name: 'GenEdit',
         meta: { title: '修改生成配置', activeMenu: '/tool/gen', icon: '' }
+      }
+    ]
+  },
+  {
+    path: '/device/detail',
+    component: Layout,
+    hidden: true,
+    permissions: ['manager:device:list'],
+    children: [
+      {
+        path: ':id(\\d+)',
+        component: () => import('@/views/manager/device/detail.vue'),
+        name: 'DeviceDetail',
+        meta: { title: '设备详情', activeMenu: '/device/device', icon: '' }
       }
     ]
   }

@@ -1,53 +1,45 @@
 <template>
-  <div class="p-2">
-    <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">
-      <div class="search" v-show="showSearch">
-        <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
-          <!-- <el-form-item label="设备分组ID" prop="groupId">
-            <el-input v-model="queryParams.groupId" placeholder="请输入设备分组ID" clearable @keyup.enter="handleQuery" />
-          </el-form-item> -->
-          <el-form-item label="产品" prop="productId">
-            <el-select v-model="queryParams.productId" placeholder="请选择产品" clearable @change="handleQuery">
-              <el-option v-for="item in productTree" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="设备编号" prop="code">
-            <el-input v-model="queryParams.code" placeholder="请输入设备编号" clearable @keyup.enter="handleQuery" />
-          </el-form-item>
-          <el-form-item label="设备名称" prop="name">
-            <el-input v-model="queryParams.name" placeholder="请输入设备名称" clearable @keyup.enter="handleQuery" />
-          </el-form-item>
+  <div class="p-2" v-if="checkDone">
+    <!-- 设备基础信息 -->
+    <el-card shadow="never">
+      <template #header>
+        <el-descriptions :title="device.name" border>
+          <el-descriptions-item label="设备编号">{{ device.code }}</el-descriptions-item>
+          <el-descriptions-item label="设备类型">
+            <template v-for="dict in iot_device_type" :key="dict.value">
+              <el-tag size="small" v-if="dict.value == device.deviceType">{{ dict.label }}</el-tag>
+            </template>
+          </el-descriptions-item>
+          <el-descriptions-item label="所属产品">{{getProduct(device.productId)?.name}}</el-descriptions-item>
+          <el-descriptions-item label="设备地址">
+            {{ device.address || '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="坐标">
+            {{ device.position || '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <el-tag size="small" v-if=" device.status == 1">启用</el-tag>
+            <el-tag size="small" type="error" v-else>禁用</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="备注"> {{ device.remark || '-' }}</el-descriptions-item>
+        </el-descriptions>
+      </template>
 
-          <el-form-item label="设备类型" prop="deviceType">
-            <el-select v-model="queryParams.deviceType" placeholder="请选择设备类型" clearable @change="handleQuery">
-              <el-option v-for="dict in iot_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="请选择状态" clearable @change="handleQuery">
-              <el-option v-for="dict in iot_enable_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="创建时间" style="width: 308px">
-            <el-date-picker
-              v-model="daterangeCreateTime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              type="daterange"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              @change="handleQuery"
-              :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </transition>
+      <el-tabs v-model="activeName" class="demo-tabs">
+        <el-tab-pane name="attribute">
+          <template v-slot:label>
+            <div style="width: 100px; text-align: center;">属性222</div>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="属性管理" name="attributeMgr">Config</el-tab-pane>
+        <el-tab-pane label="功能管理" name="function">Role</el-tab-pane>
+        <!-- <el-tab-pane label="告警规则" name="alarm">Task</el-tab-pane> -->
+        <el-tab-pane label="日志" name="log">Task</el-tab-pane>
+        <el-tab-pane label="标签管理" name="tagMgr">Task</el-tab-pane>
+        <el-tab-pane label="驱动配置" v-if="device.deviceType === 2" name="driverConfig">Task</el-tab-pane>
+        <el-tab-pane label="子设备" v-if="device.deviceType === 2" name="childDevice">Task</el-tab-pane>
+      </el-tabs>
+    </el-card>
 
     <el-card shadow="never">
       <template #header>
@@ -171,8 +163,34 @@ import { treeProduct } from '@/api/manager/product';
 import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
-
 import router from '@/router';
+
+const route = useRoute();
+
+
+/**
+ * 检查设备是否存在
+ */
+const device = ref<DeviceVO>({} as DeviceVO);
+const checkDone = ref(false);
+const checkDevice = async () => {
+  const deviceId = route.params.id as string;
+  if (!deviceId) {
+    router.push({ path: '/404' });
+    return
+  }
+  const res = await getDevice(deviceId);
+  if (!res.data) {
+    router.push({ path: '/404' });
+    return;
+  }else{
+    device.value = res.data;
+    checkDone.value = true;
+  }
+}
+checkDevice();
+
+
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_enable_status } = toRefs<any>(proxy?.useDict('iot_enable_status'));
 const { iot_device_type } = toRefs<any>(proxy?.useDict('iot_device_type'));
@@ -190,6 +208,7 @@ const daterangeCreateTime = ref([]);
 
 const queryFormRef = ref(ElForm);
 const deviceFormRef = ref(ElForm);
+const activeName = ref('attribute')
 
 const dialog = reactive<DialogOption>({
   visible: false,

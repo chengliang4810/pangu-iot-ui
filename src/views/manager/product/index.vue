@@ -9,8 +9,8 @@
           <el-form-item label="产品名称" prop="name">
             <el-input v-model="queryParams.name" placeholder="请输入产品名称" clearable @keyup.enter="handleQuery" />
           </el-form-item>
-          <el-form-item label="产品类型" prop="type">
-            <el-select v-model="queryParams.type" placeholder="请选择产品类型" clearable @change="handleQuery">
+          <el-form-item label="设备类型" prop="type">
+            <el-select v-model="queryParams.deviceType" placeholder="请选择设备类型" clearable @change="handleQuery">
               <el-option v-for="dict in iot_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>

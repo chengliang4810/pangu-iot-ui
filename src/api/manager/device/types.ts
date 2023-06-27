@@ -15,6 +15,11 @@ export interface DeviceVO {
   productId: string | number;
 
   /**
+   * 设备类型
+   */
+  deviceType?: string | number;
+
+  /**
    * 设备编号
    */
   code: string;
@@ -43,7 +48,6 @@ export interface DeviceVO {
    * 描述
    */
   remark: string;
-
 }
 
 export interface DeviceForm extends BaseEntity {
@@ -91,7 +95,6 @@ export interface DeviceForm extends BaseEntity {
    * 描述
    */
   remark?: string;
-
 }
 
 export interface DeviceQuery extends PageQuery {
@@ -104,6 +107,11 @@ export interface DeviceQuery extends PageQuery {
    * 产品ID
    */
   productId?: string | number;
+
+  /**
+   * 设备类型
+   */
+  deviceType?: string | number;
 
   /**
    * 设备编号
@@ -124,5 +132,4 @@ export interface DeviceQuery extends PageQuery {
    * 创建时间
    */
   createTime?: string;
-
 }
