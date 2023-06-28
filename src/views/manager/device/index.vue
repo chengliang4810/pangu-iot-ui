@@ -129,23 +129,57 @@
     </el-card>
     <!-- 添加或修改设备对话框 -->
     <el-dialog :title="dialog.title " v-model="dialog.visible " width="500px" append-to-body>
-      <el-form ref="deviceFormRef" :model=" form " :rules=" rules " label-width="80px">
+      <el-form ref="deviceFormRef" :model="form" label-width="80px">
         <!-- <el-form-item label="设备分组ID" prop="groupId">
           <el-input v-model="form.groupId" placeholder="请输入设备分组ID" />
         </el-form-item> -->
-        <el-form-item label="设备编号" prop="code">
+        <el-form-item
+          label="设备编号"
+          prop="code"
+          :rules="{
+            required: true,
+            message: '设备编号不能为空',
+            trigger: 'blur',
+          }"
+        >
           <el-input v-model=" form.code " placeholder="请输入设备编号" />
         </el-form-item>
-        <el-form-item label="设备名称" prop="name">
+        <el-form-item
+          label="设备名称"
+          prop="name"
+          :rules="{
+            required: true,
+            message: '设备名称不能为空',
+            trigger: 'blur',
+          }"
+        >
           <el-input v-model=" form.name " placeholder="请输入设备名称" />
         </el-form-item>
-        <el-form-item label="产品" prop="productId">
+        <el-form-item
+          label="产品"
+          prop="productId"
+          :rules="{
+            required: true,
+            message: '请选择产品',
+            trigger: 'blur',
+          }"
+        >
           <el-select v-model="form.productId " placeholder="请选择产品" clearable style="width:100%" @change="productChangeHandler">
             <el-option v-for="item in productTree" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
 
-        <el-form-item :label="item.displayName" :key="item.id" :prop="item.attributeName" v-for="item in driverConfigList">
+        <el-form-item
+          v-for="item in driverConfigList"
+          :label="item.displayName"
+          :key="item.id"
+          :prop="'driverAttributeConfig.' + item.attributeName"
+          :rules="{
+            required: item.required != 0,
+            message: item.displayName + '不能为空',
+            trigger: 'blur',
+          }"
+        >
           <el-input v-model="form.driverAttributeConfig[item.attributeName]" :placeholder="'请输入' + item.displayName" />
         </el-form-item>
 
@@ -155,7 +189,15 @@
         <el-form-item label="地址坐标" prop="position">
           <el-input v-model=" form.position " placeholder="请输入地址坐标" />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item
+          label="状态"
+          prop="status"
+          :rules="{
+            required: true,
+            message: '请选择状态',
+            trigger: 'blur',
+          }"
+        >
           <el-radio-group v-model=" form.status ">
             <el-radio v-for="dict in iot_enable_status" :key="dict.value" :label="parseInt(dict.value) ">{{dict.label}}</el-radio>
           </el-radio-group>
@@ -166,7 +208,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button :loading=" buttonLoading " type="primary" @click=" submitForm ">确 定</el-button>
+          <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
@@ -208,16 +250,6 @@ const showDeviceSelect = ref(false)
 const queryFormRef = ref(ElForm);
 const deviceFormRef = ref(ElForm);
 
-
-const driverConfigList = ref<DriverAttributeVO[]>([]);
-const productChangeHandler = async (productId: number) => {
-  const product = productTree.value.find(item => item.id == productId);
-  if(product?.type == 2){
-    // 加载驱动配置信息表单
-    const res = await treeDriverAttribute({driverId: product.driverId});
-    driverConfigList.value = res.data;
-  }
-}
 
 /**
  * 绑定设备
@@ -292,6 +324,20 @@ const data = reactive<PageData<DeviceForm, DeviceQuery>>({
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+const driverConfigList = ref<DriverAttributeVO[]>([]);
+const productChangeHandler = async (productId: number) => {
+  const product = productTree.value.find(item => item.id == productId);
+  if(product?.type == 2){
+    // 加载驱动配置信息表单
+    const res = await treeDriverAttribute({driverId: product.driverId});
+    driverConfigList.value = res.data;
+    driverConfigList.value.forEach(item => {
+      form.value.driverAttributeConfig[item.attributeName] = item.defaultValue;
+    });
+  }
+}
+
 
 /** 查询设备列表 */
 const getList = async () => {
