@@ -119,6 +119,11 @@ export interface DeviceForm extends BaseEntity {
    * 描述
    */
   remark?: string;
+
+  /**
+   * 驱动属性配置
+   */
+  driverAttributeConfig?: any;
 }
 
 export interface DeviceQuery extends PageQuery {

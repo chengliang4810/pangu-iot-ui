@@ -139,11 +139,16 @@
         <el-form-item label="设备名称" prop="name">
           <el-input v-model=" form.name " placeholder="请输入设备名称" />
         </el-form-item>
-        <el-form-item label="产品" prop="product">
-          <el-select v-model=" form.productId " placeholder="请选择产品" clearable style="width:100%">
-            <el-option v-for="item in productTree" :key=" item.id " :label=" item.name " :value=" item.id " />
+        <el-form-item label="产品" prop="productId">
+          <el-select v-model="form.productId " placeholder="请选择产品" clearable style="width:100%" @change="productChangeHandler">
+            <el-option v-for="item in productTree" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
+
+        <el-form-item :label="item.displayName" :key="item.id" :prop="item.attributeName" v-for="item in driverConfigList">
+          <el-input v-model="form.driverAttributeConfig[item.attributeName]" :placeholder="'请输入' + item.displayName" />
+        </el-form-item>
+
         <el-form-item label="设备地址" prop="address">
           <el-input v-model=" form.address " placeholder="请输入设备地址" />
         </el-form-item>
@@ -172,6 +177,8 @@
 </template>
 
 <script setup name="Device" lang="ts">
+import { treeDriverAttribute } from '@/api/manager/driverAttribute';
+import { DriverAttributeVO, DriverAttributeQuery, DriverAttributeForm } from '@/api/manager/driverAttribute/types';
 import { listDevice, getDevice, delDevice, addDevice, updateDevice, addChildDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
 import { treeProduct } from '@/api/manager/product';
@@ -201,6 +208,16 @@ const showDeviceSelect = ref(false)
 const queryFormRef = ref(ElForm);
 const deviceFormRef = ref(ElForm);
 
+
+const driverConfigList = ref<DriverAttributeVO[]>([]);
+const productChangeHandler = async (productId: number) => {
+  const product = productTree.value.find(item => item.id == productId);
+  if(product?.type == 2){
+    // 加载驱动配置信息表单
+    const res = await treeDriverAttribute({driverId: product.driverId});
+    driverConfigList.value = res.data;
+  }
+}
 
 /**
  * 绑定设备
@@ -237,7 +254,8 @@ const initFormData: DeviceForm = {
   address: undefined,
   position: undefined,
   status: 1,
-  remark: undefined
+  remark: undefined,
+  driverAttributeConfig: {},
 }
 const data = reactive<PageData<DeviceForm, DeviceQuery>>({
   form: { ...initFormData },
