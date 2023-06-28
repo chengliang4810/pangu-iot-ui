@@ -335,7 +335,9 @@ const productChangeHandler = async (productId: number) => {
     driverConfigList.value.forEach(item => {
       form.value.driverAttributeConfig[item.attributeName] = item.defaultValue;
     });
+    return
   }
+  driverConfigList.value = [];
 }
 
 
