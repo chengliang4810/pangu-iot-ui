@@ -1,6 +1,18 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { DeviceVO, DeviceForm, DeviceQuery } from '@/api/manager/device/types';
+import { DeviceVO, DeviceForm, DeviceQuery, AddChildDeviceForm } from '@/api/manager/device/types';
+
+/**
+ * 添加子设备
+ * @param data
+ */
+export const addChildDevice = (data: AddChildDeviceForm) => {
+  return request({
+    url: '/manager/device/child',
+    method: 'post',
+    data: data
+  });
+};
 
 /**
  * 查询设备列表

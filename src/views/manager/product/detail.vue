@@ -53,7 +53,7 @@ import { ProductVO, ProductQuery, ProductForm } from '@/api/manager/product/type
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 
-import attributeMgr from '@/views/manager/device/attributeMgr';
+import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
 import router from '@/router';
 const route = useRoute();
 

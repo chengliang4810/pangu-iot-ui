@@ -101,7 +101,14 @@
         <el-table-column label="创建时间" align="center" prop="createTime" min-width="100px" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="120px">
           <template #default=" scope ">
-            <el-button link type="primary" v-if="scope.row.deviceType === 2" v-hasPermi=" ['manager:device:edit'] ">子设备(0)</el-button>
+            <el-button
+              link
+              type="primary"
+              v-if="scope.row.deviceType === 2"
+              v-hasPermi=" ['manager:device:edit'] "
+              @click="showDeviceSelectHandler(scope.row.id)"
+              >子设备({{ scope.row.childDeviceNumber }})</el-button
+            >
             <el-tooltip content="修改" placement="top">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi=" ['manager:device:edit'] "></el-button>
             </el-tooltip>
@@ -145,7 +152,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model=" form.status ">
-            <el-radio v-for="dict in iot_enable_status" :key=" dict.value " :label=" parseInt(dict.value) ">{{dict.label}}</el-radio>
+            <el-radio v-for="dict in iot_enable_status" :key="dict.value" :label="parseInt(dict.value) ">{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
@@ -155,20 +162,23 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button :loading=" buttonLoading " type="primary" @click=" submitForm ">确 定</el-button>
-          <el-button @click=" cancel ">取 消</el-button>
+          <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
     </el-dialog>
+
+    <DeviceSelect v-model="showDeviceSelect" width="800px" @submit="bindDeviceHandler" />
   </div>
 </template>
 
 <script setup name="Device" lang="ts">
-import { listDevice, getDevice, delDevice, addDevice, updateDevice } from '@/api/manager/device';
+import { listDevice, getDevice, delDevice, addDevice, updateDevice, addChildDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
 import { treeProduct } from '@/api/manager/product';
 import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
+import DeviceSelect from '@/views/manager/device/components/deviceSelect.vue';
 
 import router from '@/router';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -186,8 +196,32 @@ const multiple = ref(true);
 const total = ref(0);
 const daterangeCreateTime = ref([]);
 
+const showDeviceSelect = ref(false)
+
 const queryFormRef = ref(ElForm);
 const deviceFormRef = ref(ElForm);
+
+
+/**
+ * 绑定设备
+ */
+const bindDeviceId = ref<string | number>(0);
+const showDeviceSelectHandler = (id: string | number) => {
+  showDeviceSelect.value = true;
+  bindDeviceId.value = id;
+}
+
+/**
+ * 绑定设备
+ */
+const bindDeviceHandler = async (ids: Array<string | number>) => {
+  const res = await addChildDevice({deviceId: bindDeviceId.value, childDeviceIds: ids});
+  if (res.data > 0) {
+    proxy?.$modal.msgSuccess(`成功添加 ${res.data} 个子设备`);
+    return
+  }
+  proxy?.$modal.msgError(`添加 ${res.data} 个子设备`);
+}
 
 const dialog = reactive<DialogOption>({
   visible: false,

@@ -1,3 +1,22 @@
+/**
+ * 添加子设备
+ */
+export interface AddChildDeviceForm {
+  /**
+   * 设备主键
+   * @description 设备主键
+   * @example 1
+   */
+  deviceId: string | number;
+
+  /**
+   * 子设备主键数组
+   * @description 子设备主键数组
+   * @example [1,2,3]
+   */
+  childDeviceIds: Array<string | number>;
+}
+
 export interface DeviceVO {
   /**
    * 设备主键
@@ -48,6 +67,11 @@ export interface DeviceVO {
    * 描述
    */
   remark: string;
+
+  /**
+   * 子设备数量
+   */
+  childDeviceNumber: number;
 }
 
 export interface DeviceForm extends BaseEntity {
