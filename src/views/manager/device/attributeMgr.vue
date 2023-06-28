@@ -31,6 +31,11 @@
             <dict-tag :options="iot_attribute_type" :value="scope.row.attributeType" />
           </template>
         </el-table-column>
+        <el-table-column label="属性来源" align="center" :prop="deviceId">
+          <template #default="scope">
+            <span>{{ scope.row.deviceId == 0 ? '产品': '设备' }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="单位" align="center" prop="unit">
           <template #default="scope">
             <dict-tag :options="iot_units" :value="scope.row.unit" />
@@ -42,7 +47,7 @@
           </template>
         </el-table-column>
         <el-table-column label="描述" align="center" prop="remark" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" v-if="props.edit == true || props.delete == true" class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip v-if="props.edit" content="修改" placement="top">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceAttribute:edit']"></el-button>
@@ -121,6 +126,7 @@ const props = withDefaults(defineProps<attributeMgrProps>(), {
   add: true,
   edit: true,
   delete: true,
+  deviceId: 0
 })
 
 import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceAttribute, updateDeviceAttribute } from '@/api/manager/deviceAttribute';

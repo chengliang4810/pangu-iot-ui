@@ -35,7 +35,7 @@
           <template v-slot:label>
             <div style="width: 100px; text-align: center;">属性管理</div>
           </template>
-          <attributeMgr :productId="device.productId" :deviceId="device.id"></attributeMgr>
+          <attributeMgr :productId="device.productId" :deviceId="device.id" :add="false" :edit="false" :delete="false"></attributeMgr>
         </el-tab-pane>
         <el-tab-pane label="功能管理" name="function">Role</el-tab-pane>
         <!-- <el-tab-pane label="告警规则" name="alarm">Task</el-tab-pane> -->
@@ -59,7 +59,6 @@ import router from '@/router';
 import attributeMgr from '@/views/manager/device/attributeMgr';
 
 const route = useRoute();
-
 
 /**
  * 检查设备是否存在

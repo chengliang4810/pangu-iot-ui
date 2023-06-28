@@ -53,7 +53,16 @@
       <el-table v-loading="loading" :data="productList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="产品主键" align="center" prop="id" v-if="false" />
-        <el-table-column label="产品名称" align="center" prop="name" />
+        <el-table-column label="产品名称" align="center" prop="name">
+          <template #default="scope">
+            <el-button type="primary" @click="detailHandler(scope.row)" link>{{ scope.row.name }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="产品图片" align="center" prop="icon" width="100">
+          <template #default="scope">
+            <image-preview :src="scope.row.icon" :width="50" :height="50" />
+          </template>
+        </el-table-column>
         <el-table-column label="设备类型" align="center" prop="type">
           <template #default="scope">
             <dict-tag :options="iot_device_type" :value="scope.row.type" />
@@ -67,7 +76,7 @@
             </template>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="图标" align="center" prop="icon" /> -->
+
         <el-table-column label="厂家" align="center" prop="manufacturer" />
         <el-table-column label="型号" align="center" prop="model" />
         <el-table-column label="设备总数" align="center" prop="deviceCount" />
@@ -109,9 +118,9 @@
           </el-select>
         </el-form-item>
 
-        <!-- <el-form-item label="图标" prop="icon">
-          <el-input v-model="form.icon" type="textarea" placeholder="请输入内容" />
-        </el-form-item> -->
+        <el-form-item label="产品图片" prop="icon">
+          <image-upload v-model="form.icon" />
+        </el-form-item>
         <el-form-item label="厂家" prop="manufacturer">
           <el-input v-model="form.manufacturer" placeholder="请输入厂家" />
         </el-form-item>
@@ -140,6 +149,8 @@ import { ProductVO, ProductQuery, ProductForm } from '@/api/manager/product/type
 
 import { ComponentInternalInstance } from 'vue';
 import { ElForm, ElSelect } from 'element-plus';
+import router from '@/router';
+const route = useRoute();
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_device_type } = toRefs<any>(proxy?.useDict('iot_device_type'));
@@ -214,6 +225,14 @@ const deviceTypeChangeHandle = (val: number) => {
 
 const { queryParams, form, rules } = toRefs(data);
 
+/**
+ * 切换到产品详情页面
+ */
+ const detailHandler = (row: ProductVO) => {
+  router.push({ path: `/product/detail/${row.id}`, query: {} });
+}
+
+
 /** 查询产品列表 */
 const getList = async () => {
   loading.value = true;
@@ -225,7 +244,7 @@ const getList = async () => {
 
 /** 查询驱动列表 */
 const getDriverList = async () => {
-  const res = await treeDriver({});
+  const res = await treeDriver();
   driverList.value = res.data;
 }
 

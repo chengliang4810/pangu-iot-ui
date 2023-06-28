@@ -181,6 +181,20 @@ export const dynamicRoutes: RouteOption[] = [
         meta: { title: '设备详情', activeMenu: '/device/device', icon: '' }
       }
     ]
+  },
+  {
+    path: '/product/detail',
+    component: Layout,
+    hidden: true,
+    permissions: ['manager:product:list'],
+    children: [
+      {
+        path: ':id(\\d+)',
+        component: () => import('@/views/manager/product/detail.vue'),
+        name: 'ProductDetail',
+        meta: { title: '产品详情', activeMenu: '/device/product', icon: '' }
+      }
+    ]
   }
 ];
 
