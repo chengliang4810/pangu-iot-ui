@@ -23,7 +23,6 @@
           </el-descriptions-item>
           <el-descriptions-item label="备注"> {{ device.remark || '-' }}</el-descriptions-item>
         </el-descriptions>
-        <div>{{ JSON.stringify(product) }}</div>
       </template>
 
       <el-tabs v-model="activeName" class="demo-tabs">
@@ -34,7 +33,7 @@
         </el-tab-pane>
         <el-tab-pane v-if="device.deviceType !== 2" name="attributeMgr">
           <template v-slot:label>
-            <div style="width: 100px; text-align: center;">属性管理 {{ product.driverId }}</div>
+            <div style="width: 100px; text-align: center;">属性管理</div>
           </template>
           <attributeMgr
             :productId="device.productId"
@@ -99,7 +98,6 @@ const { iot_device_type } = toRefs<any>(proxy?.useDict('iot_device_type'));
  * 检查设备是否存在
  */
 const checkDevice = async () => {
-  console.log('check start');
   const deviceId = route.params.id as string;
   if (!deviceId) {
     router.push({ path: '/404' });
@@ -114,14 +112,11 @@ const checkDevice = async () => {
     device.value.deviceType === 2 ? activeName.value = 'driverConfig' : activeName.value = 'attribute';
     checkDone.value = true;
   }
-  console.log('check finish');
 }
 
 const queryProduct = async () => {
-  console.log('query start');
   const res = await getProduct(device.value.productId);
   product.value = res.data;
-  console.log('query finish');
 }
 
 onMounted(async () => {
