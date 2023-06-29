@@ -30,6 +30,7 @@
           <template v-slot:label>
             <div style="width: 100px; text-align: center;">属性</div>
           </template>
+          <ShowAttributeValue :productId="device.productId" :deviceId="device.id" />
         </el-tab-pane>
         <el-tab-pane v-if="device.deviceType !== 2" name="attributeMgr">
           <template v-slot:label>
@@ -85,6 +86,7 @@ import { DeviceVO } from '@/api/manager/device/types';
 import { ProductVO } from '@/api/manager/product/types';
 import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
 import DriverAttributeConfig from '@/views/manager/driver/components/driverAttributeConfig.vue';
+import ShowAttributeValue from '@/views/manager/device/components/showAttributeValue.vue';
 
 const route = useRoute();
 const checkDone = ref(false);

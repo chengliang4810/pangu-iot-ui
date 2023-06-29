@@ -2,6 +2,8 @@ import { createApp } from 'vue';
 // global css
 import 'uno.css';
 import '@/assets/styles/index.scss';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
 // App、router、store
@@ -33,6 +35,10 @@ import { parseTime, addDateRange, handleTree, selectDictLabel, selectDictLabels 
 // 国际化
 import i18n from '@/lang/index';
 
+// Avue 组件
+import Avue from '@smallwei/avue';
+import '@smallwei/avue/lib/index.css';
+
 const app = createApp(App);
 // 全局方法挂载
 app.config.globalProperties.useDict = useDict;
@@ -51,6 +57,8 @@ app.use(router);
 app.use(store);
 app.use(i18n);
 app.use(plugins);
+app.use(ElementPlus);
+app.use(Avue);
 // 自定义指令
 directive(app);
 
