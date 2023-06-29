@@ -38,7 +38,28 @@ export interface DriverAttributeVO {
    * 描述
    */
   remark: string;
+}
 
+export interface DriverAttributeValueForm extends BaseEntity {
+  /**
+   * 主键ID
+   */
+  id?: string | number;
+
+  /**
+   * 驱动属性ID
+   */
+  driverAttributeId?: string | number;
+
+  /**
+   * 设备ID
+   */
+  gatewayDeviceId?: string | number;
+
+  /**
+   * 值
+   */
+  value?: string;
 }
 
 export interface DriverAttributeForm extends BaseEntity {
@@ -81,7 +102,6 @@ export interface DriverAttributeForm extends BaseEntity {
    * 描述
    */
   remark?: string;
-
 }
 
 export interface DriverAttributeQuery extends PageQuery {
@@ -114,5 +134,4 @@ export interface DriverAttributeQuery extends PageQuery {
    * 必填
    */
   required?: number;
-
 }

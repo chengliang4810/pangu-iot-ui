@@ -173,14 +173,14 @@
           v-for="item in driverConfigList"
           :label="item.displayName"
           :key="item.id"
-          :prop="'driverAttributeConfig.' + item.attributeName"
+          :prop="'driverAttributeConfig.' + item.id"
           :rules="{
             required: item.required != 0,
             message: item.displayName + '不能为空',
             trigger: 'blur',
           }"
         >
-          <el-input v-model="form.driverAttributeConfig[item.attributeName]" :placeholder="'请输入' + item.displayName" />
+          <el-input v-model="form.driverAttributeConfig[item.id]" :placeholder="'请输入' + item.displayName" clearable />
         </el-form-item>
 
         <el-form-item label="设备地址" prop="address">
@@ -301,39 +301,20 @@ const data = reactive<PageData<DeviceForm, DeviceQuery>>({
     status: undefined,
     createTime: undefined,
   },
-  rules: {
-    id: [
-      { required: true, message: "设备主键不能为空", trigger: "blur" }
-    ],
-    groupId: [
-      { required: true, message: "设备分组ID不能为空", trigger: "blur" }
-    ],
-    productId: [
-      { required: true, message: "产品ID不能为空", trigger: "change" }
-    ],
-    code: [
-      { required: true, message: "设备编号不能为空", trigger: "blur" }
-    ],
-    name: [
-      { required: true, message: "设备名称不能为空", trigger: "blur" }
-    ],
-    status: [
-      { required: true, message: "启用状态不能为空", trigger: "change" }
-    ],
-  }
+  rules: {}
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 const driverConfigList = ref<DriverAttributeVO[]>([]);
-const productChangeHandler = async (productId: number) => {
+const productChangeHandler = async (productId: number | string) => {
   const product = productTree.value.find(item => item.id == productId);
-  if(product?.type == 2){
+  if(product?.type == 2 && form.value.id == undefined){
     // 加载驱动配置信息表单
     const res = await treeDriverAttribute({driverId: product.driverId});
     driverConfigList.value = res.data;
     driverConfigList.value.forEach(item => {
-      form.value.driverAttributeConfig[item.attributeName] = item.defaultValue;
+      form.value.driverAttributeConfig[item.id] = item.defaultValue;
     });
     return
   }
@@ -387,6 +368,10 @@ const reset = () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.value.pageNum = 1;
+
+  if(queryParams.value.productId){
+    productChangeHandler(queryParams.value.productId);
+  }
   getList();
 }
 

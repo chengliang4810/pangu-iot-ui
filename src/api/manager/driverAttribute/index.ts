@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { DriverAttributeVO, DriverAttributeForm, DriverAttributeQuery } from '@/api/manager/driverAttribute/types';
+import { DriverAttributeVO, DriverAttributeForm, DriverAttributeQuery, DriverAttributeValueForm } from '@/api/manager/driverAttribute/types';
 
 /**
  * 查询驱动属性列表
@@ -48,6 +48,19 @@ export const getDriverAttribute = (id: string | number): AxiosPromise<DriverAttr
 export const addDriverAttribute = (data: DriverAttributeForm) => {
   return request({
     url: '/manager/driverAttribute',
+    method: 'post',
+    data: data
+  });
+};
+
+/**
+ * 批量新增/修改驱动属性值
+ * 通过判断是否存在id来判断是新增还是修改
+ * @param data
+ */
+export const batchAddDriverAttributeValue = (data: Array<DriverAttributeValueForm>) => {
+  return request({
+    url: '/manager/driverAttributeValue/batch',
     method: 'post',
     data: data
   });

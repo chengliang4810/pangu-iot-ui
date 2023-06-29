@@ -48,18 +48,19 @@
             <div style="width: 100px; text-align: center;">日志</div>
           </template></el-tab-pane
         >
-        <el-tab-pane label="标签管理" v-if="device.deviceType !== 2" name="tagMgr"
-          ><template v-slot:label>
+        <el-tab-pane label="标签管理" v-if="device.deviceType !== 2" name="tagMgr">
+          <template v-slot:label>
             <div style="width: 100px; text-align: center;">标签管理</div>
-          </template></el-tab-pane
-        >
-        <el-tab-pane label="驱动配置" v-if="device.deviceType === 2" name="driverConfig"
-          ><template v-slot:label>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="驱动配置" v-if="device.deviceType === 2" name="driverConfig">
+          <template v-slot:label>
             <div style="width: 100px; text-align: center;">驱动配置</div>
-          </template></el-tab-pane
-        >
-        <el-tab-pane label="子设备" v-if="device.deviceType === 2" name="childDevice"
-          ><template v-slot:label>
+          </template>
+          <DriverAttributeConfig :productId="device.productId" :deviceId="device.id"></DriverAttributeConfig>
+        </el-tab-pane>
+        <el-tab-pane label="子设备" v-if="device.deviceType === 2" name="childDevice">
+          <template v-slot:label>
             <div style="width: 100px; text-align: center;">子设备</div>
           </template>
         </el-tab-pane>
@@ -71,6 +72,7 @@
 <script setup name="Device" lang="ts">
 import { listDevice, getDevice, delDevice, addDevice, updateDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
+import DriverAttributeConfig from '@/views/manager/driver/components/driverAttributeConfig.vue';
 import { treeProduct } from '@/api/manager/product';
 import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
@@ -97,6 +99,7 @@ const checkDevice = async () => {
     return;
   }else{
     device.value = res.data;
+    device.value.deviceType === 2 ? activeName.value = 'driverConfig' : activeName.value = 'attribute';
     checkDone.value = true;
   }
 }
