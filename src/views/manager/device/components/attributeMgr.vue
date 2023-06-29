@@ -47,8 +47,17 @@
           </template>
         </el-table-column>
         <el-table-column label="描述" align="center" prop="remark" />
-        <el-table-column label="操作" align="center" v-if="props.edit == true || props.delete == true" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
+            <el-button
+              v-if="deviceId != 0"
+              link
+              type="primary"
+              icon="Edit"
+              @click="handlePointConfig(scope.row)"
+              v-hasPermi="['manager:deviceAttribute:edit']"
+              >采集配置
+            </el-button>
             <el-tooltip v-if="props.edit" content="修改" placement="top">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceAttribute:edit']"></el-button>
             </el-tooltip>
@@ -65,7 +74,13 @@
         </el-table-column>
       </el-table>
 
-      <pagination v-show="total>0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
+      <pagination
+        v-show="total > (queryParams.pageSize || 10)"
+        :total="total"
+        v-model:page="queryParams.pageNum"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
     </el-card>
     <!-- 添加或修改设备属性对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
@@ -111,6 +126,31 @@
         </div>
       </template>
     </el-dialog>
+
+    <el-dialog :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
+      <el-form ref="deviceAttributeFormRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item
+          v-for="(item, index) in pointAttributes"
+          :label="item.displayName"
+          :key="item.id"
+          :prop="index + '.value'"
+          :rules="{
+            required: item.required != 0,
+            message: item.displayName + '不能为空',
+            trigger: 'blur',
+          }"
+        >
+          <el-input v-model="pointForm[index].value" :placeholder="'请输入' + item.displayName" />
+        </el-form-item>
+      </el-form>
+      {{ pointAttributes }}
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="pointConfigCancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -120,19 +160,25 @@ export interface attributeMgrProps {
   deviceId?: string | number
   add?: boolean
   edit?: boolean
-  delete?: boolean
+  delete?: boolean,
+  driverId?: string | number
 }
 const props = withDefaults(defineProps<attributeMgrProps>(), {
   add: true,
   edit: true,
   delete: true,
-  deviceId: 0
+  deviceId: 0,
+  driverId: 0
 })
 
 import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceAttribute, updateDeviceAttribute } from '@/api/manager/deviceAttribute';
 import { DeviceAttributeVO, DeviceAttributeQuery, DeviceAttributeForm } from '@/api/manager/deviceAttribute/types';
+import { treePointAttribute,  } from '@/api/manager/pointAttribute';
+import { PointAttributeVO } from '@/api/manager/pointAttribute/types';
+import { PointAttributeValueForm } from '@/api/manager/pointAttributeValue/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
+import { DriverVO } from '@/api/manager/driver/types'
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_units, iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
@@ -152,6 +198,45 @@ const dialog = reactive<DialogOption>({
   visible: false,
   title: ''
 });
+
+const pointDialog = reactive<DialogOption>({
+  visible: false,
+  title: ''
+});
+
+// 采集配置表单
+const pointForm = ref([] as Array<PointAttributeValueForm>);
+const pointFormRef = ref(ElForm);
+const pointAttributes = ref([] as Array<PointAttributeVO>);
+const initPointForm = async () => {
+  const res = await treePointAttribute({driverId: props.driverId});
+  pointAttributes.value = res.data;
+  pointAttributes.value.forEach(item => {
+    pointForm.value.push({
+      id: undefined,
+      pointAttributeId: item.id,
+      deviceId: props.deviceId,
+      value: undefined,
+    })
+  })
+}
+
+
+/**
+ *  属性点位配置
+ * @param row
+ */
+const handlePointConfig = (row?: DeviceAttributeVO) => {
+  pointDialog.visible = true;
+  pointDialog.title = `[${row?.attributeName}]采集配置`;
+  nextTick(() => {
+    reset();
+    // const _id = row?.id || ids.value[0]
+    // const res = await getDeviceAttribute(_id);
+    // loading.value = false;
+    // Object.assign(form.value, res.data);
+  });
+}
 
 const initFormData: DeviceAttributeForm = {
   id: undefined,
@@ -207,6 +292,13 @@ const cancel = () => {
   reset();
   dialog.visible = false;
 }
+
+/** 取消按钮 */
+const pointConfigCancel = () => {
+  // reset();
+  pointDialog.visible = false;
+}
+
 
 /** 表单重置 */
 const reset = () => {
@@ -282,7 +374,10 @@ const handleDelete = async (row?: DeviceAttributeVO) => {
   await getList();
 }
 
-onMounted(() => {
-  getList();
+onMounted(async () => {
+  loading.value = true;
+  await getList();
+  await initPointForm();
+  loading.value = false;
 });
 </script>

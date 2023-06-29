@@ -35,7 +35,14 @@
           <template v-slot:label>
             <div style="width: 100px; text-align: center;">属性管理</div>
           </template>
-          <attributeMgr :productId="device.productId" :deviceId="device.id" :add="false" :edit="false" :delete="false"></attributeMgr>
+          <attributeMgr
+            :productId="device.productId"
+            :driver-id="getProduct(device.productId)?.driverId"
+            :deviceId="device.id"
+            :add="false"
+            :edit="false"
+            :delete="false"
+          ></attributeMgr>
         </el-tab-pane>
         <el-tab-pane v-if="device.deviceType !== 2" label="功能管理" name="function"
           ><template v-slot:label>
@@ -70,13 +77,12 @@
 </template>
 
 <script setup name="Device" lang="ts">
-import { listDevice, getDevice, delDevice, addDevice, updateDevice } from '@/api/manager/device';
+import { listDevice, getDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
 import DriverAttributeConfig from '@/views/manager/driver/components/driverAttributeConfig.vue';
 import { treeProduct } from '@/api/manager/product';
 import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
-import { ElForm } from 'element-plus';
 import router from '@/router';
 import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
 
@@ -107,28 +113,15 @@ checkDevice();
 
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { iot_enable_status } = toRefs<any>(proxy?.useDict('iot_enable_status'));
 const { iot_device_type } = toRefs<any>(proxy?.useDict('iot_device_type'));
 
 const productTree = ref<ProductVO[]>([]);
 const deviceList = ref<DeviceVO[]>([]);
-const buttonLoading = ref(false);
 const loading = ref(true);
-const showSearch = ref(true);
-const ids = ref<Array<string | number>>([]);
-const single = ref(true);
-const multiple = ref(true);
 const total = ref(0);
 const daterangeCreateTime = ref([]);
 
-const queryFormRef = ref(ElForm);
-const deviceFormRef = ref(ElForm);
 const activeName = ref('attribute')
-
-const dialog = reactive<DialogOption>({
-  visible: false,
-  title: ''
-});
 
 const initFormData: DeviceForm = {
   id: undefined,
@@ -181,7 +174,7 @@ const { queryParams, form, rules } = toRefs(data);
 const getList = async () => {
   loading.value = true;
   queryParams.value.params = {};
-  if (null != daterangeCreateTime && '' != daterangeCreateTime) {
+  if (null != daterangeCreateTime) {
     queryParams.value.params["beginCreateTime"] = daterangeCreateTime.value[0];
     queryParams.value.params["endCreateTime"] = daterangeCreateTime.value[1];
   }
@@ -198,106 +191,10 @@ const getTree = async () => {
 }
 
 /** 通过产品ID 查找产品信息 */
-const getProduct = (productId: number) => {
+const getProduct = (productId: number | string) => {
   return productTree.value.find(item => item.id == productId);
 }
 
-/**
- * 切换到设备详情页面
- */
-const detailHandler = (row: DeviceVO) => {
-  router.push({ path: `/device/detail/${row.id}`, query: {} });
-}
-/** 取消按钮 */
-const cancel = () => {
-  reset();
-  dialog.visible = false;
-}
-
-/** 表单重置 */
-const reset = () => {
-  form.value = { ...initFormData };
-  deviceFormRef.value.resetFields();
-}
-
-/** 搜索按钮操作 */
-const handleQuery = () => {
-  queryParams.value.pageNum = 1;
-  getList();
-}
-
-/** 重置按钮操作 */
-const resetQuery = () => {
-  daterangeCreateTime.value = [];
-  queryFormRef.value.resetFields();
-  handleQuery();
-}
-
-/** 多选框选中数据 */
-const handleSelectionChange = (selection: DeviceVO[]) => {
-  ids.value = selection.map(item => item.id);
-  single.value = selection.length != 1;
-  multiple.value = !selection.length;
-}
-
-/** 新增按钮操作 */
-const handleAdd = () => {
-  dialog.visible = true;
-  dialog.title = "添加设备";
-
-  nextTick(() => {
-    reset();
-    // 根据查询条件选择产品
-    form.value.productId = queryParams.value.productId || form.value.productId
-  });
-}
-
-/** 修改按钮操作 */
-const handleUpdate = (row?: DeviceVO) => {
-  loading.value = true
-  dialog.visible = true;
-  dialog.title = "修改设备";
-  nextTick(async () => {
-    reset();
-    const _id = row?.id || ids.value[0]
-    const res = await getDevice(_id);
-    loading.value = false;
-    Object.assign(form.value, res.data);
-  });
-}
-
-/** 提交按钮 */
-const submitForm = () => {
-  deviceFormRef.value.validate(async (valid: boolean) => {
-    if (valid) {
-      buttonLoading.value = true;
-      if (form.value.id) {
-        await updateDevice(form.value).finally(() => buttonLoading.value = false);
-      } else {
-        await addDevice(form.value).finally(() => buttonLoading.value = false);
-      }
-      proxy?.$modal.msgSuccess("修改成功");
-      dialog.visible = false;
-      await getList();
-    }
-  });
-}
-
-/** 删除按钮操作 */
-const handleDelete = async (row?: DeviceVO) => {
-  const _ids = row?.id || ids.value;
-  await proxy?.$modal.confirm('是否确认删除设备编号为"' + _ids + '"的数据项？').finally(() => loading.value = false);
-  await delDevice(_ids);
-  proxy?.$modal.msgSuccess("删除成功");
-  await getList();
-}
-
-/** 导出按钮操作 */
-const handleExport = () => {
-  proxy?.download('manager/device/export', {
-    ...queryParams.value
-  }, `device_${new Date().getTime()}.xlsx`)
-}
 
 onMounted(() => {
   getTree();

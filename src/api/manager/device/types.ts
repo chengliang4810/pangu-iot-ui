@@ -161,4 +161,5 @@ export interface DeviceQuery extends PageQuery {
    * 创建时间
    */
   createTime?: string;
+  params?: any;
 }

@@ -220,7 +220,7 @@
 
 <script setup name="Device" lang="ts">
 import { treeDriverAttribute } from '@/api/manager/driverAttribute';
-import { DriverAttributeVO, DriverAttributeQuery, DriverAttributeForm } from '@/api/manager/driverAttribute/types';
+import { DriverAttributeVO } from '@/api/manager/driverAttribute/types';
 import { listDevice, getDevice, delDevice, addDevice, updateDevice, addChildDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
 import { treeProduct } from '@/api/manager/product';
@@ -326,7 +326,7 @@ const productChangeHandler = async (productId: number | string) => {
 const getList = async () => {
   loading.value = true;
   queryParams.value.params = {};
-  if (null != daterangeCreateTime && '' != daterangeCreateTime) {
+  if (null != daterangeCreateTime) {
     queryParams.value.params["beginCreateTime"] = daterangeCreateTime.value[0];
     queryParams.value.params["endCreateTime"] = daterangeCreateTime.value[1];
   }

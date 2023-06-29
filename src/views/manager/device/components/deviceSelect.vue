@@ -74,7 +74,7 @@
         </el-table>
 
         <pagination
-          v-show=" total > queryParams.pageSize"
+          v-show=" total > (queryParams.pageSize || 10)"
           :total=" total "
           v-model:page=" queryParams.pageNum "
           v-model:limit=" queryParams.pageSize "
@@ -93,7 +93,7 @@
 </template>
 
 <script setup name="DeviceSelect" lang="ts">
-import { listDevice, getDevice, delDevice, addDevice, updateDevice } from '@/api/manager/device';
+import { listDevice } from '@/api/manager/device';
 import { DeviceVO, DeviceQuery, DeviceForm } from '@/api/manager/device/types';
 import { treeProduct } from '@/api/manager/product';
 import { ProductVO } from '@/api/manager/product/types';
@@ -127,7 +127,6 @@ const productTree = ref<ProductVO[]>([]);
 const deviceList = ref<DeviceVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
-const showSearch = ref(true);
 const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
@@ -135,16 +134,10 @@ const total = ref(0);
 const daterangeCreateTime = ref([]);
 
 const queryFormRef = ref(ElForm);
-const deviceFormRef = ref(ElForm);
 
 const selectableHandle = (row: DeviceVO) => {
   return row.deviceType != 2;
 }
-
-const dialog = reactive<DialogOption>({
-  visible: false,
-  title: ''
-});
 
 const initFormData: DeviceForm = {
   id: undefined,
@@ -178,7 +171,7 @@ const { queryParams, form } = toRefs(data);
 const getList = async () => {
   loading.value = true;
   queryParams.value.params = {};
-  if (null != daterangeCreateTime && '' != daterangeCreateTime) {
+  if (null != daterangeCreateTime) {
     queryParams.value.params["beginCreateTime"] = daterangeCreateTime.value[0];
     queryParams.value.params["endCreateTime"] = daterangeCreateTime.value[1];
   }
@@ -221,13 +214,6 @@ const reset = () => {
 const handleQuery = () => {
   queryParams.value.pageNum = 1;
   getList();
-}
-
-/** 重置按钮操作 */
-const resetQuery = () => {
-  daterangeCreateTime.value = [];
-  queryFormRef.value.resetFields();
-  handleQuery();
 }
 
 /** 多选框选中数据 */
