@@ -36,14 +36,7 @@
           <template v-slot:label>
             <div style="width: 100px; text-align: center;">属性管理</div>
           </template>
-          <attributeMgr
-            :productId="device.productId"
-            :driverId="product.driverId"
-            :deviceId="device.id"
-            :add="false"
-            :edit="false"
-            :delete="false"
-          ></attributeMgr>
+          <attributeMgr :productId="device.productId" :deviceId="device.id" :add="false" :edit="false" :delete="false"></attributeMgr>
         </el-tab-pane>
         <el-tab-pane v-if="device.deviceType !== 2" label="功能管理" name="function"
           ><template v-slot:label>

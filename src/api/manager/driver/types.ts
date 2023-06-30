@@ -28,7 +28,6 @@ export interface DriverVO {
    * 描述
    */
   remark: string;
-
 }
 
 export interface DriverForm extends BaseEntity {
@@ -56,7 +55,6 @@ export interface DriverForm extends BaseEntity {
    * 描述
    */
   remark?: string;
-
 }
 
 export interface DriverQuery extends PageQuery {
@@ -74,5 +72,4 @@ export interface DriverQuery extends PageQuery {
    * 启用|禁用
    */
   enable?: number;
-
 }

@@ -25,6 +25,12 @@ export interface PointAttributeValueVO {
   value: string;
 }
 
+export interface PointAttributeValueBatchForm {
+  deviceId?: string | number;
+  deviceAttributeId?: string | number;
+  pointAttributeConfig?: any;
+}
+
 export interface PointAttributeValueForm extends BaseEntity {
   /**
    * 主键ID

@@ -3,6 +3,18 @@ import { AxiosPromise } from 'axios';
 import { DriverVO, DriverForm, DriverQuery } from '@/api/manager/driver/types';
 
 /**
+ * 查询父级设备对应的驱动列表
+ * @param query
+ * @returns {*}
+ */
+export const treeParentDeviceDriver = (deviceId: string | number): AxiosPromise<DriverVO[]> => {
+  return request({
+    url: '/manager/driver/parentDevice/' + deviceId,
+    method: 'get'
+  });
+};
+
+/**
  * 查询驱动列表
  * @param query
  * @returns {*}
