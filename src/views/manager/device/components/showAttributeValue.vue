@@ -29,6 +29,7 @@
 
 <script setup name="DeviceSelect" lang="ts">
 import { listDeviceAttribute } from '@/api/manager/deviceAttribute';
+import { ComponentInternalInstance } from 'vue';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_units, iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
 
