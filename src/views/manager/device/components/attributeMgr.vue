@@ -127,7 +127,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
+    <el-dialog :title="pointDialog.title" v-loading="configFormLoading" v-model="pointDialog.visible" width="500px" append-to-body>
       <el-form ref="pointFormRef" :model="pointForm" label-width="80px">
         <el-form-item label="驱动" prop="driverId" v-if="driverList.length > 1">
           <el-select v-model="pointForm.driverId" placeholder="请选择驱动" style="width: 100%;" @change="driverChangeHandler">
@@ -136,17 +136,17 @@
         </el-form-item>
 
         <el-form-item
-          v-for="(item) in pointAttributes"
+          v-for="(item, index) in pointAttributes"
           :label="item.displayName"
           :key="item.id"
-          :prop="'pointAttributeConfig.'+ item.id"
+          :prop="'pointAttributeConfig.'+ index +'.value'"
           :rules="{
             required: item.required != 0,
             message: item.displayName + '不能为空',
             trigger: 'blur',
           }"
         >
-          <el-input v-model="pointForm.pointAttributeConfig[item.id]" :placeholder="'请输入' + item.displayName" />
+          <el-input v-model="pointForm.pointAttributeConfig[index].value" :placeholder="'请输入' + item.displayName + ', 如：' + item.defaultValue" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -165,7 +165,8 @@ import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceA
 import { DeviceAttributeVO, DeviceAttributeQuery, DeviceAttributeForm } from '@/api/manager/deviceAttribute/types';
 import { treePointAttribute,  } from '@/api/manager/pointAttribute';
 import { PointAttributeVO } from '@/api/manager/pointAttribute/types';
-import { PointAttributeValueBatchForm } from '@/api/manager/pointAttributeValue/types';
+import { treePointAttributeValue } from '@/api/manager/pointAttributeValue';
+import { PointAttributeValueBatchForm, PointAttributeValueVO } from '@/api/manager/pointAttributeValue/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 import { treeParentDeviceDriver,  } from '@/api/manager/driver';
@@ -192,6 +193,7 @@ const props = withDefaults(defineProps<attributeMgrProps>(), {
 const deviceAttributeList = ref<DeviceAttributeVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
+const configFormLoading = ref(false);
 const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
@@ -349,10 +351,11 @@ const handleDelete = async (row?: DeviceAttributeVO) => {
  *  属性点位配置
  * @param row
  */
- const handlePointConfig = (row?: DeviceAttributeVO) => {
+ const handlePointConfig = async (row?: DeviceAttributeVO) => {
   pointDialog.visible = true;
   pointDialog.title = `[${row?.attributeName}] 采集配置`;
   pointForm.value.deviceAttributeId = row?.id;
+  await loadPointAttributeValue();
   nextTick(() => {
     reset();
   });
@@ -368,7 +371,7 @@ const getParendDeviceDriver = async () => {
 
 
 // 采集配置表单
-const pointForm = ref<PointAttributeValueBatchForm   & {driverId?:string | number}>({pointAttributeConfig: {}, deviceId: props.deviceId});
+const pointForm = ref<PointAttributeValueBatchForm   & {driverId?:string | number}>({pointAttributeConfig: [], deviceId: props.deviceId});
 const pointFormRef = ref(ElForm);
 const pointAttributes = ref([] as Array<PointAttributeVO>);
 const initPointForm = async () => {
@@ -379,16 +382,34 @@ const initPointForm = async () => {
 }
 
 /**
+ * 加载点位属性值
+ */
+const pointAttributeValueList = ref([] as Array<PointAttributeValueVO>);
+const loadPointAttributeValue = async () => {
+  if (pointForm.value.deviceAttributeId == undefined) return;
+  const res = await treePointAttributeValue({deviceAttributeId: pointForm.value.deviceAttributeId, deviceId: props.deviceId});
+  pointAttributeValueList.value = res.data;
+}
+
+/**
  * 驱动选择事件
  * 重新加载采集配置
  */
 const driverChangeHandler = async () => {
-  pointForm.value.pointAttributeConfig = {};
+  configFormLoading.value = true;
+  pointForm.value.pointAttributeConfig = [];
   const res = await treePointAttribute({driverId: pointForm.value.driverId});
+  await loadPointAttributeValue();
   pointAttributes.value = res.data;
-  console.log(pointAttributes.value, 'pointAttributes.value')
-  pointAttributes.value.forEach(item => pointForm.value.pointAttributeConfig[item.id] = item.defaultValue)
-  console.log(pointForm.value, "pointForm.value")
+
+  pointAttributes.value.forEach(item => {
+    const pointAttributeValue = pointAttributeValueList.value.find(value => value.pointAttributeId == item.id);
+    pointForm.value.pointAttributeConfig?.push({
+    attributeId: item.id,
+    value: pointAttributeValue?.value || item.defaultValue
+  })
+  configFormLoading.value = false;
+});
 }
 
 /** 提交按钮 */
