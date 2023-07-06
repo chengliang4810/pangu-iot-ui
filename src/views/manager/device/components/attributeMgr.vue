@@ -165,7 +165,7 @@ import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceA
 import { DeviceAttributeVO, DeviceAttributeQuery, DeviceAttributeForm } from '@/api/manager/deviceAttribute/types';
 import { treePointAttribute,  } from '@/api/manager/pointAttribute';
 import { PointAttributeVO } from '@/api/manager/pointAttribute/types';
-import { PointAttributeValueBatchForm } from '@/api/manager/pointAttributeValue/types';
+import { PointAttributeValueBatchForm, batchAddPointAttributeValue } from '@/api/manager/pointAttributeValue/types';
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 import { treeParentDeviceDriver,  } from '@/api/manager/driver';
@@ -396,6 +396,7 @@ const submitPointForm = () => {
   pointFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
       buttonLoading.value = true;
+      await batchAddPointAttributeValue(pointForm.value).finally(() =>  buttonLoading.value = false);
       await proxy?.$modal.msgSuccess("修改成功");
       pointDialog.visible = false;
       console.log(pointForm.value);

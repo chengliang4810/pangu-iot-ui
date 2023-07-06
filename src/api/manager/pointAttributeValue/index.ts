@@ -1,6 +1,11 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { PointAttributeValueVO, PointAttributeValueForm, PointAttributeValueQuery } from '@/api/manager/pointAttributeValue/types';
+import {
+  PointAttributeValueVO,
+  PointAttributeValueForm,
+  PointAttributeValueBatchForm,
+  PointAttributeValueQuery
+} from '@/api/manager/pointAttributeValue/types';
 
 /**
  * 查询驱动属性值列表
@@ -34,6 +39,18 @@ export const getPointAttributeValue = (id: string | number): AxiosPromise<PointA
 export const addPointAttributeValue = (data: PointAttributeValueForm) => {
   return request({
     url: '/manager/pointAttributeValue',
+    method: 'post',
+    data: data
+  });
+};
+
+/**
+ * 新增驱动属性值
+ * @param data
+ */
+export const batchAddPointAttributeValue = (data: PointAttributeValueBatchForm) => {
+  return request({
+    url: '/manager/pointAttributeValue/batch',
     method: 'post',
     data: data
   });
