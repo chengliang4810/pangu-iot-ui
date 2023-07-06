@@ -417,6 +417,7 @@ const submitPointForm = () => {
   pointFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
       buttonLoading.value = true;
+      await batchAddPointAttributeValue(pointForm.value).finally(() =>  buttonLoading.value = false);
       await proxy?.$modal.msgSuccess("修改成功");
       pointDialog.visible = false;
       console.log(pointForm.value);
