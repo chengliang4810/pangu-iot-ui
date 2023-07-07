@@ -22,6 +22,20 @@ export const listPointAttributeValue = (query?: PointAttributeValueQuery): Axios
 };
 
 /**
+ * 查询驱动属性值列表
+ * @param query
+ * @returns {*}
+ */
+
+export const treePointAttributeValue = (query?: PointAttributeValueQuery): AxiosPromise<PointAttributeValueVO[]> => {
+  return request({
+    url: '/manager/pointAttributeValue/tree',
+    method: 'get',
+    params: query
+  });
+};
+
+/**
  * 查询驱动属性值详细
  * @param id
  */

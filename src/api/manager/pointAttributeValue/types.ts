@@ -28,7 +28,7 @@ export interface PointAttributeValueVO {
 export interface PointAttributeValueBatchForm {
   deviceId?: string | number;
   deviceAttributeId?: string | number;
-  pointAttributeConfig?: any;
+  pointAttributeConfig: any[];
 }
 
 export interface PointAttributeValueForm extends BaseEntity {
@@ -59,6 +59,10 @@ export interface PointAttributeValueForm extends BaseEntity {
 }
 
 export interface PointAttributeValueQuery extends PageQuery {
+  /**
+   * 设备ID
+   */
+  driverId?: string | number;
   /**
    * 点位属性ID
    */

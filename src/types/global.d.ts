@@ -21,6 +21,12 @@ declare global {
      * 是否显示
      */
     visible: boolean;
+    /**
+     * 是否显示loading
+     * @default false
+     * @type boolean
+      */
+    loading?: boolean;
   }
 
   interface UploadOption {
