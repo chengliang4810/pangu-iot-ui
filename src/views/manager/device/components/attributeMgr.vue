@@ -173,15 +173,6 @@ import { treePointAttribute,  } from '@/api/manager/pointAttribute';
 import { batchAddPointAttributeValue, treePointAttributeValue  } from '@/api/manager/pointAttributeValue';
 import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceAttribute, updateDeviceAttribute } from '@/api/manager/deviceAttribute';
 
-
-import { PointAttributeVO } from '@/api/manager/pointAttribute/types';
-import { treePointAttributeValue } from '@/api/manager/pointAttributeValue';
-import { PointAttributeValueBatchForm, PointAttributeValueVO } from '@/api/manager/pointAttributeValue/types';
-import { ComponentInternalInstance } from 'vue';
-import { ElForm } from 'element-plus';
-import { treeParentDeviceDriver,  } from '@/api/manager/driver';
-import { DriverVO } from '@/api/manager/driver/types'
-
 export interface attributeMgrProps {
   productId: string | number
   deviceId?: string | number
@@ -391,23 +382,12 @@ const initPointForm = async () => {
 }
 
 /**
- * 加载点位属性值
- */
-const pointAttributeValueList = ref([] as Array<PointAttributeValueVO>);
-const loadPointAttributeValue = async () => {
-  if (pointForm.value.deviceAttributeId == undefined) return;
-  const res = await treePointAttributeValue({deviceAttributeId: pointForm.value.deviceAttributeId, deviceId: props.deviceId});
-  pointAttributeValueList.value = res.data;
-}
-
-/**
  * 驱动选择事件
  * 重新加载采集配置
  */
 const driverChangeHandler = async () => {
   pointForm.value.pointAttributeConfig = [];
   const res = await treePointAttribute({driverId: pointForm.value.driverId});
-  await loadPointAttributeValue();
   pointAttributes.value = res.data;
   pointAttributes.value.forEach((item, index) => { pointForm.value.pointAttributeConfig[index] = {value: item.defaultValue, pointAttributeId: item.id, }})
 }
