@@ -83,8 +83,8 @@
       />
     </el-card>
     <!-- 添加或修改设备属性对话框 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
-      <el-form ref="deviceAttributeFormRef" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px" append-to-body>
+      <el-form ref="deviceAttributeFormRef" :model="form" :rules="rules" label-width="100px">
         <!-- <el-form-item label="产品ID" prop="productId">
           <el-input v-model="form.productId" placeholder="请输入产品ID" />
         </el-form-item>
@@ -107,9 +107,9 @@
             <el-option v-for="dict in iot_units" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="数据预处理代码" prop="pretreatmentScript">
+        <el-form-item label="数据预处理" prop="pretreatmentScript">
           <el-input v-model="form.pretreatmentScript" type="textarea" placeholder="请输入内容" />
-        </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item label="值映射ID" prop="valueMapId">
           <el-select v-model="form.valueMapId" placeholder="请选择值映射ID">
             <el-option v-for="dict in iot_units" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
@@ -127,7 +127,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog  :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
+    <el-dialog :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
       <el-form v-loading="pointDialog.loading" ref="pointFormRef" :model="pointForm" label-width="80px">
         <el-form-item label="驱动" prop="driverId" v-if="driverList.length > 1">
           <el-select v-model="pointForm.driverId" placeholder="请选择驱动" style="width: 100%;" @change="driverChangeHandler">
