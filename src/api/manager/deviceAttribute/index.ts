@@ -44,6 +44,9 @@ export const addDeviceAttribute = (data: DeviceAttributeForm) => {
  * @param data
  */
 export const updateDeviceAttribute = (data: DeviceAttributeForm) => {
+  // 删除对象中productId与deviceId
+  delete data.productId;
+  delete data.deviceId;
   return request({
     url: '/manager/deviceAttribute',
     method: 'put',

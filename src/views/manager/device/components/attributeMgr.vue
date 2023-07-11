@@ -201,6 +201,7 @@ const multiple = ref(true);
 const total = ref(0);
 
 const queryFormRef = ref(ElForm);
+const deviceAttributeFormRef = ref(ElForm);
 
 const dialog = reactive<DialogOption>({
   visible: false,
@@ -325,7 +326,7 @@ const handleUpdate = (row?: DeviceAttributeVO) => {
 
 /** 提交按钮 */
 const submitForm = () => {
-  pointFormRef.value.validate(async (valid: boolean) => {
+  deviceAttributeFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
       buttonLoading.value = true;
       if (form.value.id) {
