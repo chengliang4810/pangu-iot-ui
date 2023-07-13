@@ -133,15 +133,7 @@
         <!-- <el-form-item label="设备分组ID" prop="groupId">
           <el-input v-model="form.groupId" placeholder="请输入设备分组ID" />
         </el-form-item> -->
-        <el-form-item
-          label="设备编号"
-          prop="code"
-          :rules="{
-            required: true,
-            message: '设备编号不能为空',
-            trigger: 'blur',
-          }"
-        >
+        <el-form-item label="设备编号" prop="code">
           <el-input v-model=" form.code " placeholder="请输入设备编号" />
         </el-form-item>
         <el-form-item
