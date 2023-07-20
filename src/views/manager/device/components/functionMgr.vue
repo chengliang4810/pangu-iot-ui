@@ -16,7 +16,7 @@
             </el-form-item>
           </el-form>
           <el-col class="top-right-btn" :span="1.5" v-if="props.add">
-            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['manager:deviceAttribute:add']">新增</el-button>
+            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['manager:deviceFunction:add']">新增</el-button>
           </el-col>
         </el-row>
       </template>
@@ -24,21 +24,19 @@
       <el-table v-loading="loading" :data="deviceAttributeList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="主键" align="center" prop="id" v-if="false" />
-        <el-table-column label="属性名称" align="center" prop="attributeName" />
+        <el-table-column label="功能名称" align="center" prop="functionName" />
         <el-table-column label="标识符" align="center" prop="identifier" />
-        <el-table-column label="属性类型" align="center" prop="attributeType">
+        <el-table-column label="数据类型" align="center" prop="dataType">
           <template #default="scope">
-            <dict-tag :options="iot_attribute_type" :value="scope.row.attributeType" />
+            <dict-tag :options="iot_attribute_type" :value="scope.row.dataType" />
           </template>
         </el-table-column>
-        <el-table-column label="属性来源" align="center" :prop="deviceId">
+        <el-table-column label="执行方式" align="center" prop="async">
           <template #default="scope">
-            <span>{{ scope.row.deviceId == 0 ? '产品': '设备' }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="单位" align="center" prop="unit">
-          <template #default="scope">
-            <dict-tag :options="iot_units" :value="scope.row.unit" />
+            <div>
+              <el-tag v-if="scope.row.async">异步</el-tag>
+              <el-tag v-else>同步</el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -55,11 +53,11 @@
               type="primary"
               icon="Edit"
               @click="handlePointConfig(scope.row)"
-              v-hasPermi="['manager:deviceAttribute:edit']"
+              v-hasPermi="['manager:deviceFunction:edit']"
               >采集配置
             </el-button>
             <el-tooltip v-if="props.edit" content="修改" placement="top">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceAttribute:edit']"></el-button>
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceFunction:edit']"></el-button>
             </el-tooltip>
             <el-tooltip v-if="props.delete" content="删除" placement="top">
               <el-button
@@ -67,7 +65,7 @@
                 type="primary"
                 icon="Delete"
                 @click="handleDelete(scope.row)"
-                v-hasPermi="['manager:deviceAttribute:remove']"
+                v-hasPermi="['manager:deviceFunction:remove']"
               ></el-button>
             </el-tooltip>
           </template>
