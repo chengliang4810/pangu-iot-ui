@@ -8,6 +8,19 @@ import { DeviceAttributeVO, DeviceAttributeForm, DeviceAttributeQuery } from '@/
  * @returns {*}
  */
 
+export const listDeviceAttributeByDeviceId = (deviceId: string | number, realTime: boolean): AxiosPromise<DeviceAttributeVO[]> => {
+  return request({
+    url: `/manager/deviceAttribute/device/${deviceId}?realTime=${realTime}`,
+    method: 'get'
+  });
+};
+
+/**
+ * 查询设备属性列表
+ * @param query
+ * @returns {*}
+ */
+
 export const listDeviceAttribute = (query?: DeviceAttributeQuery): AxiosPromise<DeviceAttributeVO[]> => {
   return request({
     url: '/manager/deviceAttribute/list',

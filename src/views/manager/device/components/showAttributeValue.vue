@@ -16,19 +16,14 @@
       </el-col>
     </el-row> -->
 
-    <avue-data-tabs :option="attributeValueOption"></avue-data-tabs>
-    <pagination
-      v-show="total > (queryParams.pageSize || 10)"
-      :total="total"
-      v-model:page="queryParams.pageNum"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getDeviceAttribute"
-    />
+    <!-- <avue-data-tabs :option="attributeValueOption"></avue-data-tabs> -->
+
+    <avue-data-display :option="attributeValueOption"></avue-data-display>
   </view>
 </template>
 
 <script setup name="DeviceSelect" lang="ts">
-import { listDeviceAttribute } from '@/api/manager/deviceAttribute';
+import { listDeviceAttributeByDeviceId } from '@/api/manager/deviceAttribute';
 import { ComponentInternalInstance } from 'vue';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { iot_units, iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
@@ -39,13 +34,6 @@ type Option = {
   productId: number | string
 }
 const props = defineProps<Option>();
-
-// 分页
-const total = ref(0);
-const queryParams = ref({
-  pageNum: 1,
-  pageSize: 10
-});
 
 // 动态卡片
 const attributeValueOption = ref({
@@ -58,21 +46,18 @@ const realTime = ref(false);
 
 // 获取设备属性
 const getDeviceAttribute = async () => {
-  const res = await listDeviceAttribute({
-    deviceId: props.deviceId,
-    productId: props.productId,
-    pageNum: 1,
-    pageSize: 10
-  });
-  total.value = res.total;
-  res.rows.map((item: any) => {
+  const res = await listDeviceAttributeByDeviceId(props.deviceId, true);
+  res.data.map((item: any) => {
+    console.log("item.value",item.value)
     attributeValueOption.value.data.push({
       title: item.attributeName + '(' + item.identifier + ')',
-      subtitle: iot_attribute_type.value.find((i: any) => i.value === item.attributeType)?.label,
-      count: Math.floor(Math.random() * 10000) + '',
-      allcount: iot_units.value.find((i: any) => i.value === item.unit)?.label || '未设置单位',
+      // subtitle: iot_attribute_type.value.find((i: any) => i.value === item.attributeType)?.label,
+      count: item.value || '-',
+      decimals: 2,
+      animation: false,
+      // allcount: iot_units.value.find((i: any) => i.value === item.unit)?.label || '未设置单位',
       text: item.createTime,
-      color: 'rgb(64, 158, 255)',
+      // color: 'rgb(64, 158, 255)',
     })
   })
 }
