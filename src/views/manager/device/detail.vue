@@ -41,8 +41,9 @@
         <el-tab-pane v-if="device.deviceType !== 2" label="功能管理" name="function"
           ><template v-slot:label>
             <div style="width: 100px; text-align: center;">功能管理</div>
-          </template></el-tab-pane
-        >
+          </template>
+          <functionMgr :productId="device.productId" :deviceId="device.id" :add="false" :edit="false" :delete="false"></functionMgr>
+        </el-tab-pane>
         <!-- <el-tab-pane v-if="device.deviceType !== 2" label="告警规则" name="alarm">Task</el-tab-pane> -->
         <el-tab-pane label="日志" v-if="device.deviceType !== 2" name="log"
           ><template v-slot:label>
@@ -78,6 +79,7 @@ import { getProduct } from '@/api/manager/product';
 import { DeviceVO } from '@/api/manager/device/types';
 import { ProductVO } from '@/api/manager/product/types';
 import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
+import functionMgr from '@/views/manager/device/components/functionMgr.vue';
 import DriverAttributeConfig from '@/views/manager/driver/components/driverAttributeConfig.vue';
 import ShowAttributeValue from '@/views/manager/device/components/showAttributeValue.vue';
 

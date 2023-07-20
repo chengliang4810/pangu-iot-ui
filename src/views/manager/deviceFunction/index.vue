@@ -11,12 +11,7 @@
           </el-form-item>
           <el-form-item label="驱动ID" prop="driverId">
             <el-select v-model="queryParams.driverId" placeholder="请选择驱动ID" clearable>
-              <el-option
-                v-for="dict in iot_device_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
+              <el-option v-for="dict in iot_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="设备属性" prop="functionStatusAttribute">
@@ -30,22 +25,12 @@
           </el-form-item>
           <el-form-item label="数据类型" prop="dataType">
             <el-select v-model="queryParams.dataType" placeholder="请选择数据类型" clearable>
-              <el-option
-                v-for="dict in iot_attribute_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
+              <el-option v-for="dict in iot_attribute_type" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="执行方式" prop="async">
             <el-select v-model="queryParams.async" placeholder="请选择执行方式" clearable>
-              <el-option
-                v-for="dict in sys_normal_disable"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
+              <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -63,10 +48,14 @@
             <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['manager:deviceFunction:add']">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['manager:deviceFunction:edit']">修改</el-button>
+            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['manager:deviceFunction:edit']"
+              >修改</el-button
+            >
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['manager:deviceFunction:remove']">删除</el-button>
+            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['manager:deviceFunction:remove']"
+              >删除</el-button
+            >
           </el-col>
           <el-col :span="1.5">
             <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['manager:deviceFunction:export']">导出</el-button>
@@ -82,7 +71,7 @@
         <el-table-column label="设备编号" align="center" prop="deviceId" />
         <el-table-column label="驱动ID" align="center" prop="driverId">
           <template #default="scope">
-            <dict-tag :options="iot_device_type" :value="scope.row.driverId"/>
+            <dict-tag :options="iot_device_type" :value="scope.row.driverId" />
           </template>
         </el-table-column>
         <el-table-column label="设备属性" align="center" prop="functionStatusAttribute" />
@@ -90,12 +79,12 @@
         <el-table-column label="标识符" align="center" prop="identifier" />
         <el-table-column label="数据类型" align="center" prop="dataType">
           <template #default="scope">
-            <dict-tag :options="iot_attribute_type" :value="scope.row.dataType"/>
+            <dict-tag :options="iot_attribute_type" :value="scope.row.dataType" />
           </template>
         </el-table-column>
         <el-table-column label="执行方式" align="center" prop="async">
           <template #default="scope">
-            <dict-tag :options="sys_normal_disable" :value="scope.row.async"/>
+            <dict-tag :options="sys_normal_disable" :value="scope.row.async" />
           </template>
         </el-table-column>
         <el-table-column label="描述" align="center" prop="remark" />
@@ -105,19 +94,19 @@
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceFunction:edit']"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['manager:deviceFunction:remove']"></el-button>
+              <el-button
+                link
+                type="primary"
+                icon="Delete"
+                @click="handleDelete(scope.row)"
+                v-hasPermi="['manager:deviceFunction:remove']"
+              ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
 
-      <pagination
-          v-show="total>0"
-          :total="total"
-          v-model:page="queryParams.pageNum"
-          v-model:limit="queryParams.pageSize"
-          @pagination="getList"
-      />
+      <pagination v-show="total>0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
     </el-card>
     <!-- 添加或修改设备功能对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
@@ -130,12 +119,7 @@
         </el-form-item>
         <el-form-item label="驱动ID" prop="driverId">
           <el-select v-model="form.driverId" placeholder="请选择驱动ID">
-            <el-option
-                v-for="dict in iot_device_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="parseInt(dict.value)"
-            ></el-option>
+            <el-option v-for="dict in iot_device_type" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="设备属性" prop="functionStatusAttribute">
@@ -149,29 +133,19 @@
         </el-form-item>
         <el-form-item label="数据类型" prop="dataType">
           <el-select v-model="form.dataType" placeholder="请选择数据类型">
-            <el-option
-                v-for="dict in iot_attribute_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
+            <el-option v-for="dict in iot_attribute_type" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="数据类型对象参数" prop="specs">
-            <el-input v-model="form.specs" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.specs" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="执行方式" prop="async">
           <el-select v-model="form.async" placeholder="请选择执行方式">
-            <el-option
-                v-for="dict in sys_normal_disable"
-                :key="dict.value"
-                :label="dict.label"
-                :value="parseInt(dict.value)"
-            ></el-option>
+            <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <template #footer>
