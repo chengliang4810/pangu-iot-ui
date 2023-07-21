@@ -10,7 +10,7 @@ import { DeviceAttributeVO, DeviceAttributeForm, DeviceAttributeQuery } from '@/
 
 export const listDeviceAttributeByDeviceId = (deviceId: string | number, realTime: boolean): AxiosPromise<DeviceAttributeVO[]> => {
   return request({
-    url: `/manager/deviceAttribute/device/${deviceId}?realTime=${realTime}`,
+    url: `/manager/thing/attribute/device/${deviceId}?realTime=${realTime}`,
     method: 'get'
   });
 };
@@ -23,7 +23,7 @@ export const listDeviceAttributeByDeviceId = (deviceId: string | number, realTim
 
 export const listDeviceAttribute = (query?: DeviceAttributeQuery): AxiosPromise<DeviceAttributeVO[]> => {
   return request({
-    url: '/manager/deviceAttribute/list',
+    url: '/manager/thing/attribute/list',
     method: 'get',
     params: query
   });
@@ -35,7 +35,7 @@ export const listDeviceAttribute = (query?: DeviceAttributeQuery): AxiosPromise<
  */
 export const getDeviceAttribute = (id: string | number): AxiosPromise<DeviceAttributeVO> => {
   return request({
-    url: '/manager/deviceAttribute/' + id,
+    url: '/manager/thing/attribute/' + id,
     method: 'get'
   });
 };
@@ -46,7 +46,7 @@ export const getDeviceAttribute = (id: string | number): AxiosPromise<DeviceAttr
  */
 export const addDeviceAttribute = (data: DeviceAttributeForm) => {
   return request({
-    url: '/manager/deviceAttribute',
+    url: '/manager/thing/attribute',
     method: 'post',
     data: data
   });
@@ -61,7 +61,7 @@ export const updateDeviceAttribute = (data: DeviceAttributeForm) => {
   delete data.productId;
   delete data.deviceId;
   return request({
-    url: '/manager/deviceAttribute',
+    url: '/manager/thing/attribute',
     method: 'put',
     data: data
   });
@@ -73,7 +73,7 @@ export const updateDeviceAttribute = (data: DeviceAttributeForm) => {
  */
 export const delDeviceAttribute = (id: string | number | Array<string | number>) => {
   return request({
-    url: '/manager/deviceAttribute/' + id,
+    url: '/manager/thing/attribute/' + id,
     method: 'delete'
   });
 };

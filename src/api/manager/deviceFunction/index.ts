@@ -10,7 +10,7 @@ import { DeviceFunctionVO, DeviceFunctionForm, DeviceFunctionQuery } from '@/api
 
 export const listDeviceFunction = (query?: DeviceFunctionQuery): AxiosPromise<DeviceFunctionVO[]> => {
   return request({
-    url: '/manager/deviceFunction/list',
+    url: '/manager/devicefunction/list',
     method: 'get',
     params: query
   });
@@ -22,7 +22,7 @@ export const listDeviceFunction = (query?: DeviceFunctionQuery): AxiosPromise<De
  */
 export const getDeviceFunction = (id: string | number): AxiosPromise<DeviceFunctionVO> => {
   return request({
-    url: '/manager/deviceFunction/' + id,
+    url: '/manager/thing/function/' + id,
     method: 'get'
   });
 };
@@ -33,7 +33,7 @@ export const getDeviceFunction = (id: string | number): AxiosPromise<DeviceFunct
  */
 export const addDeviceFunction = (data: DeviceFunctionForm) => {
   return request({
-    url: '/manager/deviceFunction',
+    url: '/manager/thing/function',
     method: 'post',
     data: data
   });
@@ -45,7 +45,7 @@ export const addDeviceFunction = (data: DeviceFunctionForm) => {
  */
 export const updateDeviceFunction = (data: DeviceFunctionForm) => {
   return request({
-    url: '/manager/deviceFunction',
+    url: '/manager/thing/function',
     method: 'put',
     data: data
   });
@@ -57,7 +57,7 @@ export const updateDeviceFunction = (data: DeviceFunctionForm) => {
  */
 export const delDeviceFunction = (id: string | number | Array<string | number>) => {
   return request({
-    url: '/manager/deviceFunction/' + id,
+    url: '/manager/thing/function/' + id,
     method: 'delete'
   });
 };
