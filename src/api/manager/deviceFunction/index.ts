@@ -10,7 +10,7 @@ import { DeviceFunctionVO, DeviceFunctionForm, DeviceFunctionQuery } from '@/api
 
 export const listDeviceFunction = (query?: DeviceFunctionQuery): AxiosPromise<DeviceFunctionVO[]> => {
   return request({
-    url: '/manager/devicefunction/list',
+    url: '/manager/thing/function/list',
     method: 'get',
     params: query
   });

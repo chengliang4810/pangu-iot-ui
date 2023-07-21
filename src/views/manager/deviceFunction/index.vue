@@ -336,13 +336,6 @@ const handleDelete = async (row?: DeviceFunctionVO) => {
   await getList();
 }
 
-/** 导出按钮操作 */
-const handleExport = () => {
-  proxy?.download('manager/deviceFunction/export', {
-    ...queryParams.value
-  }, `deviceFunction_${new Date().getTime()}.xlsx`)
-}
-
 onMounted(() => {
   getList();
 });

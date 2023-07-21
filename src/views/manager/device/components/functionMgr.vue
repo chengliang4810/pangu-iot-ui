@@ -82,37 +82,40 @@
     </el-card>
     <!-- 添加或修改设备属性对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px" append-to-body>
-      <el-form ref="deviceAttributeFormRef" :model="form" :rules="rules" label-width="100px">
-        <!-- <el-form-item label="产品ID" prop="productId">
+      <el-form ref="deviceFunctionFormRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="产品ID" prop="productId">
           <el-input v-model="form.productId" placeholder="请输入产品ID" />
         </el-form-item>
         <el-form-item label="设备编号" prop="deviceId">
           <el-input v-model="form.deviceId" placeholder="请输入设备编号" />
-        </el-form-item> -->
-        <el-form-item label="属性名称" prop="attributeName">
-          <el-input v-model="form.attributeName" placeholder="请输入属性名称" />
+        </el-form-item>
+        <el-form-item label="驱动" prop="driverId" v-if="driverList.length > 1">
+          <el-select v-model="form.driverId" placeholder="请选择驱动" style="width: 100%;" @change="driverChangeHandler">
+            <el-option v-for="item in driverList" :key="item.id" :label="item.displayName" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备属性" prop="functionStatusAttribute">
+          <el-input v-model="form.functionStatusAttribute" placeholder="请输入设备属性" />
+        </el-form-item>
+        <el-form-item label="功能名称" prop="functionName">
+          <el-input v-model="form.functionName" placeholder="请输入功能名称" />
         </el-form-item>
         <el-form-item label="标识符" prop="identifier">
           <el-input v-model="form.identifier" placeholder="请输入标识符" />
         </el-form-item>
-        <el-form-item label="属性类型" prop="attributeType">
-          <el-select v-model="form.attributeType" placeholder="请选择属性类型" style="width: 100%;">
+        <el-form-item label="数据类型" prop="dataType">
+          <el-select v-model="form.dataType" placeholder="请选择数据类型">
             <el-option v-for="dict in iot_attribute_type" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-select v-model="form.unit" placeholder="请选择单位" style="width: 100%;">
-            <el-option v-for="dict in iot_units" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
+        <el-form-item label="数据类型对象参数" prop="specs">
+          <el-input v-model="form.specs" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="执行方式" prop="async">
+          <el-select v-model="form.async" placeholder="请选择执行方式">
+            <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数据预处理" prop="pretreatmentScript">
-          <el-input v-model="form.pretreatmentScript" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <!-- <el-form-item label="值映射ID" prop="valueMapId">
-          <el-select v-model="form.valueMapId" placeholder="请选择值映射ID">
-            <el-option v-for="dict in iot_units" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="描述" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -127,12 +130,6 @@
 
     <el-dialog :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
       <el-form v-loading="pointDialog.loading" ref="pointFormRef" :model="pointForm" label-width="80px">
-        <el-form-item label="驱动" prop="driverId" v-if="driverList.length > 1">
-          <el-select v-model="pointForm.driverId" placeholder="请选择驱动" style="width: 100%;" @change="driverChangeHandler">
-            <el-option v-for="item in driverList" :key="item.id" :label="item.displayName" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-
         <el-form-item
           v-for="(item, index) in pointAttributes"
           :label="item.displayName"
@@ -162,16 +159,15 @@
 import { ElForm } from 'element-plus';
 import { ComponentInternalInstance } from 'vue';
 import { DriverVO } from '@/api/manager/driver/types'
-import { PointAttributeVO } from '@/api/manager/pointAttribute/types';
-import { PointAttributeValueBatchForm, PointAttributeValueVO } from '@/api/manager/pointAttributeValue/types';
-import { DeviceAttributeVO, DeviceAttributeQuery, DeviceAttributeForm } from '@/api/manager/deviceAttribute/types';
+import { DeviceFunctionVO, DeviceFunctionQuery, DeviceFunctionForm } from '@/api/manager/deviceFunction/types';
 
 import { treeParentDeviceDriver,  } from '@/api/manager/driver';
-import { treePointAttribute,  } from '@/api/manager/pointAttribute';
-import { batchAddPointAttributeValue, treePointAttributeValue  } from '@/api/manager/pointAttributeValue';
-import { listDeviceAttribute, getDeviceAttribute, delDeviceAttribute, addDeviceAttribute, updateDeviceAttribute } from '@/api/manager/deviceAttribute';
+import { listDeviceFunction, getDeviceFunction, delDeviceFunction, addDeviceFunction, updateDeviceFunction } from '@/api/manager/deviceFunction';
 
-export interface attributeMgrProps {
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const { iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
+
+export interface functionMgrProps {
   productId: string | number
   deviceId?: string | number
   add?: boolean
@@ -179,27 +175,23 @@ export interface attributeMgrProps {
   delete?: boolean,
 }
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { iot_units, iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
-
-const props = withDefaults(defineProps<attributeMgrProps>(), {
+const props = withDefaults(defineProps<functionMgrProps>(), {
   add: true,
   edit: true,
   delete: true,
   deviceId: 0,
 })
 
-const deviceAttributeList = ref<DeviceAttributeVO[]>([]);
+const deviceFunctionList = ref<DeviceFunctionVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
-const configFormLoading = ref(false);
 const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 
 const queryFormRef = ref(ElForm);
-const deviceAttributeFormRef = ref(ElForm);
+const deviceFunctionFormRef = ref(ElForm);
 
 const dialog = reactive<DialogOption>({
   visible: false,
@@ -212,40 +204,63 @@ const pointDialog = reactive<DialogOption>({
   loading: false
 });
 
-const initFormData: DeviceAttributeForm = {
+const initFormData: DeviceFunctionForm = {
   id: undefined,
-  productId: props.productId,
-  deviceId: props.deviceId,
-  attributeName: undefined,
+  productId: undefined,
+  deviceId: undefined,
+  driverId: undefined,
+  functionStatusAttribute: undefined,
+  functionName: undefined,
   identifier: undefined,
-  attributeType: undefined,
-  unit: undefined,
-  pretreatmentScript: undefined,
-  valueMapId: undefined,
+  dataType: undefined,
+  specs: undefined,
+  async: undefined,
   remark: undefined
 }
-const data = reactive<PageData<DeviceAttributeForm, DeviceAttributeQuery>>({
+const data = reactive<PageData<DeviceFunctionForm, DeviceFunctionQuery>>({
   form: {...initFormData},
   queryParams: {
     pageNum: 1,
     pageSize: 10,
     deviceId: props.deviceId,
     productId: props.productId,
-    attributeName: undefined,
+    driverId: undefined,
+    functionStatusAttribute: undefined,
+    functionName: undefined,
     identifier: undefined,
+    dataType: undefined,
+    async: undefined,
   },
   rules: {
     id: [
       { required: true, message: "主键不能为空", trigger: "blur" }
     ],
-    attributeName: [
-      { required: true, message: "属性名称不能为空", trigger: "blur" }
+    productId: [
+      { required: true, message: "产品ID不能为空", trigger: "blur" }
+    ],
+    deviceId: [
+      { required: true, message: "设备编号不能为空", trigger: "blur" }
+    ],
+    driverId: [
+      { required: true, message: "驱动ID不能为空", trigger: "change" }
+    ],
+    functionStatusAttribute: [
+      { required: true, message: "设备属性不能为空", trigger: "blur" }
+    ],
+    functionName: [
+      { required: true, message: "功能名称不能为空", trigger: "blur" }
     ],
     identifier: [
       { required: true, message: "标识符不能为空", trigger: "blur" }
     ],
-    attributeType: [
-      { required: true, message: "属性类型不能为空", trigger: "change" }
+    dataType: [
+      { required: true, message: "数据类型不能为空", trigger: "change" }
+    ],
+    specs: [
+      { required: true, message: "数据类型对象参数不能为空", trigger: "blur" }
+    ],
+    async: [
+      { required: true, message: "执行方式不能为空", trigger: "change" }
     ],
   }
 });
@@ -255,8 +270,8 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询设备属性列表 */
 const getList = async () => {
   loading.value = true;
-  const res = await listDeviceAttribute(queryParams.value);
-  deviceAttributeList.value = res.rows;
+  const res = await listDeviceFunction(queryParams.value);
+  deviceFunctionList.value = res.rows;
   total.value = res.total;
   loading.value = false;
 }
@@ -267,17 +282,10 @@ const cancel = () => {
   dialog.visible = false;
 }
 
-/** 取消按钮 */
-const pointConfigCancel = () => {
-  // reset();
-  pointDialog.visible = false;
-}
-
-
 /** 表单重置 */
 const reset = () => {
-  // form.value = {...initFormData};
-  // pointFormRef.value.resetFields();
+  form.value = {...initFormData};
+  deviceFunctionFormRef.value.resetFields();
 }
 
 /** 搜索按钮操作 */
@@ -293,7 +301,7 @@ const resetQuery = () => {
 }
 
 /** 多选框选中数据 */
-const handleSelectionChange = (selection: DeviceAttributeVO[]) => {
+const handleSelectionChange = (selection: DeviceFunctionVO[]) => {
   ids.value = selection.map(item => item.id);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
@@ -302,21 +310,21 @@ const handleSelectionChange = (selection: DeviceAttributeVO[]) => {
 /** 新增按钮操作 */
 const handleAdd = () => {
   dialog.visible = true;
-  dialog.title = "添加设备属性";
+  dialog.title = "添加设备功能";
   nextTick(() => {
     reset();
   });
 }
 
 /** 修改按钮操作 */
-const handleUpdate = (row?: DeviceAttributeVO) => {
+const handleUpdate = (row?: DeviceFunctionVO) => {
   loading.value = true
   dialog.visible = true;
-  dialog.title = "修改设备属性";
+  dialog.title = "修改设备功能";
   nextTick(async () => {
     reset();
     const _id = row?.id || ids.value[0]
-    const res = await getDeviceAttribute(_id);
+    const res = await getDeviceFunction(_id);
     loading.value = false;
     Object.assign(form.value, res.data);
   });
@@ -324,13 +332,13 @@ const handleUpdate = (row?: DeviceAttributeVO) => {
 
 /** 提交按钮 */
 const submitForm = () => {
-  deviceAttributeFormRef.value.validate(async (valid: boolean) => {
+  deviceFunctionFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
       buttonLoading.value = true;
       if (form.value.id) {
-        await updateDeviceAttribute(form.value).finally(() =>  buttonLoading.value = false);
+        await updateDeviceFunction(form.value).finally(() =>  buttonLoading.value = false);
       } else {
-        await addDeviceAttribute(form.value).finally(() =>  buttonLoading.value = false);
+        await addDeviceFunction(form.value).finally(() =>  buttonLoading.value = false);
       }
       proxy?.$modal.msgSuccess("修改成功");
       dialog.visible = false;
@@ -340,26 +348,12 @@ const submitForm = () => {
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (row?: DeviceAttributeVO) => {
+const handleDelete = async (row?: DeviceFunctionVO) => {
   const _ids = row?.id || ids.value;
-  await proxy?.$modal.confirm('是否确认删除设备属性编号为"' + _ids + '"的数据项？').finally(() => loading.value = false);
-  await delDeviceAttribute(_ids);
+  await proxy?.$modal.confirm('是否确认删除设备功能编号为"' + _ids + '"的数据项？').finally(() => loading.value = false);
+  await delDeviceFunction(_ids);
   proxy?.$modal.msgSuccess("删除成功");
   await getList();
-}
-
-/**
- *  属性点位配置
- * @param row
- */
- const handlePointConfig = async (row?: DeviceAttributeVO) => {
-  pointAttributes.value.forEach((item,index) => { pointForm.value.pointAttributeConfig[index].value =  undefined })
-  pointDialog.visible = true;
-  pointDialog.loading = true;
-  pointDialog.title = `[${row?.attributeName}] 采集配置`;
-  pointForm.value.deviceAttributeId = row?.id;
-  await setPointForm();
-  pointDialog.loading = false;
 }
 
 const driverList = ref<DriverVO[]>([]);
@@ -369,69 +363,10 @@ const getParendDeviceDriver = async () => {
   driverList.value = res.data;
 }
 
-// 采集配置表单
-const pointForm = ref<PointAttributeValueBatchForm   & {driverId?:string | number}>({pointAttributeConfig: [], deviceId: props.deviceId});
-const pointFormRef = ref(ElForm);
-const pointAttributes = ref([] as Array<PointAttributeVO>);
-const initPointForm = async () => {
-  if (driverList.value.length == 0) return;
-  // 默认加载第一个驱动的采集配置
-  pointForm.value.driverId = driverList.value[0].id;
-  await driverChangeHandler()
-}
-
-/**
- * 驱动选择事件
- * 重新加载采集配置
- */
-const driverChangeHandler = async () => {
-  pointForm.value.pointAttributeConfig = [];
-  const res = await treePointAttribute({driverId: pointForm.value.driverId});
-  pointAttributes.value = res.data;
-  pointAttributes.value.forEach((item, index) => { pointForm.value.pointAttributeConfig[index] = {value: item.defaultValue, pointAttributeId: item.id, }})
-}
-
-/**
- * 采集配置表单赋值
- */
-const pointAttributeValueList = ref<PointAttributeValueVO[]>([]);
-const pointAttributeValueMap = ref<Map<string | number, PointAttributeValueVO>>(new Map());
-const setPointForm = async () => {
-  const res = await treePointAttributeValue({driverId: pointForm.value.driverId, deviceId: props.deviceId, deviceAttributeId: pointForm.value.deviceAttributeId });
-  pointAttributeValueList.value = res.data;
-  if(pointAttributeValueList.value.length == 0) {
-    pointForm.value.pointAttributeConfig = [];
-    pointAttributes.value.forEach((item, index) => { pointForm.value.pointAttributeConfig[index] = {value: item.defaultValue, pointAttributeId: item.id, }})
-    return;
-  };
-  pointAttributeValueMap.value = new Map();
-  pointAttributeValueList.value.forEach(item => pointAttributeValueMap.value.set(item.pointAttributeId, item));
-  pointForm.value.pointAttributeConfig?.forEach((item, index) => {
-    const pointAttributeValue = pointAttributeValueMap.value.get(item?.pointAttributeId);
-    pointForm.value.pointAttributeConfig[index].value =  pointAttributeValue?.value;
-    pointForm.value.pointAttributeConfig[index].id =  pointAttributeValue?.id;
-  })
-}
-
-/** 提交按钮 */
-const submitPointForm = () => {
-  pointFormRef.value.validate(async (valid: boolean) => {
-    if (valid) {
-      buttonLoading.value = true;
-      await batchAddPointAttributeValue(pointForm.value).finally(() =>  buttonLoading.value = false);
-      await proxy?.$modal.msgSuccess("修改成功");
-      pointDialog.visible = false;
-      console.log(pointForm.value);
-    }
-  });
-}
-
 onMounted(async () => {
   loading.value = true;
   await getList();
   await getParendDeviceDriver();
-  await initPointForm();
-  await setPointForm();
   loading.value = false;
 });
 </script>
