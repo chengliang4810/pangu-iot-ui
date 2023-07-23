@@ -47,15 +47,6 @@
         <el-table-column label="描述" align="center" prop="remark" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button
-              v-if="deviceId != 0 && driverList.length > 0"
-              link
-              type="primary"
-              icon="Edit"
-              @click="handlePointConfig(scope.row)"
-              v-hasPermi="['manager:deviceFunction:edit']"
-              >采集配置
-            </el-button>
             <el-tooltip v-if="props.edit" content="修改" placement="top">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manager:deviceFunction:edit']"></el-button>
             </el-tooltip>
@@ -127,30 +118,6 @@
         </div>
       </template>
     </el-dialog>
-
-    <el-dialog :title="pointDialog.title" v-model="pointDialog.visible" width="500px" append-to-body>
-      <el-form v-loading="pointDialog.loading" ref="pointFormRef" :model="pointForm" label-width="80px">
-        <el-form-item
-          v-for="(item, index) in pointAttributes"
-          :label="item.displayName"
-          :key="item.id"
-          :prop="'pointAttributeConfig.'+ index +'.value'"
-          :rules="{
-            required: item.required != 0,
-            message: item.displayName + '不能为空',
-            trigger: 'blur',
-          }"
-        >
-          <el-input v-model="pointForm.pointAttributeConfig[index].value" :placeholder="'请输入' + item.displayName" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button :loading="buttonLoading" type="primary" @click="submitPointForm">确 定</el-button>
-          <el-button @click="pointConfigCancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -196,12 +163,6 @@ const deviceFunctionFormRef = ref(ElForm);
 const dialog = reactive<DialogOption>({
   visible: false,
   title: ''
-});
-
-const pointDialog = reactive<DialogOption>({
-  visible: false,
-  title: '',
-  loading: false
 });
 
 const initFormData: DeviceFunctionForm = {

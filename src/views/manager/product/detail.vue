@@ -35,7 +35,12 @@
           </template>
           <attributeMgr :productId="product.id"></attributeMgr>
         </el-tab-pane>
-        <el-tab-pane label="功能管理" name="function">Role</el-tab-pane>
+        <el-tab-pane label="功能管理" name="function">
+          <template v-slot:label>
+            <div style="width: 100px; text-align: center;">功能管理</div>
+          </template>
+          <functionMgr :productId="product.id"></functionMgr>
+        </el-tab-pane>
         <!-- <el-tab-pane label="告警规则" name="alarm">Task</el-tab-pane> -->
         <el-tab-pane label="日志" name="log">Task</el-tab-pane>
         <el-tab-pane label="标签管理" name="tagMgr">Task</el-tab-pane>
@@ -53,7 +58,7 @@ import { ProductVO, ProductQuery, ProductForm } from '@/api/manager/product/type
 import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 
-import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
+import functionMgr from '@/views/manager/device/components/functionMgr.vue';
 import router from '@/router';
 const route = useRoute();
 
