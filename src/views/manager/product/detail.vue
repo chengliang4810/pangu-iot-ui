@@ -52,12 +52,12 @@
 
 <script setup name="ProductDetail" lang="ts">
 import { treeDriver } from '@/api/manager/driver';
-import { listProduct, getProduct, delProduct, addProduct, updateProduct } from '@/api/manager/product';
+import { getProduct } from '@/api/manager/product';
 import { DriverVO } from '@/api/manager/driver/types';
-import { ProductVO, ProductQuery, ProductForm } from '@/api/manager/product/types';
+import { ProductVO } from '@/api/manager/product/types';
 import { ComponentInternalInstance } from 'vue';
-import { ElForm } from 'element-plus';
 
+import attributeMgr from '@/views/manager/device/components/attributeMgr.vue';
 import functionMgr from '@/views/manager/device/components/functionMgr.vue';
 import router from '@/router';
 const route = useRoute();
@@ -98,5 +98,6 @@ const getDriverList = async () => {
 }
 
 onMounted(() => {
+  getDriverList()
 });
 </script>
