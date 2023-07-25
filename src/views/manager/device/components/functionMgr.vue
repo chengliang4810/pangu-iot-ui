@@ -74,25 +74,25 @@
     <!-- 添加或修改设备属性对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px" append-to-body>
       <el-form ref="deviceFunctionFormRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="产品ID" prop="productId">
-          <el-input v-model="form.productId" placeholder="请输入产品ID" />
-        </el-form-item>
-        <el-form-item label="设备编号" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入设备编号" />
-        </el-form-item>
         <el-form-item label="驱动" prop="driverId" v-if="driverList.length > 1">
           <el-select v-model="form.driverId" placeholder="请选择驱动" style="width: 100%;" @change="driverChangeHandler">
             <el-option v-for="item in driverList" :key="item.id" :label="item.displayName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备属性" prop="functionStatusAttribute">
-          <el-input v-model="form.functionStatusAttribute" placeholder="请输入设备属性" />
-        </el-form-item>
+
         <el-form-item label="功能名称" prop="functionName">
           <el-input v-model="form.functionName" placeholder="请输入功能名称" />
         </el-form-item>
         <el-form-item label="标识符" prop="identifier">
           <el-input v-model="form.identifier" placeholder="请输入标识符" />
+        </el-form-item>
+        <el-form-item label="设备属性" prop="functionStatusAttribute">
+          <el-input v-model="form.functionStatusAttribute" placeholder="请输入设备属性" />
+        </el-form-item>
+        <el-form-item label="执行方式" prop="async">
+          <el-radio-group v-model=" form.async">
+            <el-radio v-for="dict in iot_execute_type" :key="dict.value" :label="parseInt(dict.value) ">{{dict.label}}</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="数据类型" prop="dataType">
           <el-select v-model="form.dataType" placeholder="请选择数据类型">
@@ -101,11 +101,6 @@
         </el-form-item>
         <el-form-item label="数据类型对象参数" prop="specs">
           <el-input v-model="form.specs" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="执行方式" prop="async">
-          <el-select v-model="form.async" placeholder="请选择执行方式">
-            <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
-          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -132,7 +127,7 @@ import { treeParentDeviceDriver,  } from '@/api/manager/driver';
 import { listDeviceFunction, getDeviceFunction, delDeviceFunction, addDeviceFunction, updateDeviceFunction } from '@/api/manager/deviceFunction';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { iot_attribute_type } = toRefs<any>(proxy?.useDict('iot_units', 'iot_attribute_type'));
+const { iot_attribute_type, iot_execute_type } = toRefs<any>(proxy?.useDict('iot_execute_type', 'iot_attribute_type'));
 
 export interface functionMgrProps {
   productId: string | number
@@ -175,7 +170,7 @@ const initFormData: DeviceFunctionForm = {
   identifier: undefined,
   dataType: undefined,
   specs: undefined,
-  async: undefined,
+  async: 1,
   remark: undefined
 }
 const data = reactive<PageData<DeviceFunctionForm, DeviceFunctionQuery>>({
@@ -193,21 +188,6 @@ const data = reactive<PageData<DeviceFunctionForm, DeviceFunctionQuery>>({
     async: undefined,
   },
   rules: {
-    id: [
-      { required: true, message: "主键不能为空", trigger: "blur" }
-    ],
-    productId: [
-      { required: true, message: "产品ID不能为空", trigger: "blur" }
-    ],
-    deviceId: [
-      { required: true, message: "设备编号不能为空", trigger: "blur" }
-    ],
-    driverId: [
-      { required: true, message: "驱动ID不能为空", trigger: "change" }
-    ],
-    functionStatusAttribute: [
-      { required: true, message: "设备属性不能为空", trigger: "blur" }
-    ],
     functionName: [
       { required: true, message: "功能名称不能为空", trigger: "blur" }
     ],
